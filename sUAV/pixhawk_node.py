@@ -96,7 +96,7 @@ class PixhawkNode():
                         self.command_status = f"Failed to store mode: {error}"
                 
                 if self.obstacle_detected == 2.0:
-                    if self.handle_mode_transition(pixhawk, "GUIDED"):
+                    if self.handle_mode_transition(pixhawk, "ALT_HOLD"):
                         self.MODE = "STOPPED"
                         previously_guided = True
                 

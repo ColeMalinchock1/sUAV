@@ -1,548 +1,651 @@
-from pymavlink import mavutil
-import socket
-from lib.coords_to_cartesian import CoordsToCartesian as c2c
-import math
+#!/usr/bin/env python3
+
+import rclpy
+from rclpy.node import Node
+from sensor_msgs.msg import LaserScan
+from geometry_msgs.msg import PoseStamped
 import time
+from dronekit import connect, VehicleMode, LocationGlobalRelative
+import logging
+from typing import Optional, Tuple, List, Dict
+import numpy as np
+from math import cos, sin, radians, atan2, sqrt, degrees
+from filterpy.kalman import ExtendedKalmanFilter as EKF
+from scipy.spatial.transform import Rotation
+from threading import Thread, Lock
 
-class PixhawkCommands:
-    """
-    A class to handle communication and commands with a Pixhawk flight controller.
-    
-    This class provides methods for:
-    - Getting GPS and position information
-    - Managing waypoints and missions
-    - Controlling vehicle movement
-    - Monitoring vehicle state
-    
-    Attributes:
-        pixhawk: MAVLink connection object
-        converter: Coordinate conversion utility object
-    """
-
-    def __init__(self, serial_port, baud_rate):
+class PixhawkController(Node):
+    def __init__(self, connection_string: str = '/dev/ttyTHS1', baud: int = 57600,
+                 safety_distance: float = 5.0, avoidance_distance: float = 8.0,
+                 lidar_topic: str = '/scan', pose_topic: str = '/zed2i/pose'):
         """
-        Initialize connection to Pixhawk and set up data streams.
+        Initialize the PixhawkController.
         
         Args:
-            serial_port (str): Serial port for Pixhawk connection
-            baud_rate (int): Baud rate for serial communication
+            connection_string: Serial port for Pixhawk connection
+            baud: Baud rate for serial connection
+            safety_distance: Minimum distance to maintain from obstacles (meters)
+            avoidance_distance: Distance at which to begin avoidance maneuvers (meters)
+            lidar_topic: ROS2 topic for LIDAR data
+            pose_topic: ROS2 topic for ZED2i pose data
         """
-        # Establish connection to Pixhawk
-        self.pixhawk = mavutil.mavlink_connection(serial_port, baud=baud_rate)
-        self.pixhawk.wait_heartbeat()
-
-        # Request position data stream
-        # Note: MAV_DATA_STREAM is deprecated, but still widely used
-        # See: https://mavlink.io/en/messages/common.html#MESSAGE_INTERVAL
-        self._request_data_streams()
-
-        # Initialize coordinate converter with current position
-        current_latlon, _ = self.get_current_latlon()
-        while current_latlon is None:
-            current_latlon, _ = self.get_current_latlon()
-        self.converter = c2c(current_latlon[0], current_latlon[1])
-
-    def _request_data_streams(self):
-        """Request necessary data streams from Pixhawk."""
-        streams = [
-            mavutil.mavlink.MAV_DATA_STREAM_POSITION,
-            mavutil.mavlink.MAV_DATA_STREAM_RAW_SENSORS
-        ]
+        super().__init__('pixhawk_controller')
         
-        for stream in streams:
-            self.pixhawk.mav.request_data_stream_send(
-                self.pixhawk.target_system,
-                self.pixhawk.target_component,
-                stream,
-                1,  # Rate in Hz
-                1   # Start/Stop (1=start)
-            )
+        self.connection_string = connection_string
+        self.baud = baud
+        self.vehicle = None
+        self.logger = self._setup_logger()
+        self.safety_distance = safety_distance
+        self.avoidance_distance = avoidance_distance
+        self.current_waypoint = None
+        self.avoiding_obstacle = False
+        self.original_mission = None
 
-    def get_gps_info(self, timeout=10):
+        # ROS2 subscribers
+        self.lidar_sub = self.create_subscription(
+            LaserScan, 
+            '/scan', 
+            self.lidar_callback, 
+            5)
+        self.pose_sub = self.create_subscription(
+            PoseStamped,
+            pose_topic,
+            self.pose_callback,
+            10)
+
+        # Data storage with thread safety
+        self.data_lock = Lock()
+        self.latest_lidar_data = {}
+        self.latest_slam_data = {
+            'x': 0.0, 'y': 0.0, 'z': 0.0,
+            'vx': 0.0, 'vy': 0.0, 'vz': 0.0
+        }
+        self.last_pose_time = None
+        
+        # Position fusion attributes
+        self.ekf = self._initialize_ekf()
+        self.last_slam_update = None
+        self.last_gps_position = None
+        self.initial_gps_position = None
+        self.gps_trust_threshold = 6  # Minimum satellites for high GPS trust
+        
+    def _initialize_ekf(self) -> EKF:
+        """Initialize Extended Kalman Filter for position fusion."""
+        ekf = EKF(dim_x=9, dim_z=6)  # State: [x, y, z, vx, vy, vz, ax, ay, az], Measurements: [x, y, z, vx, vy, vz]
+        
+        # Initial state uncertainty
+        ekf.P *= 10
+        
+        # Process noise
+        ekf.Q = np.eye(9) * 0.1
+        ekf.Q[6:, 6:] *= 0.5  # Lower process noise for accelerations
+        
+        # Measurement noise - will be adjusted based on GPS quality
+        ekf.R = np.eye(6)
+        
+        return ekf
+
+    def update_position_estimate(self, slam_data: Dict[str, float], timestamp: float) -> Tuple[float, float, float]:
         """
-        Get current GPS information including satellite count and fix quality.
+        Update position estimate using SLAM and GPS data fusion.
         
         Args:
-            timeout (int): Maximum time to wait for GPS data in seconds
+            slam_data: Dictionary containing SLAM position and velocity estimates
+            timestamp: Current timestamp
             
         Returns:
-            tuple: (dict of GPS info, error string or None)
-                GPS info includes:
-                - satellites_visible: Number of visible satellites
-                - fix_type: GPS fix type (0-1: no fix, 2: 2D fix, 3: 3D fix)
-                - hdop: Horizontal dilution of precision
-                - vdop: Vertical dilution of precision
+            Tuple[float, float, float]: Estimated position (latitude, longitude, altitude)
         """
-        msg = self.pixhawk.recv_match(type='GPS_RAW_INT', blocking=True, timeout=timeout)
-        if msg is None:
-            return None, "Failed to receive GPS_RAW_INT"
+        if not self.vehicle:
+            return None
+            
+        # Get current GPS data
+        gps_position = self.vehicle.location.global_relative_frame
+        num_satellites = self.vehicle.gps_0.satellites_visible
         
-        gps_info = {
-            'satellites_visible': msg.satellites_visible,
-            'fix_type': msg.fix_type,
-            'hdop': msg.eph / 100.0,  # Convert from cm to meters
-            'vdop': msg.epv / 100.0   # Convert from cm to meters
-        }
+        # Initialize reference position if needed
+        if self.initial_gps_position is None and gps_position is not None:
+            self.initial_gps_position = gps_position
+            
+        # Convert GPS to local coordinates
+        if gps_position is not None:
+            gps_local = self._gps_to_local(gps_position)
+        else:
+            gps_local = None
+            
+        # Predict step
+        dt = timestamp - self.last_slam_update if self.last_slam_update else 0.1
+        self.ekf.predict(dt=dt)
         
-        return gps_info, None
-
-    def get_relative_position(self, timeout=10):
+        # Update measurement noise based on GPS quality
+        self._adjust_measurement_noise(num_satellites)
+        
+        # Prepare measurement vector
+        z = np.zeros(6)
+        z[:3] = [slam_data['x'], slam_data['y'], slam_data['z']]
+        z[3:] = [slam_data['vx'], slam_data['vy'], slam_data['vz']]
+        
+        # If GPS is available, fuse it with SLAM data
+        if gps_local is not None:
+            z = self._fuse_measurements(z, gps_local, num_satellites)
+            
+        # Update step
+        self.ekf.update(z)
+        
+        # Convert local position back to GPS coordinates
+        estimated_position = self._local_to_gps(self.ekf.x[:3])
+        
+        self.last_slam_update = timestamp
+        return estimated_position
+        
+    def _adjust_measurement_noise(self, num_satellites: int) -> None:
+        """Adjust EKF measurement noise based on GPS quality."""
+        if num_satellites >= self.gps_trust_threshold:
+            # High GPS trust - lower measurement noise
+            self.ekf.R[:3, :3] = np.eye(3) * 2.0  # Position noise
+            self.ekf.R[3:, 3:] = np.eye(3) * 0.5   # Velocity noise
+        else:
+            # Low GPS trust - higher measurement noise
+            gps_factor = max(1, (self.gps_trust_threshold - num_satellites))
+            self.ekf.R[:3, :3] = np.eye(3) * (2.0 * gps_factor)  # Increase position noise
+            self.ekf.R[3:, 3:] = np.eye(3) * 0.5  # Keep velocity noise constant
+            
+    def _fuse_measurements(self, slam_measurement: np.ndarray, gps_local: np.ndarray, 
+                          num_satellites: int) -> np.ndarray:
+        """Fuse SLAM and GPS measurements based on GPS quality."""
+        if num_satellites >= self.gps_trust_threshold:
+            # High GPS trust - equal weighting
+            weight_gps = 0.5
+        else:
+            # Low GPS trust - favor SLAM
+            weight_gps = max(0.1, num_satellites / (self.gps_trust_threshold * 2))
+            
+        weight_slam = 1 - weight_gps
+        
+        # Fuse position measurements
+        fused_measurement = slam_measurement.copy()
+        fused_measurement[:3] = (slam_measurement[:3] * weight_slam + 
+                               gps_local * weight_gps)
+        
+        return fused_measurement
+        
+    def _gps_to_local(self, gps_position) -> np.ndarray:
+        """Convert GPS coordinates to local frame relative to initial position."""
+        if self.initial_gps_position is None:
+            return np.zeros(3)
+            
+        # Calculate offset in meters
+        dlat = (gps_position.lat - self.initial_gps_position.lat) * 111319.5
+        dlon = (gps_position.lon - self.initial_gps_position.lon) * \
+               (111319.5 * cos(radians(self.initial_gps_position.lat)))
+        dalt = gps_position.alt - self.initial_gps_position.alt
+        
+        return np.array([dlat, dlon, dalt])
+        
+    def _local_to_gps(self, local_position: np.ndarray) -> LocationGlobalRelative:
+        """Convert local frame coordinates back to GPS coordinates."""
+        if self.initial_gps_position is None:
+            return None
+            
+        # Convert meters back to degrees
+        dlat = local_position[0] / 111319.5
+        dlon = local_position[1] / \
+               (111319.5 * cos(radians(self.initial_gps_position.lat)))
+        
+        new_lat = self.initial_gps_position.lat + dlat
+        new_lon = self.initial_gps_position.lon + dlon
+        new_alt = self.initial_gps_position.alt + local_position[2]
+        
+        return LocationGlobalRelative(new_lat, new_lon, new_alt)
+        
+    def lidar_callback(self, msg: LaserScan) -> None:
         """
-        Get position relative to home location in NED (North-East-Down) frame.
+        Handle incoming LIDAR data from ROS2.
         
         Args:
-            timeout (int): Maximum time to wait for position data
+            msg: LaserScan message containing LIDAR data
+        """
+        with self.data_lock:
             
-        Returns:
-            tuple: (dict of position info, error string or None)
-                Position info includes:
-                - x: North position in meters
-                - y: East position in meters
-                - z: Up position in meters (negative of down)
-                - vx, vy, vz: Velocities in respective directions
+            # Convert LaserScan to our angle:distance dictionary format
+            angle = msg.angle_min
+            self.latest_lidar_data = {}
+            
+            for distance in msg.ranges:
+                if msg.range_min <= distance <= msg.range_max:
+                    self.latest_lidar_data[degrees(angle)] = distance
+                angle += msg.angle_increment
+
+    def pose_callback(self, msg: PoseStamped) -> None:
         """
-        msg = self.pixhawk.recv_match(type='LOCAL_POSITION_NED', blocking=True, timeout=timeout)
-        if msg is None:
-            return None, "Failed to receive LOCAL_POSITION_NED"
-
-        position = {
-            'x': msg.x,
-            'y': msg.y,
-            'z': -msg.z,  # Convert Down to Up for intuitive usage
-            'vx': msg.vx,
-            'vy': msg.vy,
-            'vz': -msg.vz  # Convert Down to Up velocity
-        }
-
-        return position, None
-
-    def set_auto_mode(self):
-        """Switch vehicle back to AUTO mode for mission execution."""
-        self.pixhawk.mav.command_long_send(
-            self.pixhawk.target_system,
-            self.pixhawk.target_component,
-            mavutil.mavlink.MAV_CMD_DO_SET_MODE,
-            0,  # confirmation
-            mavutil.mavlink.MAV_MODE_AUTO_ARMED,  # AUTO mode
-            0, 0, 0, 0, 0, 0  # parameters (unused)
-        )
-
-    def get_mode(self, timeout=3):
-        """
-        Get the current flight mode of the vehicle.
+        Handle incoming pose data from ZED2i.
         
         Args:
-            timeout (int): Maximum time to wait for mode data in seconds
-            
-        Returns:
-            tuple: (str mode_name, error string or None)
-                mode_name will be one of:
-                - 'STABILIZE'
-                - 'GUIDED'
-                - 'AUTO'
-                - 'RTL'
-                - 'LAND'
-                - etc.
+            msg: PoseStamped message containing camera pose data
         """
-        msg = self.pixhawk.recv_match(type='HEARTBEAT', blocking=True, timeout=timeout)
-        if msg is None:
-            return None, "Failed to receive HEARTBEAT message"
+        current_time = time.time()
         
-        # Get the custom mode from heartbeat
-        custom_mode = msg.custom_mode
-        
-        # Map of mode numbers to names for ArduPilot/PX4
-        mode_mapping = {
-            0: 'STABILIZE',
-            4: 'GUIDED',
-            3: 'AUTO',
-            6: 'RTL',
-            9: 'LAND',
-            1: 'ACRO',
-            2: 'ALT_HOLD',
-            5: 'LOITER',
-            7: 'CIRCLE',
-            11: 'DRIFT',
-            13: 'SPORT',
-            14: 'FLIP',
-            15: 'AUTOTUNE',
-            16: 'POSHOLD',
-            17: 'BRAKE',
-            18: 'THROW',
-            19: 'AVOID_ADSB',
-            20: 'GUIDED_NOGPS',
-            21: 'SMART_RTL',
-        }
-        
-        mode_name = mode_mapping.get(custom_mode, f'UNKNOWN MODE ({custom_mode})')
-        return mode_name, None
-    
+        with self.data_lock:
+            # Position data
+            self.latest_slam_data['x'] = msg.pose.position.x
+            self.latest_slam_data['y'] = msg.pose.position.y
+            self.latest_slam_data['z'] = msg.pose.position.z
+            
+            # Calculate velocity if we have previous data
+            if self.last_pose_time is not None:
+                dt = current_time - self.last_pose_time
+                if dt > 0:
+                    self.latest_slam_data['vx'] = (msg.pose.position.x - self.latest_slam_data['x']) / dt
+                    self.latest_slam_data['vy'] = (msg.pose.position.y - self.latest_slam_data['y']) / dt
+                    self.latest_slam_data['vz'] = (msg.pose.position.z - self.latest_slam_data['z']) / dt
+            
+            self.last_pose_time = current_time
 
-    def store_current_mode(self):
-        """
-        Store the current flight mode for later restoration.
-        
-        Returns:
-            tuple: (bool success, error string or None)
-        """
-        mode, error = self.get_mode()
-        if mode is None:
-            return False, error
-            
-        self.stored_mode = mode
-        return True, None
+    def get_latest_lidar_data(self) -> Dict[float, float]:
+        """Thread-safe getter for LIDAR data."""
+        with self.data_lock:
+            return self.latest_lidar_data.copy()
 
-    def restore_mode(self):
-        """
-        Restore the previously stored flight mode.
-        
-        Returns:
-            tuple: (bool success, error string or None)
-        """
-        if self.stored_mode is None:
-            return False, "No stored mode available"
-            
-        # Map of mode names to their MAVLink mode values
-        mode_mapping = {
-            'STABILIZE': 0,
-            'GUIDED': 4,
-            'AUTO': 3,
-            'RTL': 6,
-            'LAND': 9,
-            'ACRO': 1,
-            'ALT_HOLD': 2,
-            'LOITER': 5,
-            'CIRCLE': 7,
-            'DRIFT': 11,
-            'SPORT': 13,
-            'FLIP': 14,
-            'AUTOTUNE': 15,
-            'POSHOLD': 16,
-            'BRAKE': 17,
-            'THROW': 18,
-            'AVOID_ADSB': 19,
-            'GUIDED_NOGPS': 20,
-            'SMART_RTL': 21
-        }
-        
-        if self.stored_mode not in mode_mapping:
-            return False, f"Unknown mode: {self.stored_mode}"
-            
-        # Set the mode
-        self.pixhawk.mav.command_long_send(
-            self.pixhawk.target_system,
-            self.pixhawk.target_component,
-            mavutil.mavlink.MAV_CMD_DO_SET_MODE,
-            0,  # confirmation
-            mavutil.mavlink.MAV_MODE_FLAG_CUSTOM_MODE_ENABLED,
-            mode_mapping[self.stored_mode],
-            0, 0, 0, 0, 0  # parameters (unused)
-        )
-        
-        return True, None
+    def get_latest_slam_data(self) -> Tuple[Dict[str, float], float]:
+        """Thread-safe getter for SLAM data."""
+        with self.data_lock:
+            return self.latest_slam_data.copy(), time.time()
 
-    def set_guided_mode(self):
+    def _setup_logger(self) -> logging.Logger:
+        """Configure logging for the controller."""
+        logger = logging.getLogger('PixhawkController')
+        logger.setLevel(logging.INFO)
+        handler = logging.StreamHandler()
+        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        handler.setFormatter(formatter)
+        logger.addHandler(handler)
+        return logger
+
+    def connect(self) -> bool:
+        try:
+            self.logger.info(f"Connecting to vehicle on: {self.connection_string}")
+            self.vehicle = connect(self.connection_string, baud=self.baud, wait_ready=True)
+            self.logger.info("Vehicle connected successfully")
+            time.sleep(2)  # Add delay to allow all systems to initialize
+            return True
+        except Exception as e:
+            self.logger.error(f"Connection failed: {str(e)}")
+            return False
+
+    def preflight_check(self) -> bool:
         """
-        Switch vehicle to GUIDED mode for manual control with verification.
-        
-        Returns:
-            tuple: (bool success, error string or None)
+        Perform comprehensive preflight checks.
         """
-        # Store current mode to compare after change
-        initial_mode, _ = self.get_mode()
-        
-        # Send guided mode command
-        self.pixhawk.mav.command_long_send(
-            self.pixhawk.target_system,
-            self.pixhawk.target_component,
-            mavutil.mavlink.MAV_CMD_DO_SET_MODE,
-            0,
-            mavutil.mavlink.MAV_MODE_GUIDED_ARMED,
-            0, 0, 0, 0, 0, 0
-        )
-        
-        # Wait for mode change confirmation (up to 5 seconds)
-        start_time = time.time()
-        while time.time() - start_time < 5:
-            current_mode, error = self.get_mode()
-            if error:
-                return False, f"Error checking mode: {error}"
-            
-            if current_mode == 'GUIDED':
-                return True, None
+        if not self.vehicle:
+            self.logger.error("Vehicle not connected")
+            return False
+
+        # First initialize position estimation
+        self.logger.info("Initializing position estimation...")
+        retry_count = 0
+        while retry_count < 10:  # Try for up to 10 seconds
+            try:
+                # Get initial SLAM data
+                slam_data, timestamp = self.get_latest_slam_data()
                 
-            time.sleep(0.1)
-        
-        return False, f"Failed to switch to GUIDED mode. Still in {current_mode}"
-
-    def move_to_relative_position(self, x_offset, y_offset, z_offset, velocity=1, timeout=10):
-        """
-        Move vehicle relative to its current body frame orientation with verification.
-        
-        Args:
-            x_offset (float): Forward(+)/backward(-) distance in meters
-            y_offset (float): Right(+)/left(-) distance in meters
-            z_offset (float): Up(+)/down(-) distance in meters
-            velocity (float): Desired velocity in m/s
-            timeout (float): Maximum time to wait for movement completion
-            
-        Returns:
-            tuple: (bool success, error string or None)
-        """
-        # First verify we're in GUIDED mode
-        current_mode, error = self.get_mode()
-        if error:
-            return False, f"Error checking mode: {error}"
-            
-        if current_mode != 'GUIDED':
-            return False, "Vehicle not in GUIDED mode"
-        
-        # Get initial position
-        initial_pos, error = self.get_relative_position()
-        if error:
-            return False, f"Error getting initial position: {error}"
-        
-        # Send movement command
-        type_mask = 0b110111111000  # enable position control only
-        self.pixhawk.mav.set_position_target_local_ned_send(
-            0,
-            self.pixhawk.target_system,
-            self.pixhawk.target_component,
-            mavutil.mavlink.MAV_FRAME_BODY_OFFSET_NED,
-            type_mask,
-            x_offset,
-            -y_offset,
-            -z_offset,
-            0, 0, 0,  # velocity
-            0, 0, 0,  # acceleration
-            0, 0      # yaw, yaw_rate
-        )
-        
-        # Monitor position change
-        start_time = time.time()
-        while time.time() - start_time < timeout:
-            current_pos, error = self.get_relative_position()
-            if error:
-                return False, f"Error getting current position: {error}"
+                # Update position estimate
+                estimated_position = self.update_position_estimate(slam_data, timestamp)
                 
-            # Calculate distance to target
-            dx = abs(current_pos['x'] - (initial_pos['x'] + x_offset))
-            dy = abs(current_pos['y'] - (initial_pos['y'] + y_offset))
-            dz = abs(current_pos['z'] - (initial_pos['z'] + z_offset))
-            
-            # Check if we're close enough to target (within 0.5m)
-            if dx < 0.5 and dy < 0.5 and dz < 0.5:
-                return True, None
-                
-            time.sleep(0.1)
-        
-        return False, "Movement timeout - target position not reached"
-
-    def verify_command_ack(self, command_id, timeout=3):
-        """
-        Wait for and verify a command acknowledgment from the Pixhawk.
-        
-        Args:
-            command_id: MAVLink command ID to verify
-            timeout: Maximum time to wait for acknowledgment
-            
-        Returns:
-            tuple: (bool success, error string or None)
-        """
-        start_time = time.time()
-        while time.time() - start_time < timeout:
-            msg = self.pixhawk.recv_match(type='COMMAND_ACK', blocking=True, timeout=1)
-            if msg is not None:
-                if msg.command == command_id:
-                    if msg.result == mavutil.mavlink.MAV_RESULT_ACCEPTED:
-                        return True, None
-                    else:
-                        result_codes = {
-                            mavutil.mavlink.MAV_RESULT_FAILED: "Command failed",
-                            mavutil.mavlink.MAV_RESULT_TEMPORARILY_REJECTED: "Command temporarily rejected",
-                            mavutil.mavlink.MAV_RESULT_UNSUPPORTED: "Command unsupported",
-                            mavutil.mavlink.MAV_RESULT_DENIED: "Command denied"
-                        }
-                        return False, f"Command not accepted: {result_codes.get(msg.result, 'Unknown error')}"
-                        
-        return False, "Command acknowledgment timeout"
-
-    def get_current_xy(self, timeout=10):
-        """
-        Get current position in local XY coordinates.
-        
-        Args:
-            timeout (int): Maximum time to wait for position data
-            
-        Returns:
-            tuple: (dict of position info, error string or None)
-                Position info includes x, y, z coordinates and yaw
-        """
-        msg = self.pixhawk.recv_match(type='GLOBAL_POSITION_INT', blocking=True, timeout=timeout)
-        if msg is None:
-            return None, "Failed to receive GLOBAL_POSITION_INT"
-        
-        current_position = self.converter.latlon_to_xy(msg.lat, msg.lon)
-        location = {
-            'x': current_position[0],
-            'y': current_position[1],
-            'z': msg.alt,
-            'yaw': self.converter.compass_heading_to_yaw(msg.hdg)
-        }
-
-        return location, None
-
-    def get_current_latlon(self, timeout=10):
-        """
-        Get current position in latitude/longitude coordinates.
-        
-        Args:
-            timeout (int): Maximum time to wait for position data
-            
-        Returns:
-            tuple: (list of position info, error string or None)
-                Position list contains [latitude, longitude, altitude, heading]
-        """
-        msg = self.pixhawk.recv_match(type='GLOBAL_POSITION_INT', blocking=True, timeout=timeout)
-        if msg is None:
-            return None, "Failed to receive GLOBAL_POSITION_INT"
-
-        position = [
-            msg.lat / 1e7,  # Convert to degrees
-            msg.lon / 1e7,  # Convert to degrees
-            msg.alt / 1000.0,  # Convert mm to meters
-            msg.hdg / 100.0 if msg.hdg is not None else None  # Convert centidegrees to degrees
-        ]
-
-        return position, None
-
-    def get_waypoints(self, timeout=10):
-        """
-        Retrieve all waypoints from current mission.
-        
-        Args:
-            timeout (int): Maximum time to wait for waypoint data
-            
-        Returns:
-            tuple: (list of waypoints, error string or None)
-        """
-        self.pixhawk.waypoint_request_list_send()
-        msg = self.pixhawk.recv_match(type='MISSION_COUNT', blocking=True, timeout=timeout)
-        
-        if msg is None:
-            return None, "Failed to receive MISSION_COUNT"
-
-        waypoints = []
-        for i in range(msg.count):
-            self.pixhawk.waypoint_request_send(i)
-            msg = self.pixhawk.recv_match(type='MISSION_ITEM', blocking=True, timeout=timeout)
-            
-            if msg is None:
-                return None, f"Failed to receive MISSION_ITEM for waypoint {i}"
-            
-            waypoints.append([msg.x, msg.y, msg.z])
-
-        return waypoints, None
-
-    def get_current_waypoint_vector(self):
-        """
-        Calculate vector between previous and current waypoints.
-        
-        Returns:
-            list: Vector [x, y] between previous and current waypoints
-        """
-        self.pixhawk.mav.mission_request_list_send()
-        current_waypoint_index = None
-        current_waypoint = previous_waypoint = None
-
-        while True:
-            msg = self.pixhawk.recv_match(type=['MISSION_CURRENT', 'MISSION_ITEM'], blocking=True)
-            if msg is None:
-                break
-
-            if msg.get_type() == 'MISSION_CURRENT':
-                current_waypoint_index = msg.seq
-            elif msg.get_type() == 'MISSION_ITEM' and current_waypoint_index is not None:
-                if msg.seq == current_waypoint_index - 1:
-                    position = self.converter.latlon_to_xy(msg.x, msg.y)
-                    previous_waypoint = [position[0], position[1], msg.z]
-                if msg.seq == current_waypoint_index:
-                    position = self.converter.latlon_to_xy(msg.x, msg.y)
-                    current_waypoint = [position[0], position[1], msg.z]
+                if estimated_position:
+                    self._send_position_update(estimated_position)
+                    self.logger.info("Position estimation initialized")
                     break
+                    
+            except Exception as e:
+                self.logger.warning(f"Position estimation init attempt {retry_count}: {str(e)}")
+                
+            retry_count += 1
+            time.sleep(1)
 
-        return [
-            current_waypoint[0] - previous_waypoint[0],
-            current_waypoint[1] - previous_waypoint[1]
+        # Then perform other checks
+        checks = [
+            self._check_battery(),
+            self._check_gps(),        # Move GPS check before armable check
+            self._check_mode(),
+            self._check_armable(),    # Move armable check after position init
+            self._check_rc_channels()
         ]
+        
+        return all(checks)
 
-    def send_waypoints(self, waypoint_list):
+    def _check_battery(self) -> bool:
+        """Check if battery level is sufficient."""
+        if self.vehicle.battery.level < 50:
+            self.logger.warning(f"Low battery: {self.vehicle.battery.level}%")
+            return False
+        return True
+
+    def _check_armable(self) -> bool:
+        """Check if vehicle is armable."""
+        if not self.vehicle.is_armable:
+            self.logger.warning(f"Vehicle not armable. Status: GPS: {self.vehicle.gps_0.fix_type}, EKF: {self.vehicle.ekf_ok}")
+            return False
+        return True
+
+    def _check_gps(self) -> bool:
+        """Check GPS health."""
+        if self.vehicle.gps_0.fix_type < 3:
+            self.logger.warning("Insufficient GPS fix")
+            return False
+        return True
+
+    def _check_mode(self) -> bool:
+        """Check if vehicle is in correct mode."""
+        if self.vehicle.mode.name != "GUIDED":
+            self.logger.info("Setting mode to GUIDED")
+            self.vehicle.mode = VehicleMode("GUIDED")
+            time.sleep(1)
+        return self.vehicle.mode.name == "GUIDED"
+
+    def _check_rc_channels(self) -> bool:
+        try:
+            rc_channels = [self.vehicle.channels[i] for i in range(1, 9)]
+            for i, ch in enumerate(rc_channels, 1):
+                if ch is None:
+                    self.logger.warning(f"RC channel {i} not receiving values")
+            if any(ch is None for ch in rc_channels):
+                return False
+            return True
+        except Exception as e:
+            self.logger.error(f"RC channel check failed: {str(e)}")
+            return False
+
+    def takeoff(self, target_altitude: float) -> bool:
         """
-        Upload new mission waypoints to Pixhawk.
+        Arm and takeoff to specified altitude.
         
         Args:
-            waypoint_list (list): List of waypoints, each containing [lat, lon, alt]
-        """
-        waypoints = [
-            {'seq': i, 'lat': wp[0], 'lon': wp[1], 'alt': wp[2]}
-            for i, wp in enumerate(waypoint_list)
-        ]
-
-        self.pixhawk.waypoint_count_send(len(waypoints))
-        
-        for wp in waypoints:
-            self.pixhawk.mav.mission_item_send(
-                self.pixhawk.target_system,
-                self.pixhawk.target_component,
-                wp['seq'],
-                mavutil.mavlink.MAV_FRAME_GLOBAL_RELATIVE_ALT,
-                mavutil.mavlink.MAV_CMD_NAV_WAYPOINT,
-                0, 1,  # current, autocontinue
-                0, 0, 0, 0,  # params
-                wp['lat'], wp['lon'], wp['alt']
-            )
-
-    def move_relative(self, x, y):
-        """
-        Calculate new position based on current heading and relative movement.
-        
-        Args:
-            x (float): Forward/backward distance
-            y (float): Right/left distance
+            target_altitude: Target altitude in meters
             
         Returns:
-            tuple: (target_x, target_y) coordinates
+            bool: True if takeoff successful, False otherwise
         """
-        current_position, _ = self.get_current_xy()
-        current_x = current_position['x']
-        current_y = current_position['y']
-        current_yaw = current_position['yaw']
+        if not self.vehicle or not self.preflight_check():
+            return False
 
-        theta = math.radians(current_yaw)
-        vector = [current_x - x, current_y - y]
+        try:
+            self.logger.info("Arming vehicle...")
+            self.vehicle.armed = True
+            time.sleep(2)
 
-        x_goal = current_x + (math.cos(theta) * vector[0] - math.sin(theta) * vector[1])
-        y_goal = current_y + (math.sin(theta) * vector[0] + math.cos(theta) * vector[1])
+            if not self.vehicle.armed:
+                self.logger.error("Failed to arm vehicle")
+                return False
 
-        return x_goal, y_goal
+            self.logger.info(f"Taking off to {target_altitude}m...")
+            self.vehicle.simple_takeoff(target_altitude)
 
-    def hold_position(self):
-        """Command vehicle to hold current position using loiter mode."""
-        self.pixhawk.mav.command_long_send(
-            self.pixhawk.target_system,
-            self.pixhawk.target_component,
-            mavutil.mavlink.MAV_CMD_NAV_LOITER_UNLIM,
-            0,  # confirmation
-            0, 0, 0, 0, 0, 0, 0, 0  # parameters (unused)
-        )
+            # Wait until target altitude reached
+            while True:
+                current_altitude = self.vehicle.location.global_relative_frame.alt
+                self.logger.info(f"Altitude: {current_altitude}m")
+                
+                if current_altitude >= target_altitude * 0.95:
+                    self.logger.info("Target altitude reached")
+                    break
+                    
+                time.sleep(1)
+                
+                # Check if RC override is active
+                if self._is_rc_override_active():
+                    self.logger.warning("RC override activated during takeoff")
+                    return False
 
-    def resume_mission(self):
-        """Resume currently loaded mission from next waypoint."""
-        self.pixhawk.mav.command_long_send(
-            self.pixhawk.target_system,
-            self.pixhawk.target_component,
-            mavutil.mavlink.MAV_CMD_DO_SET_MODE,
-            0,  # confirmation
-            mavutil.mavlink.MAV_MODE_AUTO_ARMED,
-            0, 0, 0, 0, 0, 0  # parameters (unused)
-        )
+            return True
+
+        except Exception as e:
+            self.logger.error(f"Takeoff failed: {str(e)}")
+            return False
+
+    def _is_rc_override_active(self) -> bool:
+        """
+        Check if RC override is active based on switch position.
+        Assumes channel 8 is used for override switch.
+        """
+        try:
+            override_channel = self.vehicle.channels['8']
+            # Typically PWM > 1800 indicates switch in override position
+            return override_channel > 1800
+        except Exception as e:
+            self.logger.error(f"Failed to check RC override: {str(e)}")
+            return False
+
+    def hold_position(self) -> None:
+        """Hold current position."""
+        if self.vehicle and self.vehicle.armed:
+            current_location = self.vehicle.location.global_relative_frame
+            self.vehicle.simple_goto(current_location)
+
+    def land(self) -> bool:
+        """
+        Land the vehicle.
+        
+        Returns:
+            bool: True if landing initiated successfully, False otherwise
+        """
+        try:
+            self.logger.info("Initiating landing...")
+            self.vehicle.mode = VehicleMode("LAND")
+            return True
+        except Exception as e:
+            self.logger.error(f"Landing failed: {str(e)}")
+            return False
+
+    def disconnect(self) -> None:
+        """Close vehicle connection."""
+        if self.vehicle:
+            self.vehicle.close()
+            self.logger.info("Vehicle disconnected")
+
+    def handle_obstacle(self, lidar_data: Dict[float, float]) -> None:
+        """
+        Process LIDAR data and execute avoidance maneuvers if needed.
+        
+        Args:
+            lidar_data: Dictionary of angles (in degrees) to distances (in meters)
+        """
+        if not self.vehicle or not self.vehicle.armed:
+            return
+
+        # Find the closest obstacle
+        min_distance = float('inf')
+        min_angle = 0
+        
+        for angle, distance in lidar_data.items():
+            if distance < min_distance:
+                min_distance = distance
+                min_angle = angle
+
+        if min_distance < self.avoidance_distance:
+            self.avoiding_obstacle = True
+            self._execute_avoidance_maneuver(min_distance, min_angle)
+        elif self.avoiding_obstacle:
+            self._resume_mission()
+
+    def _execute_avoidance_maneuver(self, distance: float, obstacle_angle: float) -> None:
+        """
+        Execute an avoidance maneuver based on obstacle position.
+        
+        Args:
+            distance: Distance to obstacle in meters
+            obstacle_angle: Angle to obstacle in degrees
+        """
+        current_pos = self.vehicle.location.global_relative_frame
+        vehicle_heading = self.vehicle.heading
+
+        # Convert obstacle angle to global frame
+        global_obstacle_angle = (vehicle_heading + obstacle_angle) % 360
+
+        # Calculate avoidance direction (perpendicular to obstacle direction)
+        avoidance_angle = (global_obstacle_angle + 90) % 360
+        
+        # Calculate avoidance distance based on how close we are to the obstacle
+        avoidance_magnitude = self.avoidance_distance * (1 - distance / self.avoidance_distance)
+        
+        # Calculate new position
+        delta_north = avoidance_magnitude * cos(radians(avoidance_angle))
+        delta_east = avoidance_magnitude * sin(radians(avoidance_angle))
+        
+        # Create new waypoint
+        next_pos = self._get_location_offset_meters(current_pos, delta_north, delta_east)
+        
+        # Move to avoidance position
+        self.vehicle.simple_goto(next_pos)
+        self.logger.info(f"Executing avoidance maneuver: {avoidance_angle}°, {avoidance_magnitude}m")
+
+    def _resume_mission(self) -> None:
+        """Resume the original mission after avoiding an obstacle."""
+        self.avoiding_obstacle = False
+        if self.current_waypoint:
+            self.vehicle.simple_goto(self.current_waypoint)
+            self.logger.info("Resuming mission")
+
+    def _get_location_offset_meters(self, original_location, dNorth, dEast) -> LocationGlobalRelative:
+        """
+        Calculate new LocationGlobalRelative based on offset from original location.
+        
+        Args:
+            original_location: Original GPS location
+            dNorth: Meters north of original location
+            dEast: Meters east of original location
+            
+        Returns:
+            New LocationGlobalRelative
+        """
+        earth_radius = 6378137.0  # Radius of "spherical" earth
+
+        # Coordinate offsets in radians
+        dLat = dNorth / earth_radius
+        dLon = dEast / (earth_radius * cos(radians(original_location.lat)))
+
+        # New position in decimal degrees
+        newlat = original_location.lat + degrees(dLat)
+        newlon = original_location.lon + degrees(dLon)
+
+        return LocationGlobalRelative(newlat, newlon, original_location.alt)
+
+    def wait_for_mission_complete(self, lidar_callback, slam_callback) -> bool:
+        """
+        Wait for mission to complete while monitoring RC override, obstacles, and position.
+        
+        Args:
+            lidar_callback: Function that returns current LIDAR data as Dict[angle, distance]
+            slam_callback: Function that returns SLAM position data and timestamp
+            
+        Returns:
+            bool: True if mission completed successfully, False if interrupted
+        """
+        try:
+            while True:
+                if self._is_rc_override_active():
+                    self.logger.warning("RC override activated - ending autonomous control")
+                    return False
+                
+                # Update position estimate with SLAM data
+                slam_data, timestamp = slam_callback()
+                estimated_position = self.update_position_estimate(slam_data, timestamp)
+                
+                if estimated_position:
+                    # Update vehicle position in Pixhawk
+                    self._send_position_update(estimated_position)
+                
+                # Get current LIDAR data and handle any obstacles
+                lidar_data = lidar_callback()
+                self.handle_obstacle(lidar_data)
+                
+                # Store current waypoint for mission resumption
+                if not self.avoiding_obstacle:
+                    self.current_waypoint = self.vehicle.commands[self.vehicle.commands.next]
+                
+                # Check if mission is complete
+                if self.vehicle.commands.next == self.vehicle.commands.count:
+                    self.logger.info("Mission complete")
+                    return True
+                
+                time.sleep(0.1)  # Faster update rate for sensor fusion
+                
+        except Exception as e:
+            self.logger.error(f"Error during mission monitoring: {str(e)}")
+            return False
+            
+    def _send_position_update(self, position: LocationGlobalRelative) -> None:
+        """
+        Send position update to Pixhawk's EKF.
+        
+        Args:
+            position: Estimated position from sensor fusion
+        """
+        try:
+            # Send vision position estimate message
+            msg = self.vehicle.message_factory.vision_position_estimate_encode(
+                int(time.time() * 1e6),  # timestamp in microseconds
+                position.lat,
+                position.lon,
+                position.alt,
+                0, 0, 0  # rotation in radians (we're not estimating rotation)
+            )
+            self.vehicle.send_mavlink(msg)
+            
+        except Exception as e:
+            self.logger.error(f"Failed to send position update: {str(e)}")
+                
+        except Exception as e:
+            self.logger.error(f"Error during mission monitoring: {str(e)}")
+            return False
+
+def main():
+    """Example usage of the PixhawkController class."""
+    rclpy.init()
+    
+    # Initialize controller
+    controller = PixhawkController()
+    
+    # Create a separate thread for ROS2 spin
+    ros_thread = Thread(target=lambda: rclpy.spin(controller))
+    ros_thread.daemon = True
+    ros_thread.start()
+    
+    try:
+        # Connect to vehicle
+        if not controller.connect():
+            return
+
+        # Perform preflight checks
+        if not controller.preflight_check():
+            controller.disconnect()
+            return
+
+        # Take off to 10 meters
+        if not controller.takeoff(10):
+            controller.land()
+            controller.disconnect()
+            return
+
+        # Hold position and wait for mission
+        controller.hold_position()
+        
+        # Wait for mission completion or RC override
+        # Use the internal data getters for LIDAR and SLAM data
+        if controller.wait_for_mission_complete(
+            controller.get_latest_lidar_data,
+            controller.get_latest_slam_data
+        ):
+            # Land after successful mission
+            controller.land()
+        
+    except KeyboardInterrupt:
+        print("\nOperation interrupted by user")
+    except Exception as e:
+        print(f"Error occurred: {str(e)}")
+    finally:
+        # Ensure we always disconnect and shutdown properly
+        controller.disconnect()
+        rclpy.shutdown()
+
+if __name__ == "__main__":
+    main()
