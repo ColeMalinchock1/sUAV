@@ -3,6 +3,7 @@
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Image
+from std_msgs.msg import Float64
 from cv_bridge import CvBridge
 import cv2
 import numpy as np
@@ -13,24 +14,33 @@ class ZedLineOverlay(Node):
         super().__init__('zed_line_overlay')
         
         # Create subscription to the Zed camera image topic
-        self.subscription = self.create_subscription(
+        self.image_sub = self.create_subscription(
             Image,
-            '/zed2i/zed_node/rgb/image_rect_color',  # Adjust topic name if needed
+            '/zed/zed_node/rgb/image_rect_color',  # Adjust topic name if needed
             self.image_callback,
             10)
-        self.subscription
+        self.yaw_sub = self.create_subscription(
+            Float64,
+            '/obstacle_avoidance/yaw',
+            self.yaw_callback,
+            10
+        )
         
         # Initialize CV bridge
         self.bridge = CvBridge()
         
         # Initialize angle for the rotating line
         self.current_angle = 0
-        self.angle_increment = 1  # Degrees to increment per frame
-        
+    
+    def yaw_callback(self, msg):
+        self.current_angle = msg.data
+
     def image_callback(self, msg):
         try:
             # Convert ROS Image message to OpenCV image
             cv_image = self.bridge.imgmsg_to_cv2(msg, "bgr8")
+
+            cv_image = cv2.flip(cv_image, -1)
             
             # Get image dimensions
             height, width = cv_image.shape[:2]
@@ -43,15 +53,18 @@ class ZedLineOverlay(Node):
             end_x = bottom_center[0] + int(line_length * math.sin(math.radians(self.current_angle)))
             end_y = bottom_center[1] - int(line_length * math.cos(math.radians(self.current_angle)))
             
+            cv2.line(cv_image, 
+                    bottom_center, 
+                    (bottom_center[0], bottom_center[1] - line_length),
+                    (0, 0, 255),  # Green color
+                    2)  # Line thickness
+
             # Draw the line
             cv2.line(cv_image, 
                     bottom_center, 
                     (end_x, end_y),
                     (0, 255, 0),  # Green color
                     2)  # Line thickness
-            
-            # Update angle for next frame
-            self.current_angle = (self.current_angle + self.angle_increment) % 360
             
             # Display the image
             cv2.imshow('Zed Camera with Line Overlay', cv_image)
