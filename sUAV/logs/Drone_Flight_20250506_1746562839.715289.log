@@ -1,0 +1,13 @@
+2025-05-06 16:20:39 - INFO - [info] - Logger created
+2025-05-06 16:20:39 - INFO - [info] - Connecting to vehicle...
+2025-05-06 16:20:54 - INFO - [info] - Connected to vehicle
+2025-05-06 16:20:54 - INFO - [info] - Sufficient number of satellites - Counted: 4, Required: 3
+2025-05-06 16:20:54 - INFO - [info] - Sufficient battery level - Measured: 100, Required: 25
+2025-05-06 16:20:54 - INFO - [info] - Vehicle health validated
+2025-05-06 16:20:54 - INFO - [info] - Pixhawk connected
+2025-05-06 16:20:55 - INFO - [info] - Waiting for mission
+2025-05-06 16:20:58 - INFO - [info] - Received mission
+2025-05-06 16:20:58 - INFO - [info] - Number of waypoints: 3
+2025-05-06 16:20:58 - INFO - [info] - Waiting to switch to GUIDED mode
+2025-05-06 16:21:30 - INFO - [info] - Keyboard interrupt caught
+2025-05-06 16:21:30 - INFO - [info] - Closing the vehicle communication

@@ -1,0 +1,1405 @@
+2025-05-06 16:28:57 - INFO - [info] - Logger created
+2025-05-06 16:28:57 - INFO - [info] - Connecting to vehicle...
+2025-05-06 16:29:11 - INFO - [info] - Connected to vehicle
+2025-05-06 16:29:11 - INFO - [info] - Sufficient number of satellites - Counted: 4, Required: 3
+2025-05-06 16:29:11 - INFO - [info] - Sufficient battery level - Measured: 99, Required: 25
+2025-05-06 16:29:11 - INFO - [info] - Vehicle health validated
+2025-05-06 16:29:11 - INFO - [info] - Pixhawk connected
+2025-05-06 16:29:12 - INFO - [info] - Waiting for mission
+2025-05-06 16:29:15 - INFO - [info] - Received mission
+2025-05-06 16:29:15 - INFO - [info] - Number of waypoints: 3
+2025-05-06 16:29:15 - INFO - [info] - Waiting to switch to GUIDED mode
+2025-05-06 16:31:00 - INFO - [info] - Beginning mission
+2025-05-06 16:31:00 - INFO - [info] - Current waypoint: 0/3
+2025-05-06 16:31:00 - INFO - [info] - Waypoint location: 35.76871109008789, -78.66352844238281, 100.0
+2025-05-06 16:31:01 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:01 - INFO - [info] - Stopping.
+2025-05-06 16:31:01 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:01 - INFO - [info] - Command sent
+2025-05-06 16:31:01 - INFO - [info] - Stopped.
+2025-05-06 16:31:01 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:01 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:01 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:01 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:10 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:10 - INFO - [info] - Stopping.
+2025-05-06 16:31:10 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:10 - INFO - [info] - Command sent
+2025-05-06 16:31:10 - INFO - [info] - Stopped.
+2025-05-06 16:31:11 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:11 - INFO - [info] - Stopping.
+2025-05-06 16:31:11 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:11 - INFO - [info] - Command sent
+2025-05-06 16:31:11 - INFO - [info] - Stopped.
+2025-05-06 16:31:14 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:14 - INFO - [info] - Stopping.
+2025-05-06 16:31:14 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:14 - INFO - [info] - Command sent
+2025-05-06 16:31:14 - INFO - [info] - Stopped.
+2025-05-06 16:31:14 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:14 - INFO - [info] - Stopping.
+2025-05-06 16:31:14 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:14 - INFO - [info] - Command sent
+2025-05-06 16:31:14 - INFO - [info] - Stopped.
+2025-05-06 16:31:15 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:15 - INFO - [info] - Stopping.
+2025-05-06 16:31:15 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:15 - INFO - [info] - Command sent
+2025-05-06 16:31:15 - INFO - [info] - Stopped.
+2025-05-06 16:31:17 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:17 - INFO - [info] - Stopping.
+2025-05-06 16:31:17 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:17 - INFO - [info] - Command sent
+2025-05-06 16:31:17 - INFO - [info] - Stopped.
+2025-05-06 16:31:19 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:19 - INFO - [info] - Stopping.
+2025-05-06 16:31:19 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:19 - INFO - [info] - Command sent
+2025-05-06 16:31:19 - INFO - [info] - Stopped.
+2025-05-06 16:31:23 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:23 - INFO - [info] - Stopping.
+2025-05-06 16:31:23 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:23 - INFO - [info] - Command sent
+2025-05-06 16:31:23 - INFO - [info] - Stopped.
+2025-05-06 16:31:31 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:31 - INFO - [info] - Stopping.
+2025-05-06 16:31:31 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:31 - INFO - [info] - Command sent
+2025-05-06 16:31:31 - INFO - [info] - Stopped.
+2025-05-06 16:31:33 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:33 - INFO - [info] - Stopping.
+2025-05-06 16:31:33 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:33 - INFO - [info] - Command sent
+2025-05-06 16:31:33 - INFO - [info] - Stopped.
+2025-05-06 16:31:37 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:37 - INFO - [info] - Stopping.
+2025-05-06 16:31:37 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:37 - INFO - [info] - Command sent
+2025-05-06 16:31:37 - INFO - [info] - Stopped.
+2025-05-06 16:31:37 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:37 - INFO - [info] - Stopping.
+2025-05-06 16:31:37 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:37 - INFO - [info] - Command sent
+2025-05-06 16:31:37 - INFO - [info] - Stopped.
+2025-05-06 16:31:37 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:37 - INFO - [info] - Stopping.
+2025-05-06 16:31:37 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:37 - INFO - [info] - Command sent
+2025-05-06 16:31:37 - INFO - [info] - Stopped.
+2025-05-06 16:31:37 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:37 - INFO - [info] - Stopping.
+2025-05-06 16:31:37 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:37 - INFO - [info] - Command sent
+2025-05-06 16:31:37 - INFO - [info] - Stopped.
+2025-05-06 16:31:37 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:37 - INFO - [info] - Stopping.
+2025-05-06 16:31:37 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:37 - INFO - [info] - Command sent
+2025-05-06 16:31:37 - INFO - [info] - Stopped.
+2025-05-06 16:31:38 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:38 - INFO - [info] - Stopping.
+2025-05-06 16:31:38 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:38 - INFO - [info] - Command sent
+2025-05-06 16:31:38 - INFO - [info] - Stopped.
+2025-05-06 16:31:38 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:38 - INFO - [info] - Stopping.
+2025-05-06 16:31:38 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:38 - INFO - [info] - Command sent
+2025-05-06 16:31:38 - INFO - [info] - Stopped.
+2025-05-06 16:31:38 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:38 - INFO - [info] - Stopping.
+2025-05-06 16:31:38 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:38 - INFO - [info] - Command sent
+2025-05-06 16:31:38 - INFO - [info] - Stopped.
+2025-05-06 16:31:38 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:38 - INFO - [info] - Stopping.
+2025-05-06 16:31:38 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:38 - INFO - [info] - Command sent
+2025-05-06 16:31:38 - INFO - [info] - Stopped.
+2025-05-06 16:31:38 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:38 - INFO - [info] - Stopping.
+2025-05-06 16:31:38 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:38 - INFO - [info] - Command sent
+2025-05-06 16:31:38 - INFO - [info] - Stopped.
+2025-05-06 16:31:38 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:38 - INFO - [info] - Stopping.
+2025-05-06 16:31:38 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:38 - INFO - [info] - Command sent
+2025-05-06 16:31:38 - INFO - [info] - Stopped.
+2025-05-06 16:31:38 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:38 - INFO - [info] - Stopping.
+2025-05-06 16:31:38 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:38 - INFO - [info] - Command sent
+2025-05-06 16:31:38 - INFO - [info] - Stopped.
+2025-05-06 16:31:38 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:38 - INFO - [info] - Stopping.
+2025-05-06 16:31:38 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:38 - INFO - [info] - Command sent
+2025-05-06 16:31:38 - INFO - [info] - Stopped.
+2025-05-06 16:31:38 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:38 - INFO - [info] - Stopping.
+2025-05-06 16:31:38 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:38 - INFO - [info] - Command sent
+2025-05-06 16:31:38 - INFO - [info] - Stopped.
+2025-05-06 16:31:39 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:39 - INFO - [info] - Stopping.
+2025-05-06 16:31:39 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:39 - INFO - [info] - Command sent
+2025-05-06 16:31:39 - INFO - [info] - Stopped.
+2025-05-06 16:31:39 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:39 - INFO - [info] - Stopping.
+2025-05-06 16:31:39 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:39 - INFO - [info] - Command sent
+2025-05-06 16:31:39 - INFO - [info] - Stopped.
+2025-05-06 16:31:39 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:39 - INFO - [info] - Stopping.
+2025-05-06 16:31:39 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:39 - INFO - [info] - Command sent
+2025-05-06 16:31:39 - INFO - [info] - Stopped.
+2025-05-06 16:31:39 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:39 - INFO - [info] - Stopping.
+2025-05-06 16:31:39 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:39 - INFO - [info] - Command sent
+2025-05-06 16:31:39 - INFO - [info] - Stopped.
+2025-05-06 16:31:39 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:39 - INFO - [info] - Stopping.
+2025-05-06 16:31:39 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:39 - INFO - [info] - Command sent
+2025-05-06 16:31:39 - INFO - [info] - Stopped.
+2025-05-06 16:31:39 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:39 - INFO - [info] - Stopping.
+2025-05-06 16:31:39 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:39 - INFO - [info] - Command sent
+2025-05-06 16:31:39 - INFO - [info] - Stopped.
+2025-05-06 16:31:39 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:39 - INFO - [info] - Stopping.
+2025-05-06 16:31:39 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:39 - INFO - [info] - Command sent
+2025-05-06 16:31:39 - INFO - [info] - Stopped.
+2025-05-06 16:31:39 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:39 - INFO - [info] - Stopping.
+2025-05-06 16:31:39 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:39 - INFO - [info] - Command sent
+2025-05-06 16:31:39 - INFO - [info] - Stopped.
+2025-05-06 16:31:40 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:40 - INFO - [info] - Stopping.
+2025-05-06 16:31:40 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:40 - INFO - [info] - Command sent
+2025-05-06 16:31:40 - INFO - [info] - Stopped.
+2025-05-06 16:31:40 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:40 - INFO - [info] - Stopping.
+2025-05-06 16:31:40 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:40 - INFO - [info] - Command sent
+2025-05-06 16:31:40 - INFO - [info] - Stopped.
+2025-05-06 16:31:40 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:40 - INFO - [info] - Stopping.
+2025-05-06 16:31:40 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:40 - INFO - [info] - Command sent
+2025-05-06 16:31:40 - INFO - [info] - Stopped.
+2025-05-06 16:31:40 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:40 - INFO - [info] - Stopping.
+2025-05-06 16:31:40 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:40 - INFO - [info] - Command sent
+2025-05-06 16:31:40 - INFO - [info] - Stopped.
+2025-05-06 16:31:40 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:40 - INFO - [info] - Stopping.
+2025-05-06 16:31:40 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:40 - INFO - [info] - Command sent
+2025-05-06 16:31:40 - INFO - [info] - Stopped.
+2025-05-06 16:31:40 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:40 - INFO - [info] - Stopping.
+2025-05-06 16:31:40 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:40 - INFO - [info] - Command sent
+2025-05-06 16:31:40 - INFO - [info] - Stopped.
+2025-05-06 16:31:40 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:40 - INFO - [info] - Stopping.
+2025-05-06 16:31:40 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:40 - INFO - [info] - Command sent
+2025-05-06 16:31:40 - INFO - [info] - Stopped.
+2025-05-06 16:31:40 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:40 - INFO - [info] - Stopping.
+2025-05-06 16:31:40 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:40 - INFO - [info] - Command sent
+2025-05-06 16:31:40 - INFO - [info] - Stopped.
+2025-05-06 16:31:40 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:40 - INFO - [info] - Stopping.
+2025-05-06 16:31:40 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:40 - INFO - [info] - Command sent
+2025-05-06 16:31:40 - INFO - [info] - Stopped.
+2025-05-06 16:31:41 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:41 - INFO - [info] - Stopping.
+2025-05-06 16:31:41 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:41 - INFO - [info] - Command sent
+2025-05-06 16:31:41 - INFO - [info] - Stopped.
+2025-05-06 16:31:41 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:41 - INFO - [info] - Stopping.
+2025-05-06 16:31:41 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:41 - INFO - [info] - Command sent
+2025-05-06 16:31:41 - INFO - [info] - Stopped.
+2025-05-06 16:31:41 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:41 - INFO - [info] - Stopping.
+2025-05-06 16:31:41 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:41 - INFO - [info] - Command sent
+2025-05-06 16:31:41 - INFO - [info] - Stopped.
+2025-05-06 16:31:41 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:41 - INFO - [info] - Stopping.
+2025-05-06 16:31:41 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:41 - INFO - [info] - Command sent
+2025-05-06 16:31:41 - INFO - [info] - Stopped.
+2025-05-06 16:31:41 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:41 - INFO - [info] - Stopping.
+2025-05-06 16:31:41 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:41 - INFO - [info] - Command sent
+2025-05-06 16:31:41 - INFO - [info] - Stopped.
+2025-05-06 16:31:41 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:41 - INFO - [info] - Stopping.
+2025-05-06 16:31:41 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:41 - INFO - [info] - Command sent
+2025-05-06 16:31:41 - INFO - [info] - Stopped.
+2025-05-06 16:31:41 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:41 - INFO - [info] - Stopping.
+2025-05-06 16:31:41 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:41 - INFO - [info] - Command sent
+2025-05-06 16:31:41 - INFO - [info] - Stopped.
+2025-05-06 16:31:41 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:41 - INFO - [info] - Stopping.
+2025-05-06 16:31:41 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:41 - INFO - [info] - Command sent
+2025-05-06 16:31:41 - INFO - [info] - Stopped.
+2025-05-06 16:31:41 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:41 - INFO - [info] - Stopping.
+2025-05-06 16:31:41 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:41 - INFO - [info] - Command sent
+2025-05-06 16:31:41 - INFO - [info] - Stopped.
+2025-05-06 16:31:42 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:42 - INFO - [info] - Stopping.
+2025-05-06 16:31:42 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:42 - INFO - [info] - Command sent
+2025-05-06 16:31:42 - INFO - [info] - Stopped.
+2025-05-06 16:31:42 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:42 - INFO - [info] - Stopping.
+2025-05-06 16:31:42 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:42 - INFO - [info] - Command sent
+2025-05-06 16:31:42 - INFO - [info] - Stopped.
+2025-05-06 16:31:42 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:42 - INFO - [info] - Stopping.
+2025-05-06 16:31:42 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:42 - INFO - [info] - Command sent
+2025-05-06 16:31:42 - INFO - [info] - Stopped.
+2025-05-06 16:31:42 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:42 - INFO - [info] - Stopping.
+2025-05-06 16:31:42 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:42 - INFO - [info] - Command sent
+2025-05-06 16:31:42 - INFO - [info] - Stopped.
+2025-05-06 16:31:42 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:42 - INFO - [info] - Stopping.
+2025-05-06 16:31:42 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:42 - INFO - [info] - Command sent
+2025-05-06 16:31:42 - INFO - [info] - Stopped.
+2025-05-06 16:31:42 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:42 - INFO - [info] - Stopping.
+2025-05-06 16:31:42 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:42 - INFO - [info] - Command sent
+2025-05-06 16:31:42 - INFO - [info] - Stopped.
+2025-05-06 16:31:42 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:42 - INFO - [info] - Stopping.
+2025-05-06 16:31:42 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:42 - INFO - [info] - Command sent
+2025-05-06 16:31:42 - INFO - [info] - Stopped.
+2025-05-06 16:31:42 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:42 - INFO - [info] - Stopping.
+2025-05-06 16:31:42 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:42 - INFO - [info] - Command sent
+2025-05-06 16:31:42 - INFO - [info] - Stopped.
+2025-05-06 16:31:42 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:42 - INFO - [info] - Stopping.
+2025-05-06 16:31:42 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:42 - INFO - [info] - Command sent
+2025-05-06 16:31:42 - INFO - [info] - Stopped.
+2025-05-06 16:31:42 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:42 - INFO - [info] - Stopping.
+2025-05-06 16:31:42 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:42 - INFO - [info] - Command sent
+2025-05-06 16:31:42 - INFO - [info] - Stopped.
+2025-05-06 16:31:43 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:43 - INFO - [info] - Stopping.
+2025-05-06 16:31:43 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:43 - INFO - [info] - Command sent
+2025-05-06 16:31:43 - INFO - [info] - Stopped.
+2025-05-06 16:31:43 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:43 - INFO - [info] - Stopping.
+2025-05-06 16:31:43 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:43 - INFO - [info] - Command sent
+2025-05-06 16:31:43 - INFO - [info] - Stopped.
+2025-05-06 16:31:43 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:43 - INFO - [info] - Stopping.
+2025-05-06 16:31:43 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:43 - INFO - [info] - Command sent
+2025-05-06 16:31:43 - INFO - [info] - Stopped.
+2025-05-06 16:31:43 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:43 - INFO - [info] - Stopping.
+2025-05-06 16:31:43 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:43 - INFO - [info] - Command sent
+2025-05-06 16:31:43 - INFO - [info] - Stopped.
+2025-05-06 16:31:43 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:43 - INFO - [info] - Stopping.
+2025-05-06 16:31:43 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:43 - INFO - [info] - Command sent
+2025-05-06 16:31:43 - INFO - [info] - Stopped.
+2025-05-06 16:31:43 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:43 - INFO - [info] - Stopping.
+2025-05-06 16:31:43 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:43 - INFO - [info] - Command sent
+2025-05-06 16:31:43 - INFO - [info] - Stopped.
+2025-05-06 16:31:43 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:43 - INFO - [info] - Stopping.
+2025-05-06 16:31:43 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:43 - INFO - [info] - Command sent
+2025-05-06 16:31:43 - INFO - [info] - Stopped.
+2025-05-06 16:31:43 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:43 - INFO - [info] - Stopping.
+2025-05-06 16:31:43 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:43 - INFO - [info] - Command sent
+2025-05-06 16:31:43 - INFO - [info] - Stopped.
+2025-05-06 16:31:44 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:44 - INFO - [info] - Stopping.
+2025-05-06 16:31:44 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:44 - INFO - [info] - Command sent
+2025-05-06 16:31:44 - INFO - [info] - Stopped.
+2025-05-06 16:31:44 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:44 - INFO - [info] - Stopping.
+2025-05-06 16:31:44 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:44 - INFO - [info] - Command sent
+2025-05-06 16:31:44 - INFO - [info] - Stopped.
+2025-05-06 16:31:44 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:44 - INFO - [info] - Stopping.
+2025-05-06 16:31:44 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:44 - INFO - [info] - Command sent
+2025-05-06 16:31:44 - INFO - [info] - Stopped.
+2025-05-06 16:31:44 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:44 - INFO - [info] - Stopping.
+2025-05-06 16:31:44 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:44 - INFO - [info] - Command sent
+2025-05-06 16:31:44 - INFO - [info] - Stopped.
+2025-05-06 16:31:44 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:44 - INFO - [info] - Stopping.
+2025-05-06 16:31:44 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:44 - INFO - [info] - Command sent
+2025-05-06 16:31:44 - INFO - [info] - Stopped.
+2025-05-06 16:31:44 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:44 - INFO - [info] - Stopping.
+2025-05-06 16:31:44 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:44 - INFO - [info] - Command sent
+2025-05-06 16:31:44 - INFO - [info] - Stopped.
+2025-05-06 16:31:44 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:44 - INFO - [info] - Stopping.
+2025-05-06 16:31:44 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:44 - INFO - [info] - Command sent
+2025-05-06 16:31:44 - INFO - [info] - Stopped.
+2025-05-06 16:31:44 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:44 - INFO - [info] - Stopping.
+2025-05-06 16:31:44 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:44 - INFO - [info] - Command sent
+2025-05-06 16:31:44 - INFO - [info] - Stopped.
+2025-05-06 16:31:44 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:44 - INFO - [info] - Stopping.
+2025-05-06 16:31:44 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:44 - INFO - [info] - Command sent
+2025-05-06 16:31:44 - INFO - [info] - Stopped.
+2025-05-06 16:31:45 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:45 - INFO - [info] - Stopping.
+2025-05-06 16:31:45 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:45 - INFO - [info] - Command sent
+2025-05-06 16:31:45 - INFO - [info] - Stopped.
+2025-05-06 16:31:45 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:45 - INFO - [info] - Stopping.
+2025-05-06 16:31:45 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:45 - INFO - [info] - Command sent
+2025-05-06 16:31:45 - INFO - [info] - Stopped.
+2025-05-06 16:31:45 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:45 - INFO - [info] - Stopping.
+2025-05-06 16:31:45 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:45 - INFO - [info] - Command sent
+2025-05-06 16:31:45 - INFO - [info] - Stopped.
+2025-05-06 16:31:45 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:45 - INFO - [info] - Stopping.
+2025-05-06 16:31:45 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:45 - INFO - [info] - Command sent
+2025-05-06 16:31:45 - INFO - [info] - Stopped.
+2025-05-06 16:31:45 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:45 - INFO - [info] - Stopping.
+2025-05-06 16:31:45 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:45 - INFO - [info] - Command sent
+2025-05-06 16:31:45 - INFO - [info] - Stopped.
+2025-05-06 16:31:45 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:45 - INFO - [info] - Stopping.
+2025-05-06 16:31:45 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:45 - INFO - [info] - Command sent
+2025-05-06 16:31:45 - INFO - [info] - Stopped.
+2025-05-06 16:31:45 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:45 - INFO - [info] - Stopping.
+2025-05-06 16:31:45 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:45 - INFO - [info] - Command sent
+2025-05-06 16:31:45 - INFO - [info] - Stopped.
+2025-05-06 16:31:45 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:45 - INFO - [info] - Stopping.
+2025-05-06 16:31:45 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:45 - INFO - [info] - Command sent
+2025-05-06 16:31:45 - INFO - [info] - Stopped.
+2025-05-06 16:31:45 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:45 - INFO - [info] - Stopping.
+2025-05-06 16:31:45 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:45 - INFO - [info] - Command sent
+2025-05-06 16:31:45 - INFO - [info] - Stopped.
+2025-05-06 16:31:46 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:46 - INFO - [info] - Stopping.
+2025-05-06 16:31:46 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:46 - INFO - [info] - Command sent
+2025-05-06 16:31:46 - INFO - [info] - Stopped.
+2025-05-06 16:31:46 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:46 - INFO - [info] - Stopping.
+2025-05-06 16:31:46 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:46 - INFO - [info] - Command sent
+2025-05-06 16:31:46 - INFO - [info] - Stopped.
+2025-05-06 16:31:46 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:46 - INFO - [info] - Stopping.
+2025-05-06 16:31:46 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:46 - INFO - [info] - Command sent
+2025-05-06 16:31:46 - INFO - [info] - Stopped.
+2025-05-06 16:31:46 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:46 - INFO - [info] - Stopping.
+2025-05-06 16:31:46 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:46 - INFO - [info] - Command sent
+2025-05-06 16:31:46 - INFO - [info] - Stopped.
+2025-05-06 16:31:46 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:46 - INFO - [info] - Stopping.
+2025-05-06 16:31:46 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:46 - INFO - [info] - Command sent
+2025-05-06 16:31:46 - INFO - [info] - Stopped.
+2025-05-06 16:31:46 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:46 - INFO - [info] - Stopping.
+2025-05-06 16:31:46 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:46 - INFO - [info] - Command sent
+2025-05-06 16:31:46 - INFO - [info] - Stopped.
+2025-05-06 16:31:46 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:46 - INFO - [info] - Stopping.
+2025-05-06 16:31:46 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:46 - INFO - [info] - Command sent
+2025-05-06 16:31:46 - INFO - [info] - Stopped.
+2025-05-06 16:31:46 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:46 - INFO - [info] - Stopping.
+2025-05-06 16:31:46 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:46 - INFO - [info] - Command sent
+2025-05-06 16:31:46 - INFO - [info] - Stopped.
+2025-05-06 16:31:46 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:46 - INFO - [info] - Stopping.
+2025-05-06 16:31:46 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:46 - INFO - [info] - Command sent
+2025-05-06 16:31:46 - INFO - [info] - Stopped.
+2025-05-06 16:31:46 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:46 - INFO - [info] - Stopping.
+2025-05-06 16:31:46 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:46 - INFO - [info] - Command sent
+2025-05-06 16:31:46 - INFO - [info] - Stopped.
+2025-05-06 16:31:47 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:47 - INFO - [info] - Stopping.
+2025-05-06 16:31:47 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:47 - INFO - [info] - Command sent
+2025-05-06 16:31:47 - INFO - [info] - Stopped.
+2025-05-06 16:31:47 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:47 - INFO - [info] - Stopping.
+2025-05-06 16:31:47 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:47 - INFO - [info] - Command sent
+2025-05-06 16:31:47 - INFO - [info] - Stopped.
+2025-05-06 16:31:47 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:47 - INFO - [info] - Stopping.
+2025-05-06 16:31:47 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:47 - INFO - [info] - Command sent
+2025-05-06 16:31:47 - INFO - [info] - Stopped.
+2025-05-06 16:31:47 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:47 - INFO - [info] - Stopping.
+2025-05-06 16:31:47 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:47 - INFO - [info] - Command sent
+2025-05-06 16:31:47 - INFO - [info] - Stopped.
+2025-05-06 16:31:47 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:47 - INFO - [info] - Stopping.
+2025-05-06 16:31:47 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:47 - INFO - [info] - Command sent
+2025-05-06 16:31:47 - INFO - [info] - Stopped.
+2025-05-06 16:31:47 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:47 - INFO - [info] - Stopping.
+2025-05-06 16:31:47 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:47 - INFO - [info] - Command sent
+2025-05-06 16:31:47 - INFO - [info] - Stopped.
+2025-05-06 16:31:47 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:47 - INFO - [info] - Stopping.
+2025-05-06 16:31:47 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:47 - INFO - [info] - Command sent
+2025-05-06 16:31:47 - INFO - [info] - Stopped.
+2025-05-06 16:31:47 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:47 - INFO - [info] - Stopping.
+2025-05-06 16:31:47 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:47 - INFO - [info] - Command sent
+2025-05-06 16:31:47 - INFO - [info] - Stopped.
+2025-05-06 16:31:48 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:48 - INFO - [info] - Stopping.
+2025-05-06 16:31:48 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:48 - INFO - [info] - Command sent
+2025-05-06 16:31:48 - INFO - [info] - Stopped.
+2025-05-06 16:31:48 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:48 - INFO - [info] - Stopping.
+2025-05-06 16:31:48 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:48 - INFO - [info] - Command sent
+2025-05-06 16:31:48 - INFO - [info] - Stopped.
+2025-05-06 16:31:48 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:48 - INFO - [info] - Stopping.
+2025-05-06 16:31:48 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:48 - INFO - [info] - Command sent
+2025-05-06 16:31:48 - INFO - [info] - Stopped.
+2025-05-06 16:31:48 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:48 - INFO - [info] - Stopping.
+2025-05-06 16:31:48 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:48 - INFO - [info] - Command sent
+2025-05-06 16:31:48 - INFO - [info] - Stopped.
+2025-05-06 16:31:48 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:48 - INFO - [info] - Stopping.
+2025-05-06 16:31:48 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:48 - INFO - [info] - Command sent
+2025-05-06 16:31:48 - INFO - [info] - Stopped.
+2025-05-06 16:31:48 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:48 - INFO - [info] - Stopping.
+2025-05-06 16:31:48 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:48 - INFO - [info] - Command sent
+2025-05-06 16:31:48 - INFO - [info] - Stopped.
+2025-05-06 16:31:48 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:48 - INFO - [info] - Stopping.
+2025-05-06 16:31:48 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:48 - INFO - [info] - Command sent
+2025-05-06 16:31:48 - INFO - [info] - Stopped.
+2025-05-06 16:31:48 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:48 - INFO - [info] - Stopping.
+2025-05-06 16:31:48 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:48 - INFO - [info] - Command sent
+2025-05-06 16:31:48 - INFO - [info] - Stopped.
+2025-05-06 16:31:48 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:48 - INFO - [info] - Stopping.
+2025-05-06 16:31:48 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:48 - INFO - [info] - Command sent
+2025-05-06 16:31:48 - INFO - [info] - Stopped.
+2025-05-06 16:31:48 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:48 - INFO - [info] - Stopping.
+2025-05-06 16:31:48 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:48 - INFO - [info] - Command sent
+2025-05-06 16:31:48 - INFO - [info] - Stopped.
+2025-05-06 16:31:49 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:49 - INFO - [info] - Stopping.
+2025-05-06 16:31:49 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:49 - INFO - [info] - Command sent
+2025-05-06 16:31:49 - INFO - [info] - Stopped.
+2025-05-06 16:31:49 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:49 - INFO - [info] - Stopping.
+2025-05-06 16:31:49 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:49 - INFO - [info] - Command sent
+2025-05-06 16:31:49 - INFO - [info] - Stopped.
+2025-05-06 16:31:49 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:49 - INFO - [info] - Stopping.
+2025-05-06 16:31:49 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:49 - INFO - [info] - Command sent
+2025-05-06 16:31:49 - INFO - [info] - Stopped.
+2025-05-06 16:31:49 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:49 - INFO - [info] - Stopping.
+2025-05-06 16:31:49 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:49 - INFO - [info] - Command sent
+2025-05-06 16:31:49 - INFO - [info] - Stopped.
+2025-05-06 16:31:49 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:49 - INFO - [info] - Stopping.
+2025-05-06 16:31:49 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:49 - INFO - [info] - Command sent
+2025-05-06 16:31:49 - INFO - [info] - Stopped.
+2025-05-06 16:31:49 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:49 - INFO - [info] - Stopping.
+2025-05-06 16:31:49 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:49 - INFO - [info] - Command sent
+2025-05-06 16:31:49 - INFO - [info] - Stopped.
+2025-05-06 16:31:49 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:49 - INFO - [info] - Stopping.
+2025-05-06 16:31:49 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:49 - INFO - [info] - Command sent
+2025-05-06 16:31:49 - INFO - [info] - Stopped.
+2025-05-06 16:31:49 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:49 - INFO - [info] - Stopping.
+2025-05-06 16:31:49 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:49 - INFO - [info] - Command sent
+2025-05-06 16:31:49 - INFO - [info] - Stopped.
+2025-05-06 16:31:49 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:49 - INFO - [info] - Stopping.
+2025-05-06 16:31:49 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:49 - INFO - [info] - Command sent
+2025-05-06 16:31:49 - INFO - [info] - Stopped.
+2025-05-06 16:31:50 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:50 - INFO - [info] - Stopping.
+2025-05-06 16:31:50 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:50 - INFO - [info] - Command sent
+2025-05-06 16:31:50 - INFO - [info] - Stopped.
+2025-05-06 16:31:50 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:50 - INFO - [info] - Stopping.
+2025-05-06 16:31:50 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:50 - INFO - [info] - Command sent
+2025-05-06 16:31:50 - INFO - [info] - Stopped.
+2025-05-06 16:31:50 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:50 - INFO - [info] - Stopping.
+2025-05-06 16:31:50 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:50 - INFO - [info] - Command sent
+2025-05-06 16:31:50 - INFO - [info] - Stopped.
+2025-05-06 16:31:50 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:50 - INFO - [info] - Stopping.
+2025-05-06 16:31:50 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:50 - INFO - [info] - Command sent
+2025-05-06 16:31:50 - INFO - [info] - Stopped.
+2025-05-06 16:31:50 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:50 - INFO - [info] - Stopping.
+2025-05-06 16:31:50 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:50 - INFO - [info] - Command sent
+2025-05-06 16:31:50 - INFO - [info] - Stopped.
+2025-05-06 16:31:50 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:50 - INFO - [info] - Stopping.
+2025-05-06 16:31:50 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:50 - INFO - [info] - Command sent
+2025-05-06 16:31:50 - INFO - [info] - Stopped.
+2025-05-06 16:31:50 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:50 - INFO - [info] - Stopping.
+2025-05-06 16:31:50 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:50 - INFO - [info] - Command sent
+2025-05-06 16:31:50 - INFO - [info] - Stopped.
+2025-05-06 16:31:50 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:50 - INFO - [info] - Stopping.
+2025-05-06 16:31:50 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:50 - INFO - [info] - Command sent
+2025-05-06 16:31:50 - INFO - [info] - Stopped.
+2025-05-06 16:31:50 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:50 - INFO - [info] - Stopping.
+2025-05-06 16:31:50 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:50 - INFO - [info] - Command sent
+2025-05-06 16:31:50 - INFO - [info] - Stopped.
+2025-05-06 16:31:50 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:50 - INFO - [info] - Stopping.
+2025-05-06 16:31:50 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:50 - INFO - [info] - Command sent
+2025-05-06 16:31:50 - INFO - [info] - Stopped.
+2025-05-06 16:31:51 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:51 - INFO - [info] - Stopping.
+2025-05-06 16:31:51 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:51 - INFO - [info] - Command sent
+2025-05-06 16:31:51 - INFO - [info] - Stopped.
+2025-05-06 16:31:51 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:51 - INFO - [info] - Stopping.
+2025-05-06 16:31:51 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:51 - INFO - [info] - Command sent
+2025-05-06 16:31:51 - INFO - [info] - Stopped.
+2025-05-06 16:31:51 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:51 - INFO - [info] - Stopping.
+2025-05-06 16:31:51 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:51 - INFO - [info] - Command sent
+2025-05-06 16:31:51 - INFO - [info] - Stopped.
+2025-05-06 16:31:51 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:51 - INFO - [info] - Stopping.
+2025-05-06 16:31:51 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:51 - INFO - [info] - Command sent
+2025-05-06 16:31:51 - INFO - [info] - Stopped.
+2025-05-06 16:31:51 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:51 - INFO - [info] - Stopping.
+2025-05-06 16:31:51 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:51 - INFO - [info] - Command sent
+2025-05-06 16:31:51 - INFO - [info] - Stopped.
+2025-05-06 16:31:51 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:51 - INFO - [info] - Stopping.
+2025-05-06 16:31:51 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:51 - INFO - [info] - Command sent
+2025-05-06 16:31:51 - INFO - [info] - Stopped.
+2025-05-06 16:31:51 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:51 - INFO - [info] - Stopping.
+2025-05-06 16:31:51 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:51 - INFO - [info] - Command sent
+2025-05-06 16:31:51 - INFO - [info] - Stopped.
+2025-05-06 16:31:52 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:52 - INFO - [info] - Stopping.
+2025-05-06 16:31:52 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:52 - INFO - [info] - Command sent
+2025-05-06 16:31:52 - INFO - [info] - Stopped.
+2025-05-06 16:31:52 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:52 - INFO - [info] - Stopping.
+2025-05-06 16:31:52 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:52 - INFO - [info] - Command sent
+2025-05-06 16:31:52 - INFO - [info] - Stopped.
+2025-05-06 16:31:52 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:52 - INFO - [info] - Stopping.
+2025-05-06 16:31:52 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:52 - INFO - [info] - Command sent
+2025-05-06 16:31:52 - INFO - [info] - Stopped.
+2025-05-06 16:31:52 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:52 - INFO - [info] - Stopping.
+2025-05-06 16:31:52 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:52 - INFO - [info] - Command sent
+2025-05-06 16:31:52 - INFO - [info] - Stopped.
+2025-05-06 16:31:52 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:52 - INFO - [info] - Stopping.
+2025-05-06 16:31:52 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:52 - INFO - [info] - Command sent
+2025-05-06 16:31:52 - INFO - [info] - Stopped.
+2025-05-06 16:31:52 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:52 - INFO - [info] - Stopping.
+2025-05-06 16:31:52 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:52 - INFO - [info] - Command sent
+2025-05-06 16:31:52 - INFO - [info] - Stopped.
+2025-05-06 16:31:52 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:52 - INFO - [info] - Stopping.
+2025-05-06 16:31:52 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:52 - INFO - [info] - Command sent
+2025-05-06 16:31:52 - INFO - [info] - Stopped.
+2025-05-06 16:31:52 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:52 - INFO - [info] - Stopping.
+2025-05-06 16:31:52 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:52 - INFO - [info] - Command sent
+2025-05-06 16:31:52 - INFO - [info] - Stopped.
+2025-05-06 16:31:52 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:52 - INFO - [info] - Stopping.
+2025-05-06 16:31:52 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:52 - INFO - [info] - Command sent
+2025-05-06 16:31:52 - INFO - [info] - Stopped.
+2025-05-06 16:31:52 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:52 - INFO - [info] - Stopping.
+2025-05-06 16:31:52 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:52 - INFO - [info] - Command sent
+2025-05-06 16:31:52 - INFO - [info] - Stopped.
+2025-05-06 16:31:53 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:53 - INFO - [info] - Stopping.
+2025-05-06 16:31:53 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:53 - INFO - [info] - Command sent
+2025-05-06 16:31:53 - INFO - [info] - Stopped.
+2025-05-06 16:31:53 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:53 - INFO - [info] - Stopping.
+2025-05-06 16:31:53 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:53 - INFO - [info] - Command sent
+2025-05-06 16:31:53 - INFO - [info] - Stopped.
+2025-05-06 16:31:53 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:53 - INFO - [info] - Stopping.
+2025-05-06 16:31:53 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:53 - INFO - [info] - Command sent
+2025-05-06 16:31:53 - INFO - [info] - Stopped.
+2025-05-06 16:31:53 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:53 - INFO - [info] - Stopping.
+2025-05-06 16:31:53 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:53 - INFO - [info] - Command sent
+2025-05-06 16:31:53 - INFO - [info] - Stopped.
+2025-05-06 16:31:53 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:53 - INFO - [info] - Stopping.
+2025-05-06 16:31:53 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:53 - INFO - [info] - Command sent
+2025-05-06 16:31:53 - INFO - [info] - Stopped.
+2025-05-06 16:31:53 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:53 - INFO - [info] - Stopping.
+2025-05-06 16:31:53 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:53 - INFO - [info] - Command sent
+2025-05-06 16:31:53 - INFO - [info] - Stopped.
+2025-05-06 16:31:53 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:53 - INFO - [info] - Stopping.
+2025-05-06 16:31:53 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:53 - INFO - [info] - Command sent
+2025-05-06 16:31:53 - INFO - [info] - Stopped.
+2025-05-06 16:31:53 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:53 - INFO - [info] - Stopping.
+2025-05-06 16:31:53 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:53 - INFO - [info] - Command sent
+2025-05-06 16:31:53 - INFO - [info] - Stopped.
+2025-05-06 16:31:54 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:54 - INFO - [info] - Stopping.
+2025-05-06 16:31:54 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:54 - INFO - [info] - Command sent
+2025-05-06 16:31:54 - INFO - [info] - Stopped.
+2025-05-06 16:31:54 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:54 - INFO - [info] - Stopping.
+2025-05-06 16:31:54 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:54 - INFO - [info] - Command sent
+2025-05-06 16:31:54 - INFO - [info] - Stopped.
+2025-05-06 16:31:54 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:54 - INFO - [info] - Stopping.
+2025-05-06 16:31:54 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:54 - INFO - [info] - Command sent
+2025-05-06 16:31:54 - INFO - [info] - Stopped.
+2025-05-06 16:31:54 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:54 - INFO - [info] - Stopping.
+2025-05-06 16:31:54 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:54 - INFO - [info] - Command sent
+2025-05-06 16:31:54 - INFO - [info] - Stopped.
+2025-05-06 16:31:54 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:54 - INFO - [info] - Stopping.
+2025-05-06 16:31:54 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:54 - INFO - [info] - Command sent
+2025-05-06 16:31:54 - INFO - [info] - Stopped.
+2025-05-06 16:31:54 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:54 - INFO - [info] - Stopping.
+2025-05-06 16:31:54 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:54 - INFO - [info] - Command sent
+2025-05-06 16:31:54 - INFO - [info] - Stopped.
+2025-05-06 16:31:54 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:54 - INFO - [info] - Stopping.
+2025-05-06 16:31:54 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:54 - INFO - [info] - Command sent
+2025-05-06 16:31:54 - INFO - [info] - Stopped.
+2025-05-06 16:31:54 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:54 - INFO - [info] - Stopping.
+2025-05-06 16:31:54 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:54 - INFO - [info] - Command sent
+2025-05-06 16:31:54 - INFO - [info] - Stopped.
+2025-05-06 16:31:54 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:54 - INFO - [info] - Stopping.
+2025-05-06 16:31:54 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:54 - INFO - [info] - Command sent
+2025-05-06 16:31:54 - INFO - [info] - Stopped.
+2025-05-06 16:31:55 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:55 - INFO - [info] - Stopping.
+2025-05-06 16:31:55 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:55 - INFO - [info] - Command sent
+2025-05-06 16:31:55 - INFO - [info] - Stopped.
+2025-05-06 16:31:55 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:55 - INFO - [info] - Stopping.
+2025-05-06 16:31:55 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:55 - INFO - [info] - Command sent
+2025-05-06 16:31:55 - INFO - [info] - Stopped.
+2025-05-06 16:31:55 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:55 - INFO - [info] - Stopping.
+2025-05-06 16:31:55 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:55 - INFO - [info] - Command sent
+2025-05-06 16:31:55 - INFO - [info] - Stopped.
+2025-05-06 16:31:55 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:55 - INFO - [info] - Stopping.
+2025-05-06 16:31:55 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:55 - INFO - [info] - Command sent
+2025-05-06 16:31:55 - INFO - [info] - Stopped.
+2025-05-06 16:31:55 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:55 - INFO - [info] - Stopping.
+2025-05-06 16:31:55 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:55 - INFO - [info] - Command sent
+2025-05-06 16:31:55 - INFO - [info] - Stopped.
+2025-05-06 16:31:55 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:55 - INFO - [info] - Stopping.
+2025-05-06 16:31:55 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:55 - INFO - [info] - Command sent
+2025-05-06 16:31:55 - INFO - [info] - Stopped.
+2025-05-06 16:31:55 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:55 - INFO - [info] - Stopping.
+2025-05-06 16:31:55 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:55 - INFO - [info] - Command sent
+2025-05-06 16:31:55 - INFO - [info] - Stopped.
+2025-05-06 16:31:55 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:55 - INFO - [info] - Stopping.
+2025-05-06 16:31:55 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:55 - INFO - [info] - Command sent
+2025-05-06 16:31:55 - INFO - [info] - Stopped.
+2025-05-06 16:31:56 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:56 - INFO - [info] - Stopping.
+2025-05-06 16:31:56 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:56 - INFO - [info] - Command sent
+2025-05-06 16:31:56 - INFO - [info] - Stopped.
+2025-05-06 16:31:56 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:56 - INFO - [info] - Stopping.
+2025-05-06 16:31:56 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:56 - INFO - [info] - Command sent
+2025-05-06 16:31:56 - INFO - [info] - Stopped.
+2025-05-06 16:31:56 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:56 - INFO - [info] - Stopping.
+2025-05-06 16:31:56 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:56 - INFO - [info] - Command sent
+2025-05-06 16:31:56 - INFO - [info] - Stopped.
+2025-05-06 16:31:56 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:56 - INFO - [info] - Stopping.
+2025-05-06 16:31:56 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:56 - INFO - [info] - Command sent
+2025-05-06 16:31:56 - INFO - [info] - Stopped.
+2025-05-06 16:31:56 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:56 - INFO - [info] - Stopping.
+2025-05-06 16:31:56 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:56 - INFO - [info] - Command sent
+2025-05-06 16:31:56 - INFO - [info] - Stopped.
+2025-05-06 16:31:56 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:56 - INFO - [info] - Stopping.
+2025-05-06 16:31:56 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:56 - INFO - [info] - Command sent
+2025-05-06 16:31:56 - INFO - [info] - Stopped.
+2025-05-06 16:31:56 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:56 - INFO - [info] - Stopping.
+2025-05-06 16:31:56 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:56 - INFO - [info] - Command sent
+2025-05-06 16:31:56 - INFO - [info] - Stopped.
+2025-05-06 16:31:56 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:56 - INFO - [info] - Stopping.
+2025-05-06 16:31:56 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:56 - INFO - [info] - Command sent
+2025-05-06 16:31:56 - INFO - [info] - Stopped.
+2025-05-06 16:31:56 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:56 - INFO - [info] - Stopping.
+2025-05-06 16:31:56 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:56 - INFO - [info] - Command sent
+2025-05-06 16:31:56 - INFO - [info] - Stopped.
+2025-05-06 16:31:56 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:56 - INFO - [info] - Stopping.
+2025-05-06 16:31:56 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:56 - INFO - [info] - Command sent
+2025-05-06 16:31:56 - INFO - [info] - Stopped.
+2025-05-06 16:31:57 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:57 - INFO - [info] - Stopping.
+2025-05-06 16:31:57 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:57 - INFO - [info] - Command sent
+2025-05-06 16:31:57 - INFO - [info] - Stopped.
+2025-05-06 16:31:57 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:57 - INFO - [info] - Stopping.
+2025-05-06 16:31:57 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:57 - INFO - [info] - Command sent
+2025-05-06 16:31:57 - INFO - [info] - Stopped.
+2025-05-06 16:31:57 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:57 - INFO - [info] - Stopping.
+2025-05-06 16:31:57 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:57 - INFO - [info] - Command sent
+2025-05-06 16:31:57 - INFO - [info] - Stopped.
+2025-05-06 16:31:57 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:57 - INFO - [info] - Stopping.
+2025-05-06 16:31:57 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:57 - INFO - [info] - Command sent
+2025-05-06 16:31:57 - INFO - [info] - Stopped.
+2025-05-06 16:31:57 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:57 - INFO - [info] - Stopping.
+2025-05-06 16:31:57 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:57 - INFO - [info] - Command sent
+2025-05-06 16:31:57 - INFO - [info] - Stopped.
+2025-05-06 16:31:57 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:57 - INFO - [info] - Stopping.
+2025-05-06 16:31:57 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:57 - INFO - [info] - Command sent
+2025-05-06 16:31:57 - INFO - [info] - Stopped.
+2025-05-06 16:31:57 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:57 - INFO - [info] - Stopping.
+2025-05-06 16:31:57 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:57 - INFO - [info] - Command sent
+2025-05-06 16:31:57 - INFO - [info] - Stopped.
+2025-05-06 16:31:58 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:58 - INFO - [info] - Stopping.
+2025-05-06 16:31:58 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:58 - INFO - [info] - Command sent
+2025-05-06 16:31:58 - INFO - [info] - Stopped.
+2025-05-06 16:31:58 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:58 - INFO - [info] - Stopping.
+2025-05-06 16:31:58 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:58 - INFO - [info] - Command sent
+2025-05-06 16:31:58 - INFO - [info] - Stopped.
+2025-05-06 16:31:58 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:58 - INFO - [info] - Stopping.
+2025-05-06 16:31:58 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:58 - INFO - [info] - Command sent
+2025-05-06 16:31:58 - INFO - [info] - Stopped.
+2025-05-06 16:31:58 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:58 - INFO - [info] - Stopping.
+2025-05-06 16:31:58 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:58 - INFO - [info] - Command sent
+2025-05-06 16:31:58 - INFO - [info] - Stopped.
+2025-05-06 16:31:58 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:58 - INFO - [info] - Stopping.
+2025-05-06 16:31:58 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:58 - INFO - [info] - Command sent
+2025-05-06 16:31:58 - INFO - [info] - Stopped.
+2025-05-06 16:31:58 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:58 - INFO - [info] - Stopping.
+2025-05-06 16:31:58 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:58 - INFO - [info] - Command sent
+2025-05-06 16:31:58 - INFO - [info] - Stopped.
+2025-05-06 16:31:58 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:58 - INFO - [info] - Stopping.
+2025-05-06 16:31:58 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:58 - INFO - [info] - Command sent
+2025-05-06 16:31:58 - INFO - [info] - Stopped.
+2025-05-06 16:31:58 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:58 - INFO - [info] - Stopping.
+2025-05-06 16:31:58 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:58 - INFO - [info] - Command sent
+2025-05-06 16:31:58 - INFO - [info] - Stopped.
+2025-05-06 16:31:58 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:58 - INFO - [info] - Stopping.
+2025-05-06 16:31:58 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:58 - INFO - [info] - Command sent
+2025-05-06 16:31:58 - INFO - [info] - Stopped.
+2025-05-06 16:31:59 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:59 - INFO - [info] - Stopping.
+2025-05-06 16:31:59 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:59 - INFO - [info] - Command sent
+2025-05-06 16:31:59 - INFO - [info] - Stopped.
+2025-05-06 16:31:59 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:59 - INFO - [info] - Stopping.
+2025-05-06 16:31:59 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:59 - INFO - [info] - Command sent
+2025-05-06 16:31:59 - INFO - [info] - Stopped.
+2025-05-06 16:31:59 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:59 - INFO - [info] - Stopping.
+2025-05-06 16:31:59 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:59 - INFO - [info] - Command sent
+2025-05-06 16:31:59 - INFO - [info] - Stopped.
+2025-05-06 16:31:59 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:59 - INFO - [info] - Stopping.
+2025-05-06 16:31:59 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:59 - INFO - [info] - Command sent
+2025-05-06 16:31:59 - INFO - [info] - Stopped.
+2025-05-06 16:31:59 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:59 - INFO - [info] - Stopping.
+2025-05-06 16:31:59 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:59 - INFO - [info] - Command sent
+2025-05-06 16:31:59 - INFO - [info] - Stopped.
+2025-05-06 16:31:59 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:59 - INFO - [info] - Stopping.
+2025-05-06 16:31:59 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:59 - INFO - [info] - Command sent
+2025-05-06 16:31:59 - INFO - [info] - Stopped.
+2025-05-06 16:31:59 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:59 - INFO - [info] - Stopping.
+2025-05-06 16:31:59 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:59 - INFO - [info] - Command sent
+2025-05-06 16:31:59 - INFO - [info] - Stopped.
+2025-05-06 16:31:59 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:59 - INFO - [info] - Stopping.
+2025-05-06 16:31:59 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:59 - INFO - [info] - Command sent
+2025-05-06 16:31:59 - INFO - [info] - Stopped.
+2025-05-06 16:31:59 - INFO - [info] - Obstacle detected.
+2025-05-06 16:31:59 - INFO - [info] - Stopping.
+2025-05-06 16:31:59 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:31:59 - INFO - [info] - Command sent
+2025-05-06 16:31:59 - INFO - [info] - Stopped.
+2025-05-06 16:32:00 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:00 - INFO - [info] - Stopping.
+2025-05-06 16:32:00 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:00 - INFO - [info] - Command sent
+2025-05-06 16:32:00 - INFO - [info] - Stopped.
+2025-05-06 16:32:00 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:00 - INFO - [info] - Stopping.
+2025-05-06 16:32:00 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:00 - INFO - [info] - Command sent
+2025-05-06 16:32:00 - INFO - [info] - Stopped.
+2025-05-06 16:32:00 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:00 - INFO - [info] - Stopping.
+2025-05-06 16:32:00 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:00 - INFO - [info] - Command sent
+2025-05-06 16:32:00 - INFO - [info] - Stopped.
+2025-05-06 16:32:00 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:00 - INFO - [info] - Stopping.
+2025-05-06 16:32:00 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:00 - INFO - [info] - Command sent
+2025-05-06 16:32:00 - INFO - [info] - Stopped.
+2025-05-06 16:32:00 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:00 - INFO - [info] - Stopping.
+2025-05-06 16:32:00 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:00 - INFO - [info] - Command sent
+2025-05-06 16:32:00 - INFO - [info] - Stopped.
+2025-05-06 16:32:00 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:00 - INFO - [info] - Stopping.
+2025-05-06 16:32:00 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:00 - INFO - [info] - Command sent
+2025-05-06 16:32:00 - INFO - [info] - Stopped.
+2025-05-06 16:32:00 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:00 - INFO - [info] - Stopping.
+2025-05-06 16:32:00 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:00 - INFO - [info] - Command sent
+2025-05-06 16:32:00 - INFO - [info] - Stopped.
+2025-05-06 16:32:00 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:00 - INFO - [info] - Stopping.
+2025-05-06 16:32:00 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:00 - INFO - [info] - Command sent
+2025-05-06 16:32:00 - INFO - [info] - Stopped.
+2025-05-06 16:32:00 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:00 - INFO - [info] - Stopping.
+2025-05-06 16:32:00 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:00 - INFO - [info] - Command sent
+2025-05-06 16:32:00 - INFO - [info] - Stopped.
+2025-05-06 16:32:00 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:00 - INFO - [info] - Stopping.
+2025-05-06 16:32:00 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:00 - INFO - [info] - Command sent
+2025-05-06 16:32:00 - INFO - [info] - Stopped.
+2025-05-06 16:32:01 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:01 - INFO - [info] - Stopping.
+2025-05-06 16:32:01 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:01 - INFO - [info] - Command sent
+2025-05-06 16:32:01 - INFO - [info] - Stopped.
+2025-05-06 16:32:01 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:01 - INFO - [info] - Stopping.
+2025-05-06 16:32:01 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:01 - INFO - [info] - Command sent
+2025-05-06 16:32:01 - INFO - [info] - Stopped.
+2025-05-06 16:32:01 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:01 - INFO - [info] - Stopping.
+2025-05-06 16:32:01 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:01 - INFO - [info] - Command sent
+2025-05-06 16:32:01 - INFO - [info] - Stopped.
+2025-05-06 16:32:01 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:01 - INFO - [info] - Stopping.
+2025-05-06 16:32:01 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:01 - INFO - [info] - Command sent
+2025-05-06 16:32:01 - INFO - [info] - Stopped.
+2025-05-06 16:32:01 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:01 - INFO - [info] - Stopping.
+2025-05-06 16:32:01 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:01 - INFO - [info] - Command sent
+2025-05-06 16:32:01 - INFO - [info] - Stopped.
+2025-05-06 16:32:01 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:01 - INFO - [info] - Stopping.
+2025-05-06 16:32:01 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:01 - INFO - [info] - Command sent
+2025-05-06 16:32:01 - INFO - [info] - Stopped.
+2025-05-06 16:32:01 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:01 - INFO - [info] - Stopping.
+2025-05-06 16:32:01 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:01 - INFO - [info] - Command sent
+2025-05-06 16:32:01 - INFO - [info] - Stopped.
+2025-05-06 16:32:02 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:02 - INFO - [info] - Stopping.
+2025-05-06 16:32:02 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:02 - INFO - [info] - Command sent
+2025-05-06 16:32:02 - INFO - [info] - Stopped.
+2025-05-06 16:32:02 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:02 - INFO - [info] - Stopping.
+2025-05-06 16:32:02 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:02 - INFO - [info] - Command sent
+2025-05-06 16:32:02 - INFO - [info] - Stopped.
+2025-05-06 16:32:02 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:02 - INFO - [info] - Stopping.
+2025-05-06 16:32:02 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:02 - INFO - [info] - Command sent
+2025-05-06 16:32:02 - INFO - [info] - Stopped.
+2025-05-06 16:32:02 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:02 - INFO - [info] - Stopping.
+2025-05-06 16:32:02 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:02 - INFO - [info] - Command sent
+2025-05-06 16:32:02 - INFO - [info] - Stopped.
+2025-05-06 16:32:02 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:02 - INFO - [info] - Stopping.
+2025-05-06 16:32:02 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:02 - INFO - [info] - Command sent
+2025-05-06 16:32:02 - INFO - [info] - Stopped.
+2025-05-06 16:32:02 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:02 - INFO - [info] - Stopping.
+2025-05-06 16:32:02 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:02 - INFO - [info] - Command sent
+2025-05-06 16:32:02 - INFO - [info] - Stopped.
+2025-05-06 16:32:02 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:02 - INFO - [info] - Stopping.
+2025-05-06 16:32:02 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:02 - INFO - [info] - Command sent
+2025-05-06 16:32:02 - INFO - [info] - Stopped.
+2025-05-06 16:32:02 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:02 - INFO - [info] - Stopping.
+2025-05-06 16:32:02 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:02 - INFO - [info] - Command sent
+2025-05-06 16:32:02 - INFO - [info] - Stopped.
+2025-05-06 16:32:02 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:02 - INFO - [info] - Stopping.
+2025-05-06 16:32:02 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:02 - INFO - [info] - Command sent
+2025-05-06 16:32:02 - INFO - [info] - Stopped.
+2025-05-06 16:32:02 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:02 - INFO - [info] - Stopping.
+2025-05-06 16:32:02 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:02 - INFO - [info] - Command sent
+2025-05-06 16:32:02 - INFO - [info] - Stopped.
+2025-05-06 16:32:03 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:03 - INFO - [info] - Stopping.
+2025-05-06 16:32:03 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:03 - INFO - [info] - Command sent
+2025-05-06 16:32:03 - INFO - [info] - Stopped.
+2025-05-06 16:32:03 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:03 - INFO - [info] - Stopping.
+2025-05-06 16:32:03 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:03 - INFO - [info] - Command sent
+2025-05-06 16:32:03 - INFO - [info] - Stopped.
+2025-05-06 16:32:03 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:03 - INFO - [info] - Stopping.
+2025-05-06 16:32:03 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:03 - INFO - [info] - Command sent
+2025-05-06 16:32:03 - INFO - [info] - Stopped.
+2025-05-06 16:32:03 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:03 - INFO - [info] - Stopping.
+2025-05-06 16:32:03 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:03 - INFO - [info] - Command sent
+2025-05-06 16:32:03 - INFO - [info] - Stopped.
+2025-05-06 16:32:03 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:03 - INFO - [info] - Stopping.
+2025-05-06 16:32:03 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:03 - INFO - [info] - Command sent
+2025-05-06 16:32:03 - INFO - [info] - Stopped.
+2025-05-06 16:32:03 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:03 - INFO - [info] - Stopping.
+2025-05-06 16:32:03 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:03 - INFO - [info] - Command sent
+2025-05-06 16:32:03 - INFO - [info] - Stopped.
+2025-05-06 16:32:03 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:03 - INFO - [info] - Stopping.
+2025-05-06 16:32:03 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:03 - INFO - [info] - Command sent
+2025-05-06 16:32:03 - INFO - [info] - Stopped.
+2025-05-06 16:32:04 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:04 - INFO - [info] - Stopping.
+2025-05-06 16:32:04 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:04 - INFO - [info] - Command sent
+2025-05-06 16:32:04 - INFO - [info] - Stopped.
+2025-05-06 16:32:04 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:04 - INFO - [info] - Stopping.
+2025-05-06 16:32:04 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:04 - INFO - [info] - Command sent
+2025-05-06 16:32:04 - INFO - [info] - Stopped.
+2025-05-06 16:32:04 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:04 - INFO - [info] - Stopping.
+2025-05-06 16:32:04 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:04 - INFO - [info] - Command sent
+2025-05-06 16:32:04 - INFO - [info] - Stopped.
+2025-05-06 16:32:04 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:04 - INFO - [info] - Stopping.
+2025-05-06 16:32:04 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:04 - INFO - [info] - Command sent
+2025-05-06 16:32:04 - INFO - [info] - Stopped.
+2025-05-06 16:32:04 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:04 - INFO - [info] - Stopping.
+2025-05-06 16:32:04 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:04 - INFO - [info] - Command sent
+2025-05-06 16:32:04 - INFO - [info] - Stopped.
+2025-05-06 16:32:04 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:04 - INFO - [info] - Stopping.
+2025-05-06 16:32:04 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:04 - INFO - [info] - Command sent
+2025-05-06 16:32:04 - INFO - [info] - Stopped.
+2025-05-06 16:32:04 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:04 - INFO - [info] - Stopping.
+2025-05-06 16:32:04 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:04 - INFO - [info] - Command sent
+2025-05-06 16:32:04 - INFO - [info] - Stopped.
+2025-05-06 16:32:04 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:04 - INFO - [info] - Stopping.
+2025-05-06 16:32:04 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:04 - INFO - [info] - Command sent
+2025-05-06 16:32:04 - INFO - [info] - Stopped.
+2025-05-06 16:32:04 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:04 - INFO - [info] - Stopping.
+2025-05-06 16:32:04 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:04 - INFO - [info] - Command sent
+2025-05-06 16:32:04 - INFO - [info] - Stopped.
+2025-05-06 16:32:04 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:04 - INFO - [info] - Stopping.
+2025-05-06 16:32:04 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:04 - INFO - [info] - Command sent
+2025-05-06 16:32:04 - INFO - [info] - Stopped.
+2025-05-06 16:32:05 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:05 - INFO - [info] - Stopping.
+2025-05-06 16:32:05 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:05 - INFO - [info] - Command sent
+2025-05-06 16:32:05 - INFO - [info] - Stopped.
+2025-05-06 16:32:05 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:05 - INFO - [info] - Stopping.
+2025-05-06 16:32:05 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:05 - INFO - [info] - Command sent
+2025-05-06 16:32:05 - INFO - [info] - Stopped.
+2025-05-06 16:32:05 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:05 - INFO - [info] - Stopping.
+2025-05-06 16:32:05 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:05 - INFO - [info] - Command sent
+2025-05-06 16:32:05 - INFO - [info] - Stopped.
+2025-05-06 16:32:05 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:05 - INFO - [info] - Stopping.
+2025-05-06 16:32:05 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:05 - INFO - [info] - Command sent
+2025-05-06 16:32:05 - INFO - [info] - Stopped.
+2025-05-06 16:32:05 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:05 - INFO - [info] - Stopping.
+2025-05-06 16:32:05 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:05 - INFO - [info] - Command sent
+2025-05-06 16:32:05 - INFO - [info] - Stopped.
+2025-05-06 16:32:05 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:05 - INFO - [info] - Stopping.
+2025-05-06 16:32:05 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:05 - INFO - [info] - Command sent
+2025-05-06 16:32:05 - INFO - [info] - Stopped.
+2025-05-06 16:32:05 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:05 - INFO - [info] - Stopping.
+2025-05-06 16:32:05 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:05 - INFO - [info] - Command sent
+2025-05-06 16:32:05 - INFO - [info] - Stopped.
+2025-05-06 16:32:05 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:05 - INFO - [info] - Stopping.
+2025-05-06 16:32:05 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:05 - INFO - [info] - Command sent
+2025-05-06 16:32:05 - INFO - [info] - Stopped.
+2025-05-06 16:32:06 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:06 - INFO - [info] - Stopping.
+2025-05-06 16:32:06 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:06 - INFO - [info] - Command sent
+2025-05-06 16:32:06 - INFO - [info] - Stopped.
+2025-05-06 16:32:06 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:06 - INFO - [info] - Stopping.
+2025-05-06 16:32:06 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:06 - INFO - [info] - Command sent
+2025-05-06 16:32:06 - INFO - [info] - Stopped.
+2025-05-06 16:32:06 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:06 - INFO - [info] - Stopping.
+2025-05-06 16:32:06 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:06 - INFO - [info] - Command sent
+2025-05-06 16:32:06 - INFO - [info] - Stopped.
+2025-05-06 16:32:06 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:06 - INFO - [info] - Stopping.
+2025-05-06 16:32:06 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:06 - INFO - [info] - Command sent
+2025-05-06 16:32:06 - INFO - [info] - Stopped.
+2025-05-06 16:32:07 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:07 - INFO - [info] - Stopping.
+2025-05-06 16:32:07 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:07 - INFO - [info] - Command sent
+2025-05-06 16:32:07 - INFO - [info] - Stopped.
+2025-05-06 16:32:11 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:11 - INFO - [info] - Stopping.
+2025-05-06 16:32:11 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:11 - INFO - [info] - Command sent
+2025-05-06 16:32:11 - INFO - [info] - Stopped.
+2025-05-06 16:32:12 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:12 - INFO - [info] - Stopping.
+2025-05-06 16:32:12 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:12 - INFO - [info] - Command sent
+2025-05-06 16:32:12 - INFO - [info] - Stopped.
+2025-05-06 16:32:14 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:14 - INFO - [info] - Stopping.
+2025-05-06 16:32:14 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:14 - INFO - [info] - Command sent
+2025-05-06 16:32:14 - INFO - [info] - Stopped.
+2025-05-06 16:32:18 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:18 - INFO - [info] - Stopping.
+2025-05-06 16:32:18 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:18 - INFO - [info] - Command sent
+2025-05-06 16:32:18 - INFO - [info] - Stopped.
+2025-05-06 16:32:20 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:20 - INFO - [info] - Stopping.
+2025-05-06 16:32:20 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:20 - INFO - [info] - Command sent
+2025-05-06 16:32:20 - INFO - [info] - Stopped.
+2025-05-06 16:32:32 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:32 - INFO - [info] - Stopping.
+2025-05-06 16:32:32 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:32 - INFO - [info] - Command sent
+2025-05-06 16:32:32 - INFO - [info] - Stopped.
+2025-05-06 16:32:33 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:33 - INFO - [info] - Stopping.
+2025-05-06 16:32:33 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:33 - INFO - [info] - Command sent
+2025-05-06 16:32:33 - INFO - [info] - Stopped.
+2025-05-06 16:32:36 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:36 - INFO - [info] - Stopping.
+2025-05-06 16:32:36 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:36 - INFO - [info] - Command sent
+2025-05-06 16:32:36 - INFO - [info] - Stopped.
+2025-05-06 16:32:36 - INFO - [info] - Obstacle detected.
+2025-05-06 16:32:36 - INFO - [info] - Stopping.
+2025-05-06 16:32:36 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+2025-05-06 16:32:36 - INFO - [info] - Command sent
+2025-05-06 16:32:36 - INFO - [info] - Stopped.
+2025-05-06 16:32:37 - INFO - [info] - Keyboard interrupt caught
+2025-05-06 16:32:37 - INFO - [info] - Closing the vehicle communication

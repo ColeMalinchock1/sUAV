@@ -1,0 +1,135 @@
+2025-05-06 16:40:20 - INFO - [info] - Logger created
+2025-05-06 16:40:20 - INFO - [info] - Connecting to vehicle...
+2025-05-06 16:40:34 - INFO - [info] - Connected to vehicle
+2025-05-06 16:40:34 - INFO - [info] - Sufficient number of satellites - Counted: 4, Required: 3
+2025-05-06 16:40:34 - INFO - [info] - Sufficient battery level - Measured: 99, Required: 25
+2025-05-06 16:40:34 - INFO - [info] - Vehicle health validated
+2025-05-06 16:40:34 - INFO - [info] - Pixhawk connected
+2025-05-06 16:40:35 - INFO - [info] - Waiting for mission
+2025-05-06 16:40:38 - INFO - [info] - Received mission
+2025-05-06 16:40:38 - INFO - [info] - Number of waypoints: 3
+2025-05-06 16:40:38 - INFO - [info] - Waiting to switch to GUIDED mode
+2025-05-06 16:41:48 - INFO - [info] - Beginning mission
+2025-05-06 16:41:48 - INFO - [info] - Current waypoint: 0/3
+2025-05-06 16:41:48 - INFO - [info] - Waypoint location: 35.76871109008789, -78.66352844238281, 5.0
+2025-05-06 16:41:48 - INFO - [info] - Obstacle detected.
+2025-05-06 16:41:50 - INFO - [info] - Obstacle detected.
+2025-05-06 16:42:08 - INFO - [info] - Obstacle detected.
+2025-05-06 16:42:11 - INFO - [info] - Obstacle detected.
+2025-05-06 16:42:15 - INFO - [info] - Obstacle detected.
+2025-05-06 16:42:22 - INFO - [info] - Obstacle detected.
+2025-05-06 16:42:24 - INFO - [info] - Obstacle detected.
+2025-05-06 16:42:29 - INFO - [info] - Obstacle detected.
+2025-05-06 16:42:30 - INFO - [info] - Obstacle detected.
+2025-05-06 16:42:33 - INFO - [info] - Obstacle detected.
+2025-05-06 16:42:46 - INFO - [info] - Obstacle detected.
+2025-05-06 16:42:53 - INFO - [info] - Obstacle detected.
+2025-05-06 16:42:54 - INFO - [info] - Obstacle detected.
+2025-05-06 16:42:55 - INFO - [info] - Obstacle detected.
+2025-05-06 16:42:56 - INFO - [info] - Obstacle detected.
+2025-05-06 16:42:57 - INFO - [info] - Obstacle detected.
+2025-05-06 16:42:59 - INFO - [info] - Waypoint reached!
+2025-05-06 16:42:59 - INFO - [info] - Current waypoint: 0/3
+2025-05-06 16:42:59 - INFO - [info] - Waypoint location: 35.76896286010742, -78.66329956054688, 5.0
+2025-05-06 16:43:11 - INFO - [info] - Obstacle detected.
+2025-05-06 16:43:11 - INFO - [info] - Obstacle detected.
+2025-05-06 16:43:12 - INFO - [info] - Obstacle detected.
+2025-05-06 16:43:13 - INFO - [info] - Obstacle detected.
+2025-05-06 16:43:18 - INFO - [info] - Obstacle detected.
+2025-05-06 16:43:18 - INFO - [info] - Obstacle detected.
+2025-05-06 16:43:19 - INFO - [info] - Obstacle detected.
+2025-05-06 16:43:22 - INFO - [info] - Obstacle detected.
+2025-05-06 16:43:24 - INFO - [info] - Obstacle detected.
+2025-05-06 16:43:29 - INFO - [info] - Obstacle detected.
+2025-05-06 16:43:30 - INFO - [info] - Obstacle detected.
+2025-05-06 16:43:31 - INFO - [info] - Obstacle detected.
+2025-05-06 16:43:33 - INFO - [info] - Obstacle detected.
+2025-05-06 16:43:39 - INFO - [info] - Obstacle detected.
+2025-05-06 16:43:40 - INFO - [info] - Obstacle detected.
+2025-05-06 16:43:45 - INFO - [info] - Obstacle detected.
+2025-05-06 16:43:46 - INFO - [info] - Obstacle detected.
+2025-05-06 16:43:46 - INFO - [info] - Obstacle detected.
+2025-05-06 16:43:49 - INFO - [info] - Obstacle detected.
+2025-05-06 16:43:52 - INFO - [info] - Obstacle detected.
+2025-05-06 16:43:54 - INFO - [info] - Obstacle detected.
+2025-05-06 16:43:54 - INFO - [info] - Obstacle detected.
+2025-05-06 16:43:55 - INFO - [info] - Obstacle detected.
+2025-05-06 16:43:56 - INFO - [info] - Obstacle detected.
+2025-05-06 16:43:56 - INFO - [info] - Obstacle detected.
+2025-05-06 16:43:57 - INFO - [info] - Obstacle detected.
+2025-05-06 16:43:58 - INFO - [info] - Obstacle detected.
+2025-05-06 16:44:00 - INFO - [info] - Obstacle detected.
+2025-05-06 16:44:01 - INFO - [info] - Obstacle detected.
+2025-05-06 16:44:04 - INFO - [info] - Obstacle detected.
+2025-05-06 16:44:04 - INFO - [info] - Obstacle detected.
+2025-05-06 16:44:05 - INFO - [info] - Obstacle detected.
+2025-05-06 16:44:07 - INFO - [info] - Obstacle detected.
+2025-05-06 16:44:08 - INFO - [info] - Waypoint reached!
+2025-05-06 16:44:08 - INFO - [info] - Current waypoint: 0/3
+2025-05-06 16:44:08 - INFO - [info] - Waypoint location: 35.76911544799805, -78.66361999511719, 5.0
+2025-05-06 16:44:09 - INFO - [info] - Obstacle detected.
+2025-05-06 16:44:09 - INFO - [info] - Obstacle detected.
+2025-05-06 16:44:09 - INFO - [info] - Obstacle detected.
+2025-05-06 16:44:09 - INFO - [info] - Obstacle detected.
+2025-05-06 16:44:09 - INFO - [info] - Obstacle detected.
+2025-05-06 16:44:12 - INFO - [info] - Obstacle detected.
+2025-05-06 16:44:12 - INFO - [info] - Obstacle detected.
+2025-05-06 16:44:12 - INFO - [info] - Obstacle detected.
+2025-05-06 16:44:14 - INFO - [info] - Obstacle detected.
+2025-05-06 16:44:20 - INFO - [info] - Obstacle detected.
+2025-05-06 16:44:20 - INFO - [info] - Obstacle detected.
+2025-05-06 16:44:21 - INFO - [info] - Obstacle detected.
+2025-05-06 16:44:23 - INFO - [info] - Obstacle detected.
+2025-05-06 16:44:27 - INFO - [info] - Obstacle detected.
+2025-05-06 16:44:30 - INFO - [info] - Obstacle detected.
+2025-05-06 16:44:30 - INFO - [info] - Obstacle detected.
+2025-05-06 16:44:31 - INFO - [info] - Obstacle detected.
+2025-05-06 16:44:31 - INFO - [info] - Obstacle detected.
+2025-05-06 16:44:32 - INFO - [info] - Obstacle detected.
+2025-05-06 16:44:33 - INFO - [info] - Obstacle detected.
+2025-05-06 16:44:34 - INFO - [info] - Obstacle detected.
+2025-05-06 16:44:35 - INFO - [info] - Obstacle detected.
+2025-05-06 16:44:37 - INFO - [info] - Obstacle detected.
+2025-05-06 16:44:39 - INFO - [info] - Obstacle detected.
+2025-05-06 16:44:41 - INFO - [info] - Obstacle detected.
+2025-05-06 16:44:46 - INFO - [info] - Obstacle detected.
+2025-05-06 16:44:46 - INFO - [info] - Obstacle detected.
+2025-05-06 16:44:46 - INFO - [info] - Obstacle detected.
+2025-05-06 16:44:46 - INFO - [info] - Obstacle detected.
+2025-05-06 16:44:47 - INFO - [info] - Obstacle detected.
+2025-05-06 16:44:48 - INFO - [info] - Obstacle detected.
+2025-05-06 16:44:49 - INFO - [info] - Obstacle detected.
+2025-05-06 16:44:49 - INFO - [info] - Obstacle detected.
+2025-05-06 16:44:50 - INFO - [info] - Obstacle detected.
+2025-05-06 16:44:52 - INFO - [info] - Obstacle detected.
+2025-05-06 16:44:53 - INFO - [info] - Obstacle detected.
+2025-05-06 16:44:55 - INFO - [info] - Obstacle detected.
+2025-05-06 16:44:56 - INFO - [info] - Obstacle detected.
+2025-05-06 16:44:56 - INFO - [info] - Obstacle detected.
+2025-05-06 16:44:57 - INFO - [info] - Obstacle detected.
+2025-05-06 16:44:59 - INFO - [info] - Obstacle detected.
+2025-05-06 16:44:59 - INFO - [info] - Obstacle detected.
+2025-05-06 16:45:00 - INFO - [info] - Obstacle detected.
+2025-05-06 16:45:00 - INFO - [info] - Obstacle detected.
+2025-05-06 16:45:01 - INFO - [info] - Obstacle detected.
+2025-05-06 16:45:03 - INFO - [info] - Obstacle detected.
+2025-05-06 16:45:04 - INFO - [info] - Obstacle detected.
+2025-05-06 16:45:04 - INFO - [info] - Obstacle detected.
+2025-05-06 16:45:04 - INFO - [info] - Obstacle detected.
+2025-05-06 16:45:05 - INFO - [info] - Obstacle detected.
+2025-05-06 16:45:05 - INFO - [info] - Obstacle detected.
+2025-05-06 16:45:07 - INFO - [info] - Obstacle detected.
+2025-05-06 16:45:07 - INFO - [info] - Obstacle detected.
+2025-05-06 16:45:07 - INFO - [info] - Obstacle detected.
+2025-05-06 16:45:08 - INFO - [info] - Obstacle detected.
+2025-05-06 16:45:08 - INFO - [info] - Obstacle detected.
+2025-05-06 16:45:10 - INFO - [info] - Obstacle detected.
+2025-05-06 16:45:11 - INFO - [info] - Obstacle detected.
+2025-05-06 16:45:11 - INFO - [info] - Obstacle detected.
+2025-05-06 16:45:11 - INFO - [info] - Obstacle detected.
+2025-05-06 16:45:12 - INFO - [info] - Obstacle detected.
+2025-05-06 16:45:12 - INFO - [info] - Obstacle detected.
+2025-05-06 16:45:16 - INFO - [info] - Obstacle detected.
+2025-05-06 16:45:17 - INFO - [info] - Obstacle detected.
+2025-05-06 16:45:18 - INFO - [info] - Waypoint reached!
+2025-05-06 16:45:18 - INFO - [info] - Closing the vehicle communication
