@@ -1,0 +1,37 @@
+1969-12-31 19:01:30 - INFO - [info] - Logger created
+1969-12-31 19:01:30 - INFO - [info] - Connecting to vehicle...
+1969-12-31 19:01:44 - INFO - [info] - Connected to vehicle
+1969-12-31 19:01:44 - INFO - [info] - Sufficient number of satellites - Counted: 3, Required: 3
+1969-12-31 19:01:44 - INFO - [info] - Sufficient battery level - Measured: 99, Required: 25
+1969-12-31 19:01:44 - INFO - [info] - Vehicle health validated
+1969-12-31 19:01:44 - INFO - [info] - Pixhawk connected, running main
+1969-12-31 19:01:44 - INFO - [info] - Waiting to switch to guided mode
+1969-12-31 19:05:08 - INFO - [info] - Switched to guided mode
+1969-12-31 19:05:08 - INFO - [info] - Current mission: Square Movement
+1969-12-31 19:05:08 - INFO - [info] - X Velocity: 1 m/s
+1969-12-31 19:05:08 - INFO - [info] - Y Velocity: 0 m/s
+1969-12-31 19:05:08 - INFO - [info] - Altitude: 0 m
+1969-12-31 19:05:08 - INFO - [info] - Yaw: 90 degrees
+1969-12-31 19:05:13 - INFO - [info] - Adjusting velocity - Velocity X: 1, Velocity Y: 0, Altitude: 0
+1969-12-31 19:05:13 - INFO - [info] - Command sent
+1969-12-31 19:05:18 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+1969-12-31 19:05:18 - INFO - [info] - Command sent
+1969-12-31 19:05:19 - INFO - [info] - Yaw command - Current yaw: 335, Final yaw: 425
+1969-12-31 19:05:19 - INFO - [info] - Command sent
+1969-12-31 19:05:30 - INFO - [info] - Adjusting velocity - Velocity X: 1, Velocity Y: 0, Altitude: 0
+1969-12-31 19:05:30 - INFO - [info] - Command sent
+1969-12-31 19:05:35 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+1969-12-31 19:05:35 - INFO - [info] - Command sent
+1969-12-31 19:05:36 - INFO - [info] - Yaw command - Current yaw: 187, Final yaw: 277
+1969-12-31 19:05:36 - INFO - [info] - Command sent
+1969-12-31 19:05:47 - INFO - [info] - Adjusting velocity - Velocity X: 1, Velocity Y: 0, Altitude: 0
+1969-12-31 19:05:47 - INFO - [info] - Command sent
+1969-12-31 19:05:52 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+1969-12-31 19:05:52 - INFO - [info] - Command sent
+1969-12-31 19:05:53 - INFO - [info] - Yaw command - Current yaw: 61, Final yaw: 151
+1969-12-31 19:05:53 - INFO - [info] - Command sent
+1969-12-31 19:06:04 - INFO - [info] - Adjusting velocity - Velocity X: 1, Velocity Y: 0, Altitude: 0
+1969-12-31 19:06:04 - INFO - [info] - Command sent
+1969-12-31 19:06:09 - INFO - [info] - Adjusting velocity - Velocity X: 0, Velocity Y: 0, Altitude: 0
+1969-12-31 19:06:09 - INFO - [info] - Command sent
+1969-12-31 19:06:10 - INFO - [info] - Closing the vehicle communication

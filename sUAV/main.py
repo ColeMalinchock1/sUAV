@@ -31,10 +31,10 @@ def main():
 
     for i in range(4):
         # Rotate first (if not the first iteration)
-        if i > 0:
-            pixhawk.command_YAW(yaw)
-            # Wait for rotation to complete and stabilize
-            time.sleep((yaw/YAW_SPEED) + 2)
+        # if i > 0:
+        #     pixhawk.command_YAW(yaw)
+        #     # Wait for rotation to complete and stabilize
+        #     time.sleep((yaw/YAW_SPEED) + 2)
         
         # Now move forward in the new direction
         pixhawk.command_XYA(x_velocity, y_velocity, altitude)
