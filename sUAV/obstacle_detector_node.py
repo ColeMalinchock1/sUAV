@@ -14,15 +14,21 @@ from std_msgs.msg import Float64MultiArray
 import numpy as np
 import threading
 import curses
+import math
+from lib.rerouter import Rerouter
 import time
 
 THRESHOLD = 0.5 # meters
+TIMEOUT = 3.0
 
 class ObstacleDetectorNode():
 
     def __init__(self):
         self.stdscr = curses.initscr()
         self.scan_array = self.y_array = None
+        self.last_scan_time = time.time()
+        self.rerouter = Rerouter
+        self.main()
 
     def scan_2d_callback(self, msg):
         """Callback for lidar 2d scan"""
@@ -39,20 +45,19 @@ class ObstacleDetectorNode():
         self.scan_array = np.array(points)
         self.y_array = np.array(y_distances)
 
-    def main(args=None):
+        self.last_scan_time = time.time()
+
+    def main(self, args=None):
         
         rclpy.init(args=args)
         node = Node("object_avoidance_node")
-        scan_subscription = node.create_subscription(PointCloud2, '/scan_2D', scan_2d_callback, 5)
-        scan_publisher = node.create_publisher(Bool, 'obstacle_detection', 1)
+        scan_subscription = node.create_subscription(PointCloud2, '/scan_2D', self.scan_2d_callback, 5)
+        scan_publisher = node.create_publisher(Float64MultiArray, 'pixhawk_commands_topic', 1)
 
         thread = threading.Thread(target=rclpy.spin, args=(node, ), daemon=True)
         thread.start()
 
         rate = node.create_rate(20, node.get_clock())
-
-        # Initialize the messages
-        obstacle_detected = False
 
         offset = 20
 
@@ -62,7 +67,7 @@ class ObstacleDetectorNode():
 
             # Checks if the scan has been received
             # Else return that scan is not received
-            if self.scan_array:
+            if time.time() - self.last_scan_time < TIMEOUT:
 
                 # Sets received as true
                 receiving_scan = True
@@ -72,12 +77,11 @@ class ObstacleDetectorNode():
                     
                     # Checks if any of the values are less than the threshold
                     if self.scan_array[i + offset] < THRESHOLD:
-
-                        # Sets the obstacle detected as True
-                        obstacle_message[0] = 1
-
-                        # Breaks out of the for loop
-                        break
+                        theta = self.rerouter.obstacle_detected(self.scan_array, self.y_array)
+                        if theta == "STOP":
+                            obstacle_message = [2, 0, 0, 0]
+                        else:
+                            obstacle_message = [1, math.sin(math.radians(theta)), math.cos(math.radians(theta)), 0.0]
 
             else:
                 receiving_scan = False

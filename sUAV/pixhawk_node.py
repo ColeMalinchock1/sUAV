@@ -41,7 +41,7 @@ class PixhawkNode():
         
         logger_publisher = node.create_publisher(String, 'pixhawk_logger_topic', 1)
 
-        controller_subscriber = node.create_subscription(Float64MultiArray, 'pixhawk_commands_topic', pixhawk_commands_callback, 1)
+        controller_subscriber = node.create_subscription(Float64MultiArray, 'pixhawk_commands_topic', self.pixhawk_commands_callback, 1)
 
         FREQ = 20
         rate = node.create_rate(FREQ, node.get_clock())
@@ -54,7 +54,11 @@ class PixhawkNode():
 
         while rclpy.ok():                
             
-            if self.obstacle_detected and time.time() - last_time > 1.0:
+            if self.obstacle_detected == 2.0:
+                pixhawk.set_guided_mode()
+                MODE = "STOPPED"
+                previously_guided = True
+            elif self.obstacle_detected == 1.0 and time.time() - last_time > 1.0:
                 pixhawk.set_guided_mode()
 
                 pixhawk.move_to_relative_position(

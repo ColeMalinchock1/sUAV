@@ -3,24 +3,24 @@ import math
 THRESHOLD = 0.2
 MAX_THRESHOLD = 1
 STOP_COMMAND = "STOP"
-VEHICLE_SIZE = 15
+VEHICLE_SIZE = 5
 
 class Rerouter():
 
     def __init__(self):
-        self.current_position = self.scan = y_distances = None
+        self.scan = self.y_distances = None
 
-    def obstacle_detected(self, current_position, scan, y_distances):
-        self.current_position = current_position
+    def obstacle_detected(self, scan, y_distances):
+        
         self.scan = scan
         self.y_distances = y_distances
 
-        opening = self.find_opening(scan)
+        opening = self.find_opening(self.scan)
 
         if opening == -1 or len(opening) < VEHICLE_SIZE:
             return STOP_COMMAND
 
-        steer = self.steer_adjuster(scan, opening, y_distances)
+        steer = self.steer_adjuster(self.scan, opening, self.y_distances)
 
         return steer
 
