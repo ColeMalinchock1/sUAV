@@ -304,11 +304,12 @@ class PixhawkController(Node):
 
         # Then perform other checks
         checks = [
+            self._check_rc_channels(),
             self._check_battery(),
             self._check_gps(),        # Move GPS check before armable check
             self._check_mode(),
-            self._check_armable(),    # Move armable check after position init
-            self._check_rc_channels()
+            self._check_armable()    # Move armable check after position init
+            
         ]
         
         return all(checks)
@@ -344,7 +345,7 @@ class PixhawkController(Node):
 
     def _check_rc_channels(self) -> bool:
         try:
-            rc_channels = [self.vehicle.channels[i] for i in range(1, 9)]
+            rc_channels = [self.vehicle.channels[i] for i in range(1, 13)]
             for i, ch in enumerate(rc_channels, 1):
                 if ch is None:
                     self.logger.warning(f"RC channel {i} not receiving values")
