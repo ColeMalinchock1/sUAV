@@ -13,6 +13,9 @@ pixhawk = logger = obstacle_avoidance = None
 
 def control_loop(waypoints):
     """Main function to run the obstacle avoidance algorithm"""
+    logger.info("Waiting to switch to GUIDED mode")
+    while pixhawk.get_mode() != "GUIDED":
+        time.sleep(0.1)
 
     time.sleep(2)
     logger.info("Beginning mission")
@@ -39,10 +42,11 @@ def control_loop(waypoints):
 
             # Checks if there are any obstacles detected with the lidar
             if obstacle_avoidance.detect_obstacle():
-                obstacle_avoidance.maneuver(waypoint)
+                pass
+                # obstacle_avoidance.maneuver(waypoint)
 
             # Checks if the pixhawk completed the simple goto
-            waypoint_reached = pixhawk.waypoint_reached()
+            waypoint_reached = pixhawk.waypoint_reached(waypoint)
 
             time.sleep(0.1)
         
@@ -60,6 +64,7 @@ def initialize():
             waypoints = pixhawk.get_mission()
             if waypoints is not None:
                 logger.info("Received mission")
+                logger.info(f"Number of waypoints: {len(waypoints)}")
                 break 
             logger.info("No mission found, waiting...")
             previous_time = time.time()
@@ -72,7 +77,7 @@ if __name__ == "__main__":
     try:
 
         # Creates the logger
-        logger = Logger(app_name="Drone_Flight", log_dir=LOG_DIR, udp_host="192.168.111.210",  udp_port=9999)
+        logger = Logger(app_name="Drone_Flight", log_dir=LOG_DIR, udp_host="192.168.198.210",  udp_port=9999)
 
         # Checks if the logger was created correctly
         # Else report it and continue
