@@ -1,4 +1,4 @@
-from logger import Logger
+from sUAV.lib.logger import Logger
 
 my_logger = Logger()
 

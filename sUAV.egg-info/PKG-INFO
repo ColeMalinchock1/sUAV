@@ -1,0 +1,8 @@
+Metadata-Version: 2.1
+Name: sUAV
+Version: 1.0.0
+Summary: TODO: Package description
+Maintainer: mae-emrl3172
+Maintainer-email: malinchc@gmail.com
+License: TODO: License declaration
+Requires-Dist: setuptools

@@ -27,21 +27,23 @@ class PixhawkCommands():
     def _setup_pixhawk(self):
         """Sets up the vehicle to be connected with the address and baud rate"""
 
+        self.logger.info("Connecting to vehicle...")
+
         # Connects the vehicle
         self.vehicle = connect(self.address, baud=self.baud_rate, wait_ready=self.wait_ready)
 
         # Checks if the connection was made correctly to the pixhawk
         if self.vehicle:
-            self.logger.error("Connected to vehicle")
+            self.logger.info("Connected to vehicle")
             # Checks if there is a heartbeat with the pixhawk
-            if self._check_vehicle_health():
-                self.logger.report_progress("Vehicle health validated")
+            if self.check_satellites() and self.check_battery():
+                self.logger.info("Vehicle health validated")
                 return True
             else:
                 self.close_vehicle()
-                self.logger.report_error("Poor vehicle health")
+                self.logger.critical("Poor vehicle health")
         else:
-            self.logger.report_error("Unable to setup vehicle")
+            self.logger.critical("Unable to setup vehicle")
 
         return False
     
@@ -56,7 +58,7 @@ class PixhawkCommands():
             self.logger.info(f"Sufficient number of satellites - Counted: {num_satellites}, Required: {MINIMUM_SATELLITES}")
             return True
         else:
-            self.logger.report_error(f"Insufficient number of satellites - Counted: {num_satellites}, Required: {MINIMUM_SATELLITES}")
+            self.logger.critical(f"Insufficient number of satellites - Counted: {num_satellites}, Required: {MINIMUM_SATELLITES}")
             return False
         
     def check_battery(self):
@@ -147,3 +149,6 @@ class PixhawkCommands():
         self.vehicle.send_mavlink(msg)
 
         self.logger.info("Command sent")
+
+    def get_mode(self):
+        return self.vehicle.mode.name

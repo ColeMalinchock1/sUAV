@@ -12,16 +12,16 @@ pixhawk = logger = None
 def main():
     """Main function to run the obstacle avoidance algorithm"""
     logger.info("Waiting to switch to guided mode")
-    while(pixhawk.mode.name != "GUIDED"):
+    while(pixhawk.get_mode() != "GUIDED"):
         time.sleep(0.1)
     logger.info("Switched to guided mode")
 
-    x_velocity = 0.5 # [m/s]
+    x_velocity = 0 # [m/s]
     y_velocity = 0 # [m/s]
     altitude = 0 # [m]
     yaw = 90 # [deg/s]
     
-    logger.info("Current mission: Position and rotation")
+    logger.info("Current mission: 4 Rotation")
     logger.info(f"X Velocity: {x_velocity} m/s")
     logger.info(f"Y Velocity: {y_velocity} m/s")
     logger.info(f"Altitude: {altitude} m")
@@ -30,17 +30,43 @@ def main():
     time.sleep(5)
 
     # Moves the drone forward for 2 seconds
-    pixhawk.command_XYA(x_velocity, y_velocity, altitude)
+    # pixhawk.command_XYA(x_velocity, y_velocity, altitude)
 
-    time.sleep(5)
+    pixhawk.command_YAW(yaw)
+
+    logger.info(str(time.time()))
+
+    time.sleep((yaw/YAW_SPEED) + 5)
+
+    time.sleep(2)
+
+    pixhawk.command_YAW(yaw)
+
+    logger.info(str(time.time()))
+
+    time.sleep((yaw/YAW_SPEED) + 5)
+
+    time.sleep(2)
+
+    pixhawk.command_YAW(yaw)
+
+    logger.info(str(time.time()))
+
+    time.sleep((yaw/YAW_SPEED) + 5)
+
+    time.sleep(2)
+
+    # time.sleep(5)
 
     # Stop the drone after flying for 5 seconds
-    pixhawk.command_XYA(0, 0, altitude)
+    # pixhawk.command_XYA(0, 0, altitude)
 
-    time.sleep(1)
+    # time.sleep(1)
 
     # Rotates the drone 90 degrees to the right
     pixhawk.command_YAW(yaw)
+
+    logger.info(str(time.time()))
 
     time.sleep((yaw/YAW_SPEED) + 5)
 
@@ -55,12 +81,16 @@ if __name__ == "__main__":
         # Else report it and continue
         if logger:
 
+            logger.info("Logger created")
+
             # Creates the pixhawk with the logger
             pixhawk = PixhawkCommands(logger)
 
             # Checks if the pixhawk is created correctly
             # Else report it and continue
             if pixhawk:
+
+                logger.info("Pixhawk connected, running main")
                 
                 # Runs main function
                 main()
@@ -75,12 +105,6 @@ if __name__ == "__main__":
             logger.info("Keyboard interrupt caught")
         else:
             print("Keyboard interrupt caught - no logger")
-    except Exception:
-        #TODO fix this to name the exception that is caught
-        if logger:
-            logger.error("Other exception caught")
-        else:
-            print("Other exception caught - no logger")
 
     # Finally close out the system
     finally:

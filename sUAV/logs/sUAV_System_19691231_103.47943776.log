@@ -1,0 +1,23 @@
+1969-12-31 19:01:43 - INFO - [info] - Logger created
+1969-12-31 19:01:43 - INFO - [info] - Connecting to vehicle...
+1969-12-31 19:02:12 - INFO - [info] - Connected to vehicle
+1969-12-31 19:02:12 - INFO - [info] - Sufficient number of satellites - Counted: 4, Required: 3
+1969-12-31 19:02:12 - INFO - [info] - Sufficient battery level - Measured: 100, Required: 25
+1969-12-31 19:02:12 - INFO - [info] - Vehicle health validated
+1969-12-31 19:02:12 - INFO - [info] - Pixhawk connected, running main
+1969-12-31 19:02:12 - INFO - [info] - Waiting to switch to guided mode
+1969-12-31 19:12:55 - INFO - [info] - Switched to guided mode
+1969-12-31 19:12:55 - INFO - [info] - Current mission: 4 Rotation
+1969-12-31 19:12:55 - INFO - [info] - X Velocity: 0 m/s
+1969-12-31 19:12:55 - INFO - [info] - Y Velocity: 0 m/s
+1969-12-31 19:12:55 - INFO - [info] - Altitude: 0 m
+1969-12-31 19:12:55 - INFO - [info] - Yaw: 90 degrees
+1969-12-31 19:13:00 - INFO - [info] - Yaw command - Current yaw: 195, Final yaw: 285
+1969-12-31 19:13:00 - INFO - [info] - Command sent
+1969-12-31 19:13:16 - INFO - [info] - Yaw command - Current yaw: 198, Final yaw: 288
+1969-12-31 19:13:16 - INFO - [info] - Command sent
+1969-12-31 19:13:32 - INFO - [info] - Yaw command - Current yaw: 194, Final yaw: 284
+1969-12-31 19:13:32 - INFO - [info] - Command sent
+1969-12-31 19:13:48 - INFO - [info] - Yaw command - Current yaw: 193, Final yaw: 283
+1969-12-31 19:13:48 - INFO - [info] - Command sent
+1969-12-31 19:14:02 - INFO - [info] - Closing the vehicle communication

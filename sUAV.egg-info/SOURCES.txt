@@ -1,0 +1,12 @@
+README.md
+package.xml
+setup.cfg
+setup.py
+sUAV/__init__.py
+sUAV/main.py
+sUAV.egg-info/PKG-INFO
+sUAV.egg-info/SOURCES.txt
+sUAV.egg-info/dependency_links.txt
+sUAV.egg-info/requires.txt
+sUAV.egg-info/top_level.txt
+sUAV.egg-info/zip-safe
