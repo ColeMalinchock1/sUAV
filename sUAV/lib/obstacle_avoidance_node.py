@@ -15,55 +15,10 @@ DRONE_WIDTH = 1.0 #meters
 RADIUS = 0.2 #meters
 ZED_OFFSET = 0.06 #meters
 current_position = None
-detecting_obstacles_lidar = False
-detecting_obstacles_zed = False
+detecting_obstacles = False
 current_yaw = waypoint_idx = 0
 
 waypoints = [(3, 0)]
-
-class PIDController:
-    def __init__(self, kp, ki, kd, min_output=-60, max_output = 60):
-        self.kp = kp
-        self.ki = ki
-        self.kd = kd
-
-        self.min_output = min_output
-        self.max_output = max_output
-
-        self.previous_error = 0.0
-        self.integral = 0.0
-        self.last_time = time.time()
-
-    def compute(self, error):
-        current_time = time.time()
-        dt = current_time - self.last_time
-
-        if dt <= 0:
-            return 0
-        
-        p_term = self.kp * error
-        
-        self.integral += error * dt
-        i_term = self.ki * self.integral
-
-        derivative = (error - self.previous_error) / dt
-        d_term = self.kd * derivative
-
-        output = p_term + i_term + d_term
-    
-        output = max(self.min_output, min(self.max_output, output))
-
-        self.previous_error = error
-        self.last_time = time.time()
-
-        return output
-    
-    def reset(self):
-        self.previous_error = 0.0
-        self.integral = 0.0
-        self.last_time = time.time()
-
-yaw_pid = PIDController(kp = 1.0, ki = 0.0, kd = 0.0)
 
 def quaternion_to_euler_angle_vectorized2(w, x, y, z):
     ysqr = y * y
@@ -115,6 +70,7 @@ def detect_obstacles(center_row1_points, center_row2_points):
     previous_point = None
 
     obstacle_size = 0
+    opening_size = 0
 
     # Scanning through all the points int the rows
     for i in range(min_length):
@@ -131,13 +87,14 @@ def detect_obstacles(center_row1_points, center_row2_points):
         if avg_depth < MAX_THRESHOLD:
             # print(f"Depth: {avg_depth}, Angle: {avg_angle}")
             obstacle_size += 1
+            opening_size = 0
             # Checks if it is a new obstacle detected
             if not scanning_obstacle:
 
                 # If it is a new obstacle, the left end of it is recorded as an obstacle
                 # And the scanning obstacle is set to true
+            
                 obstacles.append([avg_depth, avg_angle])
-                
                 scanning_obstacle = True
             elif i == min_length - 1:
                 if obstacle_size > 2:
@@ -157,6 +114,9 @@ def detect_obstacles(center_row1_points, center_row2_points):
                 
             scanning_obstacle = False
             obstacle_size = 0
+            opening_size += 1
+        else:
+            opening_size += 1
         
         # Add the average depth and average angle to the array
         depth_angle_array.append((avg_depth, avg_angle))
@@ -166,7 +126,7 @@ def detect_obstacles(center_row1_points, center_row2_points):
 
 def lidar_3d_callback(msg):
         """Handle incoming lidar messages."""
-        global center_row1_points_lidar, center_row2_points_lidar, detecting_obstacles_lidar
+        global center_row1_points_lidar, center_row2_points_lidar, detecting_obstacles
 
         # Initialize arrays for the two center rows
         center_row1_points_lidar = []
@@ -198,7 +158,7 @@ def lidar_3d_callback(msg):
                 angle = -math.degrees(np.arctan2(y, x))
                 center_row2_points_lidar.append((depth, angle))
 
-        detecting_obstacles_lidar = True
+        detecting_obstacles = True
 
 def normalize_yaw(input_yaw):
     if input_yaw > 0:
@@ -211,46 +171,6 @@ def normalize_yaw(input_yaw):
             return -(180 + input_yaw)
         else:
             return input_yaw
-
-def zed_3d_callback(msg):
-    """Handle incoming zed messages."""
-    global center_row1_points_zed, center_row2_points_zed, detecting_obstacles_zed
-    
-    # Initialize arrays for the two center rows
-    center_row1_points_zed = []
-    center_row2_points_zed = []
-    
-    # Extract the height and width
-    height = msg.height
-    width = msg.width
-    
-    # Define center rows
-    center_row1 = height // 2
-    center_row2 = center_row1 + 1 if height > 1 else center_row1
-    
-
-    # Iterate through points with their indices
-    for idx, point in enumerate(pc2.read_points(msg, field_names=("x", "y", "z"), skip_nans=True)):
-        x, y, z = point
-
-        x += ZED_OFFSET
-
-        x = -x
-        
-        # Calculate row and column indices
-        row = idx // width
-        
-        # Process only points from the two center rows
-        if row == center_row1:
-            depth = np.sqrt(x**2 + y**2 + z**2)
-            angle = -math.degrees(np.arctan2(y, x))
-            center_row1_points_zed.append((depth, angle))
-        elif row == center_row2:
-            depth = np.sqrt(x**2 + y**2 + z**2)
-            angle = -math.degrees(np.arctan2(y, x))
-            center_row2_points_zed.append((depth, angle))
-
-    detecting_obstacles_zed = True
 
 def merge_obstacles(lidar, zed):
     """
@@ -341,7 +261,6 @@ def main():
 
     lidar_sub = node.create_subscription(PointCloud2, "/scan_3D", lidar_3d_callback, 10)
     node.create_subscription(PoseStamped, "/zed/zed_node/pose", zed_pose_callback, 10)
-    zed_sub = node.create_subscription(PointCloud2, "/zed/zed_node/point_cloud/cloud_registered", zed_3d_callback, 10)
 
     yaw_pub = node.create_publisher(Float64, "/obstacle_avoidance/yaw", 10)
 
@@ -362,8 +281,6 @@ def main():
                 if waypoint_idx == len(waypoints):
                     print("Mission accomplished!")
                     break
-
-                yaw_pid.reset()
                 
             # Gets the direction to the next waypoint
             current_waypoint = waypoints[waypoint_idx]
@@ -372,10 +289,10 @@ def main():
 
             yaw_error = math.degrees(math.atan(waypoint_vector[1]/waypoint_vector[0])) - current_yaw
             
-            if (detecting_obstacles_zed):
-                obstacles_lidar = detect_obstacles(center_row1_points_lidar, center_row2_points_lidar)
-                obstacles_zed = detect_obstacles(center_row1_points_zed, center_row2_points_zed)
-                obstacles = merge_obstacles(obstacles_lidar, obstacles_zed)
+            if (detecting_obstacles):
+                obstacles = detect_obstacles(center_row1_points_lidar, center_row2_points_lidar)
+                # obstacles_zed = detect_obstacles(center_row1_points_zed, center_row2_points_zed)
+                # obstacles = merge_obstacles(obstacles_lidar, obstacles_zed)
 
                 if len(obstacles) > 0:
                     
@@ -388,22 +305,18 @@ def main():
 
                         if abs(left[1] - current_yaw) > abs(right[1] - current_yaw):
                             # Go to the right of the obstacle
-                            print(right[0])
                             print("GO RIGHT")
                             yaw_error = math.degrees(math.atan(DRONE_WIDTH / (2 * right[0])))
                         else:
                             # Go to the left of the obstacle
-                            print(left[0])
                             print("GO LEFT")
                             yaw_error = -math.degrees(math.atan(DRONE_WIDTH / (2 * left[0])))
             
                 print("Number of obstacles: ", len(obstacles)/2)
-            
-            yaw_delta = yaw_pid.compute(yaw_error)
-            print("YAW ERROR: ", yaw_error)
-            print("YAW DELTA: ", yaw_delta)
+
+            print("YAW DELTA: ", yaw_error)
             msg = Float64()
-            msg.data = float(yaw_delta)
+            msg.data = float(yaw_error)
             yaw_pub.publish(msg)
             
 
