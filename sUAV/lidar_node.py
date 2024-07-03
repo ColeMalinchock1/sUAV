@@ -7,12 +7,22 @@ import cv2 as cv
 import numpy as np
 import threading
 import csv
-SHOW_IMAGES = True
-points_array = frame = None
+SHOW_IMAGES = False
+SHOW_3D = False
+SHOW_2D = True
+points_3d_array = point_2d_array = frame = None
 br = CvBridge()
 obstacle_location = "None detected"
 
-def scan_callback(msg):
+def scan_3d_callback(msg):
+    global points_array
+    points = []
+    for point in pc2.read_points(msg, field_names=("x", "y", "z"), skip_nans=True):
+        points.append([point[0], point[1], point[2]])
+    
+    points_array = np.array(points)
+
+def scan_2d_callback(msg):
     global points_array
     points = []
     for point in pc2.read_points(msg, field_names=("x", "y", "z"), skip_nans=True):
@@ -83,7 +93,10 @@ def main(args = None):
 
     rclpy.init(args = args)
     node = Node("lidar_node")
-    img_subscription = node.create_subscription(PointCloud2, '/scan_3D', scan_callback, 5)
+    scan_2d_subscription = node.create_subscription(PointCloud2, '/scan_2D', scan_callback, 5)
+
+    scan_3d_subscription = node.create_subscription(PointCloud2, '/scan_3D', scan_callback, 5)
+
     img_subscription = node.create_subscription(Image, '/scan_image', image_callback, 5)
 
     thread = threading.Thread(target=rclpy.spin, args=(node, ), daemon=True)
