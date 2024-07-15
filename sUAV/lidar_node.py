@@ -6,16 +6,17 @@ from cv_bridge import CvBridge
 import cv2 as cv
 import numpy as np
 import threading
-import csv
+
 SHOW_IMAGES = False
 SHOW_3D = False
-SHOW_2D = True
+SHOW_2D = False
+SHOW_SCAN = True
 points_3d_array = point_2d_array = frame = None
 br = CvBridge()
 obstacle_location = "None detected"
 
 def scan_3d_callback(msg):
-    global points_array
+    global points_3d_array
     points = []
     for point in pc2.read_points(msg, field_names=("x", "y", "z"), skip_nans=True):
         points.append([point[0], point[1], point[2]])
@@ -23,14 +24,12 @@ def scan_3d_callback(msg):
     points_array = np.array(points)
 
 def scan_2d_callback(msg):
-    global points_array
-    points = []
-    for point in pc2.read_points(msg, field_names=("x", "y", "z"), skip_nans=True):
-        points.append([point[0], point[1], point[2]])
-    
-    points_array = np.array(points)
+    pass
 
-def image_callback(msg):
+def scan_callback(msg):
+    print(len(msg.ranges))
+
+def scan_image_callback(msg):
     global frame
     frame = br.imgmsg_to_cv2(msg)                                                                                                                                    
 
@@ -93,11 +92,14 @@ def main(args = None):
 
     rclpy.init(args = args)
     node = Node("lidar_node")
-    scan_2d_subscription = node.create_subscription(PointCloud2, '/scan_2D', scan_callback, 5)
 
-    scan_3d_subscription = node.create_subscription(PointCloud2, '/scan_3D', scan_callback, 5)
+    scan_subscription = node.create_subscription(LaserScan, '/scan', scan_callback, 5)
 
-    img_subscription = node.create_subscription(Image, '/scan_image', image_callback, 5)
+    scan_2d_subscription = node.create_subscription(PointCloud2, '/scan_2D', scan_2d_callback, 5)
+
+    scan_3d_subscription = node.create_subscription(PointCloud2, '/scan_3D', scan_3d_callback, 5)
+
+    img_subscription = node.create_subscription(Image, '/scan_image', scan_image_callback, 5)
 
     thread = threading.Thread(target=rclpy.spin, args=(node, ), daemon=True)
     thread.start()
@@ -107,16 +109,21 @@ def main(args = None):
 
     while rclpy.ok():
 
-
-        if points_array is not None:
-            pass
-            #find_obstruction(points_array)
-        else:
-            print("No points received")
-        if frame is not None:
-            process_image(frame)
-        else:
-            print("No frame received")
+        if SHOW_3D:
+            if points_3d_array is not None:
+                pass
+                #find_obstruction(points_array)
+            else:
+                print("No points received")
+        if SHOW_IMAGES:
+            if frame is not None:
+                process_image(frame)
+            else:
+                print("No frame received")
+        if SHOW_2D:
+             pass
+        if SHOW_SCAN:
+             pass
         rate.sleep()
 
     node.destroy_node()
