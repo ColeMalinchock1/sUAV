@@ -18,22 +18,25 @@ import curses
 
 stdscr = curses.initscr()
 
-scan_array = None
+scan_array = y_array = None
 
 THRESHOLD = 2 # meters
 
 def scan_2d_callback(msg):
     """Callback for lidar 2d scan"""
 
-    global scan_array
+    global scan_array, y_array
 
     points = []
+    y_distances = []
     for point in pc2.read_points(msg, field_names=("x", "y", "z"), skip_nans=True):
-        depth = point[0]  # Assuming 'z' is the depth information
+        depth = point[0]  # Assuming 'x' is the depth information
         points.append(depth)
+        y_distances.append(point[1])
     
     # Convert the list to a numpy array for further processing
     scan_array = np.array(points)
+    y_array = np.array(y_distances)
 
 def main(args=None):
     
@@ -49,6 +52,9 @@ def main(args=None):
     # Initialize the messages
     obstacle_detected = False
     direction = "Straight"
+    steer = 0
+
+    rerouter = rr()
 
     while rclpy.ok():
 
@@ -61,12 +67,10 @@ def main(args=None):
 
             # Initializes the obstacle detected as false
             obstacle_detected = False
-            
+            steer = 0
+
             # Loops through the scan_array
             for i in range(scan_array.size):
-                
-                # Creates a quarter of the width of the scan
-                quarter_width = scan_array.size / 4
 
                 # Checks if any of the values are less than the threshold
                 if scan_array[i] < THRESHOLD:
@@ -74,13 +78,12 @@ def main(args=None):
                     # Sets the obstacle detected as True
                     obstacle_detected = True
 
-                    # Checks if the obstacle is a quarter width to the left, right,
-                    if i < quarter_width:
-                        direction = "Right"
-                    elif i > 3 * quarter_width:
-                        direction = "Left"
-                    else:
-                        direction = "Stop"
+                    # Breaks out of the for loop
+                    break
+            
+            if obstacle_detected:
+                current_position = 0
+                steer = rerouter.obstacle_detected(current_position, scan_array, y_array)
 
         else:
             receiving_scan = False
@@ -92,7 +95,7 @@ def main(args=None):
 
         stdscr.addstr(3, 5, 'Receiving Scan: %s         ' % str(receiving_scan))
         stdscr.addstr(4, 5, 'Obstacle Detected: %s      ' % str(obstacle_detected))
-        stdscr.addstr(5, 5, 'Move To The: %s            ' % str(direction))
+        stdscr.addstr(5, 5, 'Steer: %s            ' % str(steer))
 
     rclpy.spin(node)
     rclpy.shutdown()

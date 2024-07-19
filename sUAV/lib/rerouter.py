@@ -1,22 +1,30 @@
+import math
+
 THRESHOLD = 0.2
-MAX_THRESHOLD = 3
+MAX_THRESHOLD = 1
 STOP_COMMAND = "STOP"
+VEHICLE_SIZE = 15
 
 class Rerouter():
 
     def __init__(self):
-        self.current_position = self.scan = None
+        self.current_position = self.scan = y_distances = None
 
-    def obstacle_detected(self, current_position, scan):
+    def obstacle_detected(self, current_position, scan, y_distances):
         self.current_position = current_position
         self.scan = scan
+        self.y_distances = y_distances
 
         opening = self.find_opening(scan)
 
-        if opening == -1:
+        if opening == -1 or len(opening) < VEHICLE_SIZE:
             return STOP_COMMAND
 
-        self.vectorize(scan)
+        steer = self.steer_adjuster(scan, opening, y_distances)
+
+        return steer
+
+        
 
     def find_opening(self, scan):
         """Finds the opening in the scan if there is one"""
@@ -24,7 +32,7 @@ class Rerouter():
         # Initialize all items tracked in the for loop
         opening = -1
         longest_streak = None
-        new_streak = (0, 0)
+        new_streak = [0, 0]
         start_new_streak = True
 
         # Loops through all depths on the scan
@@ -39,7 +47,7 @@ class Rerouter():
                 # Else extends the streak to the current i
                 if start_new_streak:
                     start_new_streak = False
-                    new_streak = (i, i)
+                    new_streak = [i, i]
                 else:
                     new_streak[1] = i
             else:
@@ -51,27 +59,42 @@ class Rerouter():
                     longest_streak = new_streak
 
         if longest_streak is not None:
-            opening = (longest_streak[0] + longest_streak[1]) / 2
-    
+            opening = list(range(longest_streak[0], longest_streak[1] + 1))
+
         return opening
             
+
+    def steer_adjuster(self, scan, opening, y_distances):
         
-
-
-    def vectorize(self, scan):
+        # Checks if the vehicle has enough space on its left or right and can continue going straight
+        # Else if opening is to the left of the scan set k as -1
+        # Else it is assumed the opening is to the right of the center of the scan set k as 1
+        if int(len(scan) / 2 - VEHICLE_SIZE / 2) in opening or int(len(scan) / 2 + VEHICLE_SIZE / 2) in opening:
+            return 0
+        elif opening[int(len(opening) / 2)] < int(len(scan) / 2):
+            k = 1
+        else:
+            k = -1
         
-        vectorized_scan = []
+        closest_point = None
 
-        previous_z = None
+        # If the opening is to the left get the closest point on the right side
+        if k < 0:
+            for i in range(len(scan)):
+                if i > len(scan) / 2:
+                    if closest_point is None:
+                        closest_point = i
+                    elif scan[closest_point] > scan[i]:
+                        closest_point = i
+        else:
+            for i in range(len(scan)):
+                if i < len(scan) / 2:
+                    if closest_point is None:
+                        closest_point = i
+                    elif scan[closest_point] > scan[i]:
+                        closest_point = i
 
-        for z in scan:
-            if previous_z is not None:
-                delta_z = z - previous_z
-                if delta_z < THRESHOLD:
-                    delta_z = 0
-            
-                vectorized_scan.append(delta_z)
-                
-            else:
-                previous_z = z
+        # Steering in degrees
+        steer = k * math.degrees(math.atan(y_distances[closest_point]) / MAX_THRESHOLD - scan[closest_point])
 
+        return steer
