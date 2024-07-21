@@ -1,204 +1,172 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+
 import rclpy
 from rclpy.node import Node
-from rclpy.qos import QoSProfile, QoSReliabilityPolicy, QoSHistoryPolicy
-from std_msgs.msg import Int64
-from px4_msgs.msg import VehicleCommand, TrajectorySetpoint, TimesyncStatus
+from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy, DurabilityPolicy
+from px4_msgs.msg import OffboardControlMode, TrajectorySetpoint, VehicleCommand, VehicleLocalPosition, VehicleStatus
+from std_msgs.msg import Float64MultiArray, Bool
 
-import time
-import threading
-import math
 
-class PixhawkController(Node):
-    def __init__(self):
-        super().__init__('pixhawk_controller')
+class OffboardControl(Node):
+    """Node for controlling a vehicle in offboard mode."""
 
-        # Setting up the quality of service for the publishers and subscribers
+    def __init__(self) -> None:
+        super().__init__('offboard_control_takeoff_and_land')
+
+        # Configure QoS profile for publishing and subscribing
         qos_profile = QoSProfile(
-        reliability = QoSReliabilityPolicy.BEST_EFFORT,
-        history = QoSHistoryPolicy.KEEP_LAST,
-        depth = 5
+            reliability=ReliabilityPolicy.BEST_EFFORT,
+            durability=DurabilityPolicy.TRANSIENT_LOCAL,
+            history=HistoryPolicy.KEEP_LAST,
+            depth=1
         )
 
-        # Publishers for sending messages to the PX
-        self.vehicle_command_publisher = self.create_publisher(VehicleCommand, '/fmu/in/vehicle_command', qos_profile)
-        self.offboard_setpoint_publisher = self.create_publisher(TrajectorySetpoint, '/fmu/in/trajectory_setpoint', qos_profile)
+        # Create publishers
+        self.offboard_control_mode_publisher = self.create_publisher(
+            OffboardControlMode, '/fmu/in/offboard_control_mode', qos_profile)
+        self.trajectory_setpoint_publisher = self.create_publisher(
+            TrajectorySetpoint, '/fmu/in/trajectory_setpoint', qos_profile)
+        self.vehicle_command_publisher = self.create_publisher(
+            VehicleCommand, '/fmu/in/vehicle_command', qos_profile)
+        self.vehicle_local_position_publisher = self.create_publisher(
+            Float64MultiArray, 'current_pos_topic', 1
+        )
 
-        # Subscribers for receiving messages from the PX
-        self.timesync_subscriber = self.create_subscription(TimesyncStatus, '/fmu/out/timesync_status', self.timesync_callback, qos_profile)
+        # Create subscribers
+        self.vehicle_local_position_subscriber = self.create_subscription(
+            VehicleLocalPosition, '/fmu/out/vehicle_local_position', self.vehicle_local_position_callback, qos_profile)
+        self.vehicle_status_subscriber = self.create_subscription(
+            VehicleStatus, '/fmu/out/vehicle_status', self.vehicle_status_callback, qos_profile)
+        self.obstacle_avoidance_subscriber = self.create_subscription(
+            Bool
+        )
 
-        # Initializing the time sync between the PX and Orin
-        self.timestamp = 0
-        self.armed = False
-        self.offboard_mode = False
-        self.get_logger().info('Waiting for timesync...')
+        # Initialize variables
+        self.offboard_setpoint_counter = 0
+        self.vehicle_local_position = VehicleLocalPosition()
+        self.vehicle_status = VehicleStatus()
+        self.x_setpoint = self.y_setpoint = self.z_setpoint = None
 
-        # Looping until timestamp is received
-        while self.timestamp == 0:
-            rclpy.spin_once(self)
+        # Create a timer to publish control commands
+        self.timer = self.create_timer(0.1, self.timer_callback)
 
-        # Arm the vehicle on initialization
-        self.arm_vehicle()
+    def set_setpoint(self, setpoint):
+        """Sets the setpoint from the UI node"""
+        self.x_setpoint = setpoint.data[0] * -1.0
+        self.y_setpoint = setpoint.data[1] * -1.0
+        self.z_setpoint = setpoint.data[2] * -1.0
 
-        # Make the vehicle takeoff
-        self.takeoff()
+    def vehicle_local_position_callback(self, vehicle_local_position):
+        """Callback function for vehicle_local_position topic subscriber."""
+        self.vehicle_local_position = vehicle_local_position
 
-        # Set it so it is offboard
-        self.set_offboard_mode()
+    def vehicle_status_callback(self, vehicle_status):
+        """Callback function for vehicle_status topic subscriber."""
+        self.vehicle_status = vehicle_status
 
-        # Rotate the vehicle 360 degrees
-        self.rotate_360()
+    def arm(self):
+        """Send an arm command to the vehicle."""
+        self.publish_vehicle_command(
+            VehicleCommand.VEHICLE_CMD_COMPONENT_ARM_DISARM, param1=1.0)
+        self.get_logger().info('Arm command sent')
 
-        # Land the vehicle
-        self.land()
+    def disarm(self):
+        """Send a disarm command to the vehicle."""
+        self.publish_vehicle_command(
+            VehicleCommand.VEHICLE_CMD_COMPONENT_ARM_DISARM, param1=0.0)
+        self.get_logger().info('Disarm command sent')
 
-        # Final message on completion
-        self.get_logger().info('Complete')
+    def engage_offboard_mode(self):
+        """Switch to offboard mode."""
+        self.publish_vehicle_command(
+            VehicleCommand.VEHICLE_CMD_DO_SET_MODE, param1=1.0, param2=6.0)
+        self.get_logger().info("Switching to offboard mode")
 
-    # Callback to receive the timestamp from the PX
-    def timesync_callback(self, msg):
-        self.timestamp = msg.timestamp
-
-    # Send a command to the PX so that it arms the vehicle
-    def arm_vehicle(self):
-        self.get_logger().info('Arming vehicle')
-
-        # Create and format the Vehicle Command message
-        arm_command = VehicleCommand()
-        arm_command.timestamp = self.timestamp
-        arm_command.param1 = 1.0
-        arm_command.command = VehicleCommand.VEHICLE_CMD_COMPONENT_ARM_DISARM
-        arm_command.target_system = 1
-        arm_command.target_component = 1
-
-        # Publish the command and then wait
-        self.vehicle_command_publisher.publish(arm_command)
-        self.armed = True
-        time.sleep(2)
-
-    # Send a command to make the vehicle take off to a target location
-    def takeoff(self):
-        self.get_logger().info('Take off')
-        
-        # Create and format the Vehicle Command message
-        takeoff_command = VehicleCommand()
-        takeoff_command.timestamp = self.timestamp
-        takeoff_command.command = VehicleCommand.VEHICLE_CMD_NAV_TAKEOFF
-        takeoff_command.param5 = 47.39 # Target Latitude
-        takeoff_command.param6 = 8.4324 # Target Longitude
-        takeoff_command.param7 = 10.0 # Target Altitude
-        takeoff_command.target_system = 1
-        takeoff_command.target_component = 1
-
-        # Publish the command then wait
-        self.vehicle_command_publisher.publish(takeoff_command)
-        time.sleep(10)
-
-    # Sets the offboard mode to on
-    # This allows for the vehicle to do more manual movements
-    def set_offboard_mode(self):
-        self.get_logger().info('Setting offboard mode')
-
-        # Create and format the Vehicle Command message
-        offboard_command = VehicleCommand()
-        offboard_command.timestamp = self.timestamp
-        offboard_command.command = VehicleCommand.VEHICLE_CMD_DO_SET_MODE
-        offboard_command.param1 = 1.0 # Custom mode
-        offboard_command.param2 = 6.0 # Offboard mode
-        offboard_command.target_system = 1
-        offboard_command.target_component = 1
-        
-        # Publish the command then wait
-        self.vehicle_command_publisher.publish(offboard_command)
-        self.offboard_mode = True
-        time.sleep(2)
-
-    # Rotates the yaw of the vehicle 360 degrees
-    def rotate_360(self):
-        self.get_logger().info('Rotating 360 degrees')
-
-        # Initialize values
-        yaw_angle = 0
-        rotation_rate = 30 # Degrees per second
-        duration = 360 / rotation_rate
-
-        # Loop through the duration turning the vehicle to a new setpoint
-        for i in range(int(duration * 10)):
-
-            # Increment the setpoint of the yaw
-            yaw_angle += rotation_rate * 0.1
-            yaw_angle_rad = math.radians(yaw_angle)
-
-            # Create and format Trajectory Setpoint message
-            setpoint = TrajectorySetpoint()
-            setpoint.timestamp = self.timestamp
-            setpoint.yaw = yaw_angle_rad
-            setpoint.position = [0.0, 0.0, -10.0]
-
-            # Publish the new setpoint then wait
-            self.offboard_setpoint_publisher.publish(setpoint)
-            self.get_logger().info(f'Setting yaw: {yaw_angle} degrees')
-            time.sleep(0.1)
-
-    # Lands the vehicle
     def land(self):
-        self.get_logger().info('Landing')
+        """Switch to land mode."""
+        self.publish_vehicle_command(VehicleCommand.VEHICLE_CMD_NAV_LAND)
+        self.get_logger().info("Switching to land mode")
 
-        # Create and format Vehicle Command message
-        land_command = VehicleCommand()
-        land_command.timestamp = self.timestamp
-        land_command.command = VehicleCommand.VEHICLE_CMD_NAV_LAND
-        land_command.target_system = 1
-        land_command.target_component = 1
+    def publish_offboard_control_heartbeat_signal(self):
+        """Publish the offboard control mode."""
+        msg = OffboardControlMode()
+        msg.position = True
+        msg.velocity = False
+        msg.acceleration = False
+        msg.attitude = False
+        msg.body_rate = False
+        msg.timestamp = int(self.get_clock().now().nanoseconds / 1000)
+        self.offboard_control_mode_publisher.publish(msg)
 
-        # Publish the command then wait
-        self.vehicle_command_publisher.publish(land_command)
-        time.sleep(10)
- 
+    def publish_position_setpoint(self, x: float, y: float, z: float):
+        """Publish the trajectory setpoint."""
+        msg = TrajectorySetpoint()
+        msg.position = [x, y, z]
+        msg.yaw = 1.57079  # (90 degree)
+        msg.timestamp = int(self.get_clock().now().nanoseconds / 1000)
+        self.trajectory_setpoint_publisher.publish(msg)
+        self.get_logger().info(f"Publishing position setpoints {[x, y, z]}")
+    
+    def publish_current_position(self):
+        """Publish the current position to the UI node"""
+        msg = Float64MultiArray()
+        msg.data = [0.0, 0.0, 0.0]
+        msg.data[0] = self.vehicle_local_position.x * -1.0
+        msg.data[1] = self.vehicle_local_position.y * -1.0
+        msg.data[2] = self.vehicle_local_position.z * -1.0
+        self.vehicle_local_position_publisher.publish(msg)
 
-def main(args=None):
+    def publish_vehicle_command(self, command, **params) -> None:
+        """Publish a vehicle command."""
+        msg = VehicleCommand()
+        msg.command = command
+        msg.param1 = params.get("param1", 0.0)
+        msg.param2 = params.get("param2", 0.0)
+        msg.param3 = params.get("param3", 0.0)
+        msg.param4 = params.get("param4", 0.0)
+        msg.param5 = params.get("param5", 0.0)
+        msg.param6 = params.get("param6", 0.0)
+        msg.param7 = params.get("param7", 0.0)
+        msg.target_system = 1
+        msg.target_component = 1
+        msg.source_system = 1
+        msg.source_component = 1
+        msg.from_external = True
+        msg.timestamp = int(self.get_clock().now().nanoseconds / 1000)
+        self.vehicle_command_publisher.publish(msg)
+
+    def timer_callback(self) -> None:
+        """Callback function for the timer."""
+        self.publish_offboard_control_heartbeat_signal()
+
+        if self.offboard_setpoint_counter == 10:
+            self.engage_offboard_mode()
+            self.arm()
+        
+        if self.x_setpoint is not None and self.y_setpoint is not None and self.z_setpoint is not None: 
+            self.publish_current_position()
+            if self.vehicle_status.nav_state == VehicleStatus.NAVIGATION_STATE_OFFBOARD:
+                self.publish_position_setpoint(self.x_setpoint, self.y_setpoint, self.z_setpoint)
+
+            if abs(self.vehicle_local_position.x - self.x_setpoint) < 0.2 and abs(self.vehicle_local_position.y - self.y_setpoint) < 0.2 and abs(self.vehicle_local_position.z - self.z_setpoint) < 0.2:
+                self.land()
+                exit(0)
+
+        if self.offboard_setpoint_counter < 11:
+            self.offboard_setpoint_counter += 1
+
+
+def main(args=None) -> None:
+    print('Starting offboard control node...')
     rclpy.init(args=args)
-    pixhawk_controller = PixhawkController()
-    rclpy.spin(pixhawk_controller)
-    pixhawk_controller.destroy_node()
+    offboard_control = OffboardControl()
+    rclpy.spin(offboard_control)
+    offboard_control.destroy_node()
     rclpy.shutdown()
 
+
 if __name__ == '__main__':
-    main()
-
-# def callback(data):
-#     global test_data
-#     test_data = data
-                
-# def main(args=None):
-#     global test_data
-
-#     rclpy.init(args=args)
-
-
-
-#     px_node = Node("pixhawk_node")
-#     px_node.create_subscription(VehicleStatus, "/fmu/out/vehicle_status", callback, qos_profile)
-
-
-#     thread = threading.Thread(target=rclpy.spin, args=(px_node, ), daemon=True)
-#     thread.start()
-
-#     rate = px_node.create_rate(20, px_node.get_clock())
-#     state = 0
-#     while rclpy.ok():
-#         if state == 0:
-#             initialize()
-#         elif state == 1:
-#             takeoff()
-#         elif state == 2:
-#             rotate_360()
-#         elif state == 3:
-#             land()
-#         rate.sleep()
-
-#     rclpy.spin(px_node)
-#     rclpy.shutdown()
-
-# if __name__ == '__main__':
-#     main()
+    try:
+        main()
+    except Exception as e:
+        print(e)
