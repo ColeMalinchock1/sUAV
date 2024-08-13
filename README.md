@@ -7,7 +7,7 @@ The current ROS2 nodes used with this project are:
 - Pixhawk Node
 - User Interface Node
 
-Each node is described in detail below along with necessary commands to run each node
+Each node is described in detail below along with necessary commands to run each node.
 
 ### MicroXRCE Agent Node
 This node is intended to communicate with the Pixhawk via UART connection from the NVIDIA Jetson Orin Nano. It outputs a series of topics that can be found [here](https://github.com/PX4/px4_msgs)
