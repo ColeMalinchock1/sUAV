@@ -67,7 +67,6 @@ def main(args=None):
             
         
         coordinate = pixhawk.get_current_latlon()
-        print(coordinate)
         
         if coordinate is not None:
             msg = Float64MultiArray()
