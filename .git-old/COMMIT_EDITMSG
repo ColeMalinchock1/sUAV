@@ -1,0 +1,18 @@
+Updated so GPS tracking works
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# On branch main
+# Your branch is up to date with 'origin/main'.
+#
+# Changes to be committed:
+#	new file:   sUAV/central_node.py
+#	new file:   sUAV/data_recorder_node.py
+#	new file:   sUAV/lib/__pycache__/coords_to_cartesian.cpython-310.pyc
+#	new file:   sUAV/lib/__pycache__/pixhawk_commands.cpython-310.pyc
+#	modified:   sUAV/lib/__pycache__/rerouter.cpython-310.pyc
+#	new file:   sUAV/lib/coords_to_cartesian.py
+#	modified:   sUAV/lib/pixhawk_commands.py
+#	modified:   sUAV/mavros_node.py
+#	modified:   sUAV/obstacle_avoidance_node.py
+#

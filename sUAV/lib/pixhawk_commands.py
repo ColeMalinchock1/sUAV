@@ -7,15 +7,24 @@ import time
 class PixhawkCommands():
 
     def __init__(self, serial_port, baud_rate):
+        
         self.pixhawk = mavutil.mavlink_connection(serial_port, baud=baud_rate)
         self.pixhawk.wait_heartbeat()
 
-        print("Connected to pixhawk")
-
+        # MAV_DATA_STREAM_POSITION and MAV_DATA_STREAM_RAW_SENSORS is deprecated: 
+        # https://mavlink.io/en/messages/common.html#MESSAGE_INTERVAL
         self.pixhawk.mav.request_data_stream_send(
             self.pixhawk.target_system,
             self.pixhawk.target_component,
             mavutil.mavlink.MAV_DATA_STREAM_POSITION,
+            1,
+            1
+        )
+
+        self.pixhawk.mav.request_data_steam_send(
+            self.pixhawk.target_system,
+            self.pixhawk.target_component,
+            mavutil.mavlink.MAV_DATA_STREAM_RAW_SENSORS,
             1,
             1
         )
@@ -26,6 +35,79 @@ class PixhawkCommands():
             current_latlon = self.get_current_latlon()
 
         self.converter = c2c(current_latlon[0], current_latlon[1])
+
+    def get_gps_info(self, timeout=10):
+        """
+        Returns GPS information including number of satellites and fix type
+        """
+
+        msg = self.pixhawk.recv_match(type='GPS_RAW_INT', blocking=True, timeout=timeout)
+        if msg is None:
+            print("Failed to receive GPS_RAW_INT")
+            return None
+        
+        gps_info = {
+            'satellites_visible': msg.satellites_visible,
+            'fix_type': msg.fix_type,
+            'hdop': msg.eph / 100.0,
+            'vdop': msg.epv / 100.0
+        }
+
+        return gps_info
+    
+    def get_relative_position(self, timeout=10):
+        """
+        Returns the relative position from home position in meters
+        """
+        
+        msg = self.pixhawk.recv_match(type='LOCAL_POSITION_NED', blocking=True, timeout=timeout)
+        if msg is None:
+            print("Failed to receive LOCAL_POSITION_NED")
+            return None
+
+        position = {
+            'x': msg.x,
+            'y': msg.y,
+            'z': -msg.z,
+            'vx': msg.vx,
+            'vy': msg.vy,
+            'vz': -msg.vz
+        }
+
+        return position
+    
+    def move_to_relative_position(self, x_offset, y_offset, z_offset, velocity = 1):
+        """
+        Commands the vehicle to move to a position relative to its current position
+
+        Parameters:
+        x_offset: meters forward (positive) or backward (negative)
+        y_offset: meters right (positive) or left (negative)
+        z_offset: meters up (positive) or down (negative)
+        """
+
+        current_pos = self.get_relative_position()
+        if current_pos is None:
+            print("Unable to get current position")
+            return False
+        
+        target_x = current_pos['x'] + x_offset
+        target_y = current_pos['y'] + y_offset
+        target_z = current_pos['z'] + z_offset
+        
+        self.pixhawk.mav.set_position_target_local_ned_send(
+            0,
+            self.pixhawk.target_system,
+            self.pixhawk.target_component,
+            mavutil.mavlink.MAV_FRAME_LOCAL_NED,
+            0b110111111000,
+            target_x, target_y, -target_z,
+            0, 0, 0, # velocity
+            0, 0, 0, # acceleration
+            0, 0 # yaw, yaw rate
+        )
+
+        return True
 
     def get_current_xy(self, timeout=10):
         """
@@ -209,3 +291,4 @@ class PixhawkCommands():
             mavutil.mavlink.MAV_MODE_AUTO_ARMED,  # Set mode to AUTO
             0, 0, 0, 0, 0, 0  # Params are not used for this command
         )
+        
