@@ -11,7 +11,7 @@ Date: 12/17/2024
 # ROS2 libraries
 import rclpy
 from rclpy.node import Node
-from std_msgs.msg import Bool, Float64MultiArray
+from std_msgs.msg import Bool, Float64MultiArray, String
 
 # Personal libraries
 from lib.rerouter import Rerouter as rr
@@ -24,20 +24,22 @@ import time
 class PixhawkNode():
     def __init__(self):
         self.stdscr = curses.initscr()
-        self.pixhawk_commands = []
-        self.pixhawk_data = []
+        self.obstacle_detected = None
+        self.obstacle_avoidance = None
         self.main()
 
     def pixhawk_commands_callback(self, msg):
-        self.pixhawk_commandsi = msg.data
+        self.obstacle_detected = msg.data[0]
+        self.obstacle_avoidance_x = msg.data[1]
+        self.obstacle_avoidance_y = msg.data[2]
+        self.obstacle_avoidance_z = msg.data[3]
 
     def main(self, args=None):
 
         rclpy.init(args=args)
         node = Node('pixhawk_node')
         
-        logger_publisher = node.create_publisher(Float64MultiArray, 'pixhawk_logger_topic', 1)
-        controller_publisher = node.create_publisher(Float64MultiArray, 'pixhawk_controller_topic', 1)
+        logger_publisher = node.create_publisher(String, 'pixhawk_logger_topic', 1)
 
         controller_subscriber = node.create_subscription(Float64MultiArray, 'pixhawk_commands_topic', pixhawk_commands_callback, 1)
 
@@ -48,29 +50,37 @@ class PixhawkNode():
 
         last_time = time.time()
         
-        last_error = None
+        previously_guided = False
 
         while rclpy.ok():                
             
-            coordinate, msg = pixhawk.get_current_latlon()
-            
-            if coordinate:
+            if self.obstacle_detected and time.time() - last_time > 1.0:
+                pixhawk.set_guided_mode()
 
-                gps_info = pixhawk.get_gps_info()
-                if 
+                pixhawk.move_to_relative_position(
+                    self.obstacle_avoidance_x,
+                    self.obstacle_avoidance_y,
+                    self.obstacle_avoidance_z
+                )
+                previously_guided = True
+                MODE = "GUIDED"
+                last_time = time.time()
+            elif previously_guided:
+                pixhawk.set_auto_mode()
+                previously_guided = False
+                MODE = "AUTO"
+            else:
+                MODE = "AUTO"
 
-                msg = Float64MultiArray()
-                msg.data = coordinate
+            msg = String()
+            msg.data = MODE
+            logger_publisher.publish(msg)
             
-            # rate.sleep()
-            # print("HERE")
             self.stdscr.refresh()
-            self.stdscr.addstr(1, 5, 'CENTRAL NODE')
+            self.stdscr.addstr(1, 5, 'PIXHAWK NODE')
 
-            self.stdscr.addstr(3, 5, 'Mode: %s         ' % str(MODE))
-            self.stdscr.addstr(4, 5, 'Condition: %s      ' % condition)
-            self.stdscr.addstr(5, 5, 'Wait: %s      ' % str(wait))
-            self.stdscr.addstr(6, 5, 'Time: %s      ' % str(time.time() - last_time))
+            self.stdscr.addstr(3, 5, 'Obstacle Detected: %s         ' % str(self.obstacle_detected))
+            self.stdscr.addstr(4, 5, 'Mode: %s      ' % MODE)
 
         rclpy.spin(node)
         rclpy.shutdown()
