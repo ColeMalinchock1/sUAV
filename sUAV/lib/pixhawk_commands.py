@@ -140,7 +140,7 @@ class PixhawkCommands:
 
     def move_to_relative_position(self, x_offset, y_offset, z_offset, velocity=1):
         """
-        Move vehicle relative to current position.
+        Move vehicle relative to its current body frame orientation.
         
         Args:
             x_offset (float): Forward(+)/backward(-) distance in meters
@@ -151,15 +151,6 @@ class PixhawkCommands:
         Returns:
             tuple: (bool success, error string or None)
         """
-        current_pos, error = self.get_relative_position()
-        if current_pos is None:
-            return False, error
-        
-        # Calculate target position
-        target_x = current_pos['x'] + x_offset
-        target_y = current_pos['y'] + y_offset
-        target_z = current_pos['z'] + z_offset
-        
         # Send movement command
         # Bitmask: enable position control only
         type_mask = 0b110111111000  
@@ -167,14 +158,16 @@ class PixhawkCommands:
             0,  # timestamp (0 for immediate)
             self.pixhawk.target_system,
             self.pixhawk.target_component,
-            mavutil.mavlink.MAV_FRAME_LOCAL_NED,
+            mavutil.mavlink.MAV_FRAME_BODY_OFFSET_NED,  # Changed to body frame
             type_mask,
-            target_x, target_y, -target_z,  # NED frame
+            x_offset,  # Forward/back
+            -y_offset,  # Left/right (negative because NED frame)
+            -z_offset,  # Up/down (negative because NED frame)
             0, 0, 0,  # velocity
             0, 0, 0,  # acceleration
             0, 0      # yaw, yaw_rate
         )
-
+    
         return True, None
 
     def get_current_xy(self, timeout=10):
