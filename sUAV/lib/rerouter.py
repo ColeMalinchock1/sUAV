@@ -5,7 +5,7 @@ MAX_THRESHOLD = 1
 STOP_COMMAND = "STOP"
 VEHICLE_SIZE = 5
 
-class Rerouter():
+class Rerouter:
 
     def __init__(self):
         self.scan = self.y_distances = None

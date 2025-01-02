@@ -27,7 +27,7 @@ class ObstacleDetectorNode():
         self.stdscr = curses.initscr()
         self.scan_array = self.y_array = None
         self.last_scan_time = time.time()
-        self.rerouter = Rerouter
+        self.rerouter = Rerouter()
         self.main()
 
     def scan_2d_callback(self, msg):
@@ -63,25 +63,28 @@ class ObstacleDetectorNode():
 
         while rclpy.ok():
 
-            obstacle_message = [0, 0, 0, 0]
+            obstacle_message = [0.0, 0.0, 0.0, 0.0]
 
             # Checks if the scan has been received
             # Else return that scan is not received
-            if time.time() - self.last_scan_time < TIMEOUT:
+            if time.time() - self.last_scan_time < TIMEOUT and self.scan_array is not None:
 
                 # Sets received as true
                 receiving_scan = True
                 
                 # Loops through the scan_array
-                for i in range(self.scan_array.size - offset * 2):
+                for i in range(self.scan_array.size):
                     
                     # Checks if any of the values are less than the threshold
-                    if self.scan_array[i + offset] < THRESHOLD:
+                    if self.scan_array[i] < THRESHOLD:
                         theta = self.rerouter.obstacle_detected(self.scan_array, self.y_array)
+                        
                         if theta == "STOP":
-                            obstacle_message = [2, 0, 0, 0]
+                            obstacle_message = [2.0, 0.0, 0.0, 0.0]
                         else:
-                            obstacle_message = [1, math.sin(math.radians(theta)), math.cos(math.radians(theta)), 0.0]
+                            obstacle_message = [1.0, math.sin(math.radians(theta)), math.cos(math.radians(theta)), 0.0]
+                        
+                        break
 
             else:
                 receiving_scan = False

@@ -26,10 +26,18 @@ class DataRecorderNode():
         self.stdscr = curses.initscr()
         self.main()
 
-    def pixhawk_callback(self, msg):
+    def pixhawk_mode_callback(self, msg):
         self.receiving_pixhawk = True
 
         self.mode = msg.data
+
+    def pixhawk_command_callback(self, msg):
+        self.receiving_obstacle_avoidance = True
+
+        self.obstacle_detected = msg.data[0]
+        self.obstacle_avoidance_x = msg.data[1]
+        self.obstacle_avoidance_y = msg.data[2]
+        self.obstacle_avoidance_z = msg.data[3]
 
     def log_data(self, data):
         """Logs the data from this node to be saved and analyzed after collecting the data"""
@@ -37,7 +45,11 @@ class DataRecorderNode():
         # Saves the data as a dictionary
         saved_data = {
             FIELD_NAMES[0]: data[0],
-            FIELD_NAMES[1]: data[1]
+            FIELD_NAMES[1]: data[1],
+            FIELD_NAMES[2]: data[2],
+            FIELD_NAMES[3]: data[3],
+            FIELD_NAMES[4]: data[4],
+            FIELD_NAMES[5]: data[5]
         }
 
         # Checks if the file exists already
@@ -63,7 +75,8 @@ class DataRecorderNode():
 
         rclpy.init(args=args)
         node = Node('data_logger_node')
-        pixhawk_subscription = node.create_subscription(String, 'pixhawk_logger_topic', pixhawk_callback, 1)
+        pixhawk_subscription = node.create_subscription(String, 'pixhawk_logger_topic', self.pixhawk_mode_callback, 1)
+        obstacle_subscription = node.create_subscription(Float64MultiArray, 'pixhawk_command_topic', self.pixhawk_command_callback, 1)
 
         FREQ = 20
         rate = node.create_rate(FREQ, node.get_clock())
@@ -73,7 +86,7 @@ class DataRecorderNode():
             if self.receiving_pixhawk:
                 timestamp = time.time()
 
-                data = [timestamp, self.mode]
+                data = [timestamp, self.mode, self.obstacle_detected, self.obstacle_avoidance_x, self.obstacle_avoidance_y, self.obstacle_avoidance_z]
 
                 self.log_data(data)
 
@@ -81,6 +94,7 @@ class DataRecorderNode():
             self.stdscr.addstr(1, 5, 'DATA LOGGER NODE')
 
             self.stdscr.addstr(3, 5, 'Receiving Pixhawk: %s         ' % str(self.receiving_pixhawk))
+            self.stdscr.addstr(3, 5, 'Receiving Obstacle Avoidance: %s         ' % str(self.receiving_obstacle_avoidance))
             self.stdscr.addstr(4, 5, 'Saving Data: %s         ' % str(self.saving_data))
             
             rate.sleep()
