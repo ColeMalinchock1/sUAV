@@ -18,7 +18,7 @@ import math
 from lib.rerouter import Rerouter
 import time
 
-THRESHOLD = 0.5 # meters
+THRESHOLD = 1.0 # meters
 TIMEOUT = 3.0
 
 class ObstacleDetectorNode():
@@ -52,7 +52,7 @@ class ObstacleDetectorNode():
         rclpy.init(args=args)
         node = Node("object_avoidance_node")
         scan_subscription = node.create_subscription(PointCloud2, '/scan_2D', self.scan_2d_callback, 5)
-        scan_publisher = node.create_publisher(Float64MultiArray, 'pixhawk_commands_topic', 1)
+        scan_publisher = node.create_publisher(Float64MultiArray, '/pixhawk_commands_topic', 1)
 
         thread = threading.Thread(target=rclpy.spin, args=(node, ), daemon=True)
         thread.start()

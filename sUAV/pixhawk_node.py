@@ -20,6 +20,7 @@ from lib.pixhawk_commands import PixhawkCommands as commands
 # Other libraries
 import curses
 import time
+import threading
 
 class PixhawkNode():
     def __init__(self):
@@ -41,7 +42,10 @@ class PixhawkNode():
         
         logger_publisher = node.create_publisher(String, 'pixhawk_logger_topic', 1)
 
-        controller_subscriber = node.create_subscription(Float64MultiArray, 'pixhawk_commands_topic', self.pixhawk_commands_callback, 1)
+        controller_subscriber = node.create_subscription(Float64MultiArray, '/pixhawk_commands_topic', self.pixhawk_commands_callback, 1)
+
+        thread = threading.Thread(target=rclpy.spin, args=(node, ), daemon=True)
+        thread.start()
 
         FREQ = 20
         rate = node.create_rate(FREQ, node.get_clock())

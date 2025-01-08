@@ -4,6 +4,7 @@ from rclpy.node import Node
 from std_msgs.msg import Float64MultiArray, String
 from geometry_msgs.msg import PoseStamped
 from sensor_msgs.msg import Image
+import threading
 
 from cv_bridge import CvBridge
 import cv2 as cv
@@ -14,14 +15,14 @@ import csv
 import time
 import curses
 
-FIELD_NAMES = ["TIME", "MODE"]
+FIELD_NAMES = ["TIME", "MODE", "Obstacle Detected", "X Offset", "Y Offset", "Z Offset"]
 FILE = "/home/emrl-3172/ros2_ws/src/sUAV/log/data_log.csv"
 IMAGE_DIR = "/home/emrl-3172/ros2_ws/src/sUAV/log/images/"
 
 class DataRecorderNode():
 
     def __init__(self):
-        self.receiving_pixhawk = self.saving_data = False
+        self.receiving_pixhawk = self.saving_data = self.receiving_obstacle_avoidance = False
         self.mode = None
         self.stdscr = curses.initscr()
         self.main()
@@ -76,14 +77,20 @@ class DataRecorderNode():
         rclpy.init(args=args)
         node = Node('data_logger_node')
         pixhawk_subscription = node.create_subscription(String, 'pixhawk_logger_topic', self.pixhawk_mode_callback, 1)
-        obstacle_subscription = node.create_subscription(Float64MultiArray, 'pixhawk_command_topic', self.pixhawk_command_callback, 1)
+        obstacle_subscription = node.create_subscription(Float64MultiArray, '/pixhawk_commands_topic', self.pixhawk_command_callback, 1)
+
+        thread = threading.Thread(target=rclpy.spin, args=(node, ), daemon=True)
+        thread.start()
 
         FREQ = 20
         rate = node.create_rate(FREQ, node.get_clock())
 
         while rclpy.ok():
 
-            if self.receiving_pixhawk:
+            if self.receiving_pixhawk and self.receiving_obstacle_avoidance:
+                
+                self.saving_data = True
+
                 timestamp = time.time()
 
                 data = [timestamp, self.mode, self.obstacle_detected, self.obstacle_avoidance_x, self.obstacle_avoidance_y, self.obstacle_avoidance_z]
@@ -94,10 +101,10 @@ class DataRecorderNode():
             self.stdscr.addstr(1, 5, 'DATA LOGGER NODE')
 
             self.stdscr.addstr(3, 5, 'Receiving Pixhawk: %s         ' % str(self.receiving_pixhawk))
-            self.stdscr.addstr(3, 5, 'Receiving Obstacle Avoidance: %s         ' % str(self.receiving_obstacle_avoidance))
-            self.stdscr.addstr(4, 5, 'Saving Data: %s         ' % str(self.saving_data))
+            self.stdscr.addstr(4, 5, 'Receiving Obstacle Avoidance: %s         ' % str(self.receiving_obstacle_avoidance))
+            self.stdscr.addstr(5, 5, 'Saving Data: %s         ' % str(self.saving_data))
             
-            rate.sleep()
+            # rate.sleep()
 
         rclpy.spin(node)
         rclpy.shutdown()
