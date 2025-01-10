@@ -138,6 +138,120 @@ class PixhawkCommands:
             0, 0, 0, 0, 0, 0  # parameters (unused)
         )
 
+    def get_mode(self, timeout=3):
+        """
+        Get the current flight mode of the vehicle.
+        
+        Args:
+            timeout (int): Maximum time to wait for mode data in seconds
+            
+        Returns:
+            tuple: (str mode_name, error string or None)
+                mode_name will be one of:
+                - 'STABILIZE'
+                - 'GUIDED'
+                - 'AUTO'
+                - 'RTL'
+                - 'LAND'
+                - etc.
+        """
+        msg = self.pixhawk.recv_match(type='HEARTBEAT', blocking=True, timeout=timeout)
+        if msg is None:
+            return None, "Failed to receive HEARTBEAT message"
+        
+        # Get the custom mode from heartbeat
+        custom_mode = msg.custom_mode
+        
+        # Map of mode numbers to names for ArduPilot/PX4
+        mode_mapping = {
+            0: 'STABILIZE',
+            4: 'GUIDED',
+            3: 'AUTO',
+            6: 'RTL',
+            9: 'LAND',
+            1: 'ACRO',
+            2: 'ALT_HOLD',
+            5: 'LOITER',
+            7: 'CIRCLE',
+            11: 'DRIFT',
+            13: 'SPORT',
+            14: 'FLIP',
+            15: 'AUTOTUNE',
+            16: 'POSHOLD',
+            17: 'BRAKE',
+            18: 'THROW',
+            19: 'AVOID_ADSB',
+            20: 'GUIDED_NOGPS',
+            21: 'SMART_RTL',
+        }
+        
+        mode_name = mode_mapping.get(custom_mode, f'UNKNOWN MODE ({custom_mode})')
+        return mode_name, None
+    
+
+    def store_current_mode(self):
+        """
+        Store the current flight mode for later restoration.
+        
+        Returns:
+            tuple: (bool success, error string or None)
+        """
+        mode, error = self.get_mode()
+        if mode is None:
+            return False, error
+            
+        self.stored_mode = mode
+        return True, None
+
+    def restore_mode(self):
+        """
+        Restore the previously stored flight mode.
+        
+        Returns:
+            tuple: (bool success, error string or None)
+        """
+        if self.stored_mode is None:
+            return False, "No stored mode available"
+            
+        # Map of mode names to their MAVLink mode values
+        mode_mapping = {
+            'STABILIZE': 0,
+            'GUIDED': 4,
+            'AUTO': 3,
+            'RTL': 6,
+            'LAND': 9,
+            'ACRO': 1,
+            'ALT_HOLD': 2,
+            'LOITER': 5,
+            'CIRCLE': 7,
+            'DRIFT': 11,
+            'SPORT': 13,
+            'FLIP': 14,
+            'AUTOTUNE': 15,
+            'POSHOLD': 16,
+            'BRAKE': 17,
+            'THROW': 18,
+            'AVOID_ADSB': 19,
+            'GUIDED_NOGPS': 20,
+            'SMART_RTL': 21
+        }
+        
+        if self.stored_mode not in mode_mapping:
+            return False, f"Unknown mode: {self.stored_mode}"
+            
+        # Set the mode
+        self.pixhawk.mav.command_long_send(
+            self.pixhawk.target_system,
+            self.pixhawk.target_component,
+            mavutil.mavlink.MAV_CMD_DO_SET_MODE,
+            0,  # confirmation
+            mavutil.mavlink.MAV_MODE_FLAG_CUSTOM_MODE_ENABLED,
+            mode_mapping[self.stored_mode],
+            0, 0, 0, 0, 0  # parameters (unused)
+        )
+        
+        return True, None
+
     def move_to_relative_position(self, x_offset, y_offset, z_offset, velocity=1):
         """
         Move vehicle relative to its current body frame orientation.

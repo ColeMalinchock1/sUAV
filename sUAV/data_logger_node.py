@@ -15,15 +15,15 @@ import csv
 import time
 import curses
 
-FIELD_NAMES = ["TIME", "MODE", "Obstacle Detected", "X Offset", "Y Offset", "Z Offset"]
+FIELD_NAMES = ["TIME", "MODE", "Obstacle Detected", "X Offset", "Y Offset", "Z Offset", "Mode", "Direction"]
 FILE = "/home/emrl-3172/ros2_ws/src/sUAV/log/data_log.csv"
 IMAGE_DIR = "/home/emrl-3172/ros2_ws/src/sUAV/log/images/"
 
 class DataRecorderNode():
 
     def __init__(self):
-        self.receiving_pixhawk = self.saving_data = self.receiving_obstacle_avoidance = False
-        self.mode = None
+        self.receiving_pixhawk = self.saving_data = self.receiving_obstacle_avoidance = self.receiving_controller = False
+        self.mode = self.controller_direction = self.controller_mode = None
         self.stdscr = curses.initscr()
         self.main()
 
@@ -32,13 +32,21 @@ class DataRecorderNode():
 
         self.mode = msg.data
 
-    def pixhawk_command_callback(self, msg):
+    def vector_callback(self, msg):
         self.receiving_obstacle_avoidance = True
 
         self.obstacle_detected = msg.data[0]
         self.obstacle_avoidance_x = msg.data[1]
         self.obstacle_avoidance_y = msg.data[2]
         self.obstacle_avoidance_z = msg.data[3]
+
+    def controller_mode_callback(self, msg):
+        self.controller_mode = msg.data
+        self.receiving_controller = True
+
+    def controller_direction_callback(self, msg):
+        self.controller_direction = msg.data
+        self.receiving_controller = True
 
     def log_data(self, data):
         """Logs the data from this node to be saved and analyzed after collecting the data"""
@@ -50,7 +58,9 @@ class DataRecorderNode():
             FIELD_NAMES[2]: data[2],
             FIELD_NAMES[3]: data[3],
             FIELD_NAMES[4]: data[4],
-            FIELD_NAMES[5]: data[5]
+            FIELD_NAMES[5]: data[5],
+            FIELD_NAMES[6]: data[6],
+            FIELD_NAMES[7]: data[7]
         }
 
         # Checks if the file exists already
@@ -76,8 +86,10 @@ class DataRecorderNode():
 
         rclpy.init(args=args)
         node = Node('data_logger_node')
-        pixhawk_subscription = node.create_subscription(String, 'pixhawk_logger_topic', self.pixhawk_mode_callback, 1)
-        obstacle_subscription = node.create_subscription(Float64MultiArray, '/pixhawk_commands_topic', self.pixhawk_command_callback, 1)
+        pixhawk_subscription = node.create_subscription(String, '/pixhawk/logger', self.pixhawk_mode_callback, 1)
+        obstacle_subscription = node.create_subscription(Float64MultiArray, '/obstacle_avoidance/vector', self.vector_callback, 1)
+        mode_subscription = node.create_subscription(String, '/controller/mode', self.controller_mode_callback, 1)
+        direction_subscription = node.create_subscription(String, '/controller/direction', self.controller_direction_callback, 1)
 
         thread = threading.Thread(target=rclpy.spin, args=(node, ), daemon=True)
         thread.start()
@@ -86,8 +98,10 @@ class DataRecorderNode():
         rate = node.create_rate(FREQ, node.get_clock())
 
         while rclpy.ok():
+            
+            
 
-            if self.receiving_pixhawk and self.receiving_obstacle_avoidance:
+            if self.receiving_pixhawk and self.receiving_obstacle_avoidance and self.receiving_controller:
                 
                 self.saving_data = True
 
@@ -97,11 +111,14 @@ class DataRecorderNode():
 
                 self.log_data(data)
 
+                
+
             self.stdscr.refresh()
             self.stdscr.addstr(1, 5, 'DATA LOGGER NODE')
 
-            self.stdscr.addstr(3, 5, 'Receiving Pixhawk: %s         ' % str(self.receiving_pixhawk))
+            self.stdscr.addstr(3, 5, 'Receiving Pixhawk: %s                    ' % str(self.receiving_pixhawk))
             self.stdscr.addstr(4, 5, 'Receiving Obstacle Avoidance: %s         ' % str(self.receiving_obstacle_avoidance))
+            self.stdscr.addstr(5, 5, 'Receiving Controller: %s                 ' % str(self.receiving_controller))
             self.stdscr.addstr(5, 5, 'Saving Data: %s         ' % str(self.saving_data))
             
             # rate.sleep()
