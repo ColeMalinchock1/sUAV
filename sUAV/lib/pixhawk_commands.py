@@ -115,17 +115,6 @@ class PixhawkCommands:
         }
 
         return position, None
-    
-    def set_guided_mode(self):
-        """Switch vehicle to GUIDED mode for manual control."""
-        self.pixhawk.mav.command_long_send(
-            self.pixhawk.target_system,
-            self.pixhawk.target_component,
-            mavutil.mavlink.MAV_CMD_DO_SET_MODE,
-            0,  # confirmation
-            mavutil.mavlink.MAV_MODE_GUIDED_ARMED,  # GUIDED mode
-            0, 0, 0, 0, 0, 0  # parameters (unused)
-        )
 
     def set_auto_mode(self):
         """Switch vehicle back to AUTO mode for mission execution."""
@@ -252,37 +241,131 @@ class PixhawkCommands:
         
         return True, None
 
-    def move_to_relative_position(self, x_offset, y_offset, z_offset, velocity=1):
+    def set_guided_mode(self):
         """
-        Move vehicle relative to its current body frame orientation.
+        Switch vehicle to GUIDED mode for manual control with verification.
+        
+        Returns:
+            tuple: (bool success, error string or None)
+        """
+        # Store current mode to compare after change
+        initial_mode, _ = self.get_mode()
+        
+        # Send guided mode command
+        self.pixhawk.mav.command_long_send(
+            self.pixhawk.target_system,
+            self.pixhawk.target_component,
+            mavutil.mavlink.MAV_CMD_DO_SET_MODE,
+            0,
+            mavutil.mavlink.MAV_MODE_GUIDED_ARMED,
+            0, 0, 0, 0, 0, 0
+        )
+        
+        # Wait for mode change confirmation (up to 5 seconds)
+        start_time = time.time()
+        while time.time() - start_time < 5:
+            current_mode, error = self.get_mode()
+            if error:
+                return False, f"Error checking mode: {error}"
+            
+            if current_mode == 'GUIDED':
+                return True, None
+                
+            time.sleep(0.1)
+        
+        return False, f"Failed to switch to GUIDED mode. Still in {current_mode}"
+
+    def move_to_relative_position(self, x_offset, y_offset, z_offset, velocity=1, timeout=10):
+        """
+        Move vehicle relative to its current body frame orientation with verification.
         
         Args:
             x_offset (float): Forward(+)/backward(-) distance in meters
             y_offset (float): Right(+)/left(-) distance in meters
             z_offset (float): Up(+)/down(-) distance in meters
             velocity (float): Desired velocity in m/s
+            timeout (float): Maximum time to wait for movement completion
             
         Returns:
             tuple: (bool success, error string or None)
         """
+        # First verify we're in GUIDED mode
+        current_mode, error = self.get_mode()
+        if error:
+            return False, f"Error checking mode: {error}"
+            
+        if current_mode != 'GUIDED':
+            return False, "Vehicle not in GUIDED mode"
+        
+        # Get initial position
+        initial_pos, error = self.get_relative_position()
+        if error:
+            return False, f"Error getting initial position: {error}"
+        
         # Send movement command
-        # Bitmask: enable position control only
-        type_mask = 0b110111111000  
+        type_mask = 0b110111111000  # enable position control only
         self.pixhawk.mav.set_position_target_local_ned_send(
-            0,  # timestamp (0 for immediate)
+            0,
             self.pixhawk.target_system,
             self.pixhawk.target_component,
-            mavutil.mavlink.MAV_FRAME_BODY_OFFSET_NED,  # Changed to body frame
+            mavutil.mavlink.MAV_FRAME_BODY_OFFSET_NED,
             type_mask,
-            x_offset,  # Forward/back
-            -y_offset,  # Left/right (negative because NED frame)
-            -z_offset,  # Up/down (negative because NED frame)
+            x_offset,
+            -y_offset,
+            -z_offset,
             0, 0, 0,  # velocity
             0, 0, 0,  # acceleration
             0, 0      # yaw, yaw_rate
         )
-    
-        return True, None
+        
+        # Monitor position change
+        start_time = time.time()
+        while time.time() - start_time < timeout:
+            current_pos, error = self.get_relative_position()
+            if error:
+                return False, f"Error getting current position: {error}"
+                
+            # Calculate distance to target
+            dx = abs(current_pos['x'] - (initial_pos['x'] + x_offset))
+            dy = abs(current_pos['y'] - (initial_pos['y'] + y_offset))
+            dz = abs(current_pos['z'] - (initial_pos['z'] + z_offset))
+            
+            # Check if we're close enough to target (within 0.5m)
+            if dx < 0.5 and dy < 0.5 and dz < 0.5:
+                return True, None
+                
+            time.sleep(0.1)
+        
+        return False, "Movement timeout - target position not reached"
+
+    def verify_command_ack(self, command_id, timeout=3):
+        """
+        Wait for and verify a command acknowledgment from the Pixhawk.
+        
+        Args:
+            command_id: MAVLink command ID to verify
+            timeout: Maximum time to wait for acknowledgment
+            
+        Returns:
+            tuple: (bool success, error string or None)
+        """
+        start_time = time.time()
+        while time.time() - start_time < timeout:
+            msg = self.pixhawk.recv_match(type='COMMAND_ACK', blocking=True, timeout=1)
+            if msg is not None:
+                if msg.command == command_id:
+                    if msg.result == mavutil.mavlink.MAV_RESULT_ACCEPTED:
+                        return True, None
+                    else:
+                        result_codes = {
+                            mavutil.mavlink.MAV_RESULT_FAILED: "Command failed",
+                            mavutil.mavlink.MAV_RESULT_TEMPORARILY_REJECTED: "Command temporarily rejected",
+                            mavutil.mavlink.MAV_RESULT_UNSUPPORTED: "Command unsupported",
+                            mavutil.mavlink.MAV_RESULT_DENIED: "Command denied"
+                        }
+                        return False, f"Command not accepted: {result_codes.get(msg.result, 'Unknown error')}"
+                        
+        return False, "Command acknowledgment timeout"
 
     def get_current_xy(self, timeout=10):
         """
