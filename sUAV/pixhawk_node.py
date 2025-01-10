@@ -50,6 +50,7 @@ class PixhawkNode():
         node = Node('pixhawk_node')
         
         logger_publisher = node.create_publisher(String, '/pixhawk/logger', 1)
+        latlon_publisher = node.create_publisher(Float64MultiArray, '/pixhawk/gps', 1)
 
         obstacle_subscriber = node.create_subscription(Float64MultiArray, '/obstacle_avoidance/vector', self.obstacle_detector_callback, 1)
         controller_mode_subscriber = node.create_subscription(String, '/controller/mode', self.controller_mode_callback, 1)
@@ -114,6 +115,13 @@ class PixhawkNode():
             msg = String()
             msg.data = MODE
             logger_publisher.publish(msg)
+
+            coordinate = pixhawk.get_current_latlon()
+            
+            if coordinate is not None:
+                msg = Float64MultiArray()
+                msg.data = coordinate
+                latlon_publisher.publish(msg)
             
             self.stdscr.refresh()
             self.stdscr.addstr(1, 5, 'PIXHAWK NODE')

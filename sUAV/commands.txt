@@ -1,6 +1,5 @@
 ros2 launch zed_wrapper zed_camera.launch.py camera_model:=zed2i
 ros2 launch cyglidar_d1_ros2 cyglidar.launch.py
-ros2 launch joy
 python pixhawk_node.py
 python data_logger_node.py
 python obstacle_avoidance_node.py
