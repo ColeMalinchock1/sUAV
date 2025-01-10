@@ -42,6 +42,8 @@ class KeyboardControllerNode():
                     self.direction = "Forward"
                 elif key == curses.KEY_DOWN:
                     self.direction = "Backward"
+                elif key == ord('o'):
+                    self.direction = "Hold"
                 
                 # Reset direction when key is released
                 else:

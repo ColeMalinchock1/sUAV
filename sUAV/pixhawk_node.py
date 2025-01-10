@@ -63,54 +63,60 @@ class PixhawkNode():
         
         previously_guided = False
 
+        self.last_time = time.time()
+
+        MODE = "None"
+
         while rclpy.ok():                
             
-            if self.controller_mode == "Auto":
-                if MODE == "None":
-                    pixhawk.store_current_mode()
-                    self.adjusted_mode = True
-                
-                if self.obstacle_detected == 2.0:
-                    pixhawk.set_guided_mode()
-                    MODE = "STOPPED"
-                    previously_guided = True
-                elif self.obstacle_detected == 1.0:
-                    pixhawk.set_guided_mode()
+            if time.time() - self.last_time > 2:
+                self.last_time = time.time()    
+                if self.controller_mode == "Auto":
+                    if MODE == "None":
+                        pixhawk.store_current_mode()
+                        self.adjusted_mode = True
+                    
+                    if self.obstacle_detected == 2.0:
+                        pixhawk.set_guided_mode()
+                        MODE = "STOPPED"
+                        previously_guided = True
+                    elif self.obstacle_detected == 1.0:
+                        pixhawk.set_guided_mode()
 
-                    pixhawk.move_to_relative_position(
-                        self.obstacle_avoidance_x,
-                        self.obstacle_avoidance_y,
-                        self.obstacle_avoidance_z
-                    )
-                    previously_guided = True
+                        pixhawk.move_to_relative_position(
+                            self.obstacle_avoidance_x,
+                            self.obstacle_avoidance_y,
+                            self.obstacle_avoidance_z
+                        )
+                        previously_guided = True
+                        MODE = "GUIDED"
+                    elif previously_guided:
+                        pixhawk.set_auto_mode()
+                        previously_guided = False
+                        MODE = "AUTO"
+                    else:
+                        MODE = "AUTO"
+
+                elif self.controller_mode == "GUIDED":
+                    if MODE == "None":
+                        pixhawk.store_current_mode()
+                        self.adjusted_mode = True
+                    pixhawk.set_guided_mode()
                     MODE = "GUIDED"
-                elif previously_guided:
-                    pixhawk.set_auto_mode()
-                    previously_guided = False
-                    MODE = "AUTO"
+                    if self.controller_direction == "Left":
+                        pixhawk.move_to_relative_position(0, -1, 0)
+                    elif self.controller_direction == "Right":
+                        pixhawk.move_to_relative_position(0, 1, 0)
+                    elif self.controller_direction == "Forward":
+                        pixhawk.move_to_relative_position(1, 0, 0)
+                    elif self.controller_direction == "Backward":
+                        pixhawk.move_to_relative_position(-1, 0, 0)
+                    
                 else:
-                    MODE = "AUTO"
-
-            elif self.controller_mode == "GUIDED":
-                if MODE == "None":
-                    pixhawk.store_current_mode()
-                    self.adjusted_mode = True
-                pixhawk.set_guided_mode()
-                MODE = "GUIDED"
-                if self.controller_direction == "Left":
-                    pixhawk.move_to_relative_position(0, -1, 0)
-                elif self.controller_direction == "Right":
-                    pixhawk.move_to_relative_position(0, 1, 0)
-                elif self.controller_direction == "Forward":
-                    pixhawk.move_to_relative_position(1, 0, 0)
-                elif self.controller_direction == "Backward":
-                    pixhawk.move_to_relative_position(-1, 0, 0)
-                
-            else:
-                if self.adjusted_mode:
-                    pixhawk.restore_mode()
-                    self.adjusted_mode = False
-                MODE = "None"
+                    if self.adjusted_mode:
+                        pixhawk.restore_mode()
+                        self.adjusted_mode = False
+                    MODE = "None"
 
             msg = String()
             msg.data = MODE
@@ -120,7 +126,7 @@ class PixhawkNode():
             
             if coordinate is not None:
                 msg = Float64MultiArray()
-                msg.data = coordinate
+                msg.data = coordinate[0]
                 latlon_publisher.publish(msg)
             
             self.stdscr.refresh()
