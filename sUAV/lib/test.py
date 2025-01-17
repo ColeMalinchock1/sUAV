@@ -1,82 +1,93 @@
 from dronekit import connect, VehicleMode
 from pymavlink import mavutil
 import time
-import threading
+import logging
+
+# Set up logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Connect to the vehicle
-print("Connecting to vehicle...")
+logger.info("Connecting to vehicle...")
 vehicle = connect('/dev/ttyTHS1', baud=57600, wait_ready=True)
 
 # Global variables
-mission_count = 0
-last_update_time = 0
-UPDATE_INTERVAL = 2  # Minimum seconds between updates
 in_auto_mode = False  # Track if we're in AUTO mode
+last_mode_switch_time = 0  # Track last mode switch time
+MODE_SWITCH_COOLDOWN = 1.0  # Cooldown period between mode switches (seconds)
+CHANNEL_THRESHOLD = 1500  # RC channel threshold for mode switching
 
-def update_mission_count():
-    """Update mission count in a separate thread"""
-    global mission_count, last_update_time
+def switch_mode(target_mode):
+    """
+    Switch vehicle mode with additional checks and verification
+    Returns True if mode switch was successful
+    """
+    global in_auto_mode, last_mode_switch_time
     
     current_time = time.time()
-    # Only update if enough time has passed since last update
-    if current_time - last_update_time > UPDATE_INTERVAL:
-        try:
-            cmds = vehicle.commands
-            cmds.download()
-            cmds.wait_ready()
-            mission_count = cmds.count
-            last_update_time = current_time
-            print(f"Updated mission count: {mission_count} waypoints")
-        except Exception as e:
-            print(f"Failed to update mission count: {e}")
-
-def check_mission_available():
-    """Check if there are any mission waypoints loaded"""
-    # Start update in separate thread
-    update_thread = threading.Thread(target=update_mission_count)
-    update_thread.daemon = True
-    update_thread.start()
-    return mission_count > 0
+    
+    # Check if enough time has passed since last mode switch
+    if current_time - last_mode_switch_time < MODE_SWITCH_COOLDOWN:
+        logger.debug("Mode switch cooldown in effect")
+        return False
+        
+    # Only attempt mode switch if armed
+    if not vehicle.armed:
+        logger.warning("Vehicle not armed - mode switch blocked")
+        return False
+    
+    try:
+        # Set the mode
+        vehicle.mode = VehicleMode(target_mode)
+        
+        # Wait for mode change to take effect
+        start_time = time.time()
+        while vehicle.mode.name != target_mode:
+            if time.time() - start_time > 3:  # 3-second timeout
+                logger.error(f"Mode switch to {target_mode} timed out!")
+                return False
+            time.sleep(0.1)
+        
+        # Update tracking variables
+        in_auto_mode = (target_mode == "AUTO")
+        last_mode_switch_time = current_time
+        logger.info(f"Successfully switched to {target_mode} mode")
+        return True
+        
+    except Exception as e:
+        logger.error(f"Mode switch failed: {e}")
+        return False
 
 def switch_to_mission_mode():
-    """Switch vehicle to AUTO mode to start the mission"""
-    global in_auto_mode
-    vehicle.mode = VehicleMode("AUTO")
-    in_auto_mode = True
-    print("Switched to AUTO mode for mission execution")
+    """Switch vehicle to AUTO mode"""
+    return switch_mode("AUTO")
 
 def switch_to_manual_mode():
     """Switch vehicle back to STABILIZE mode"""
-    global in_auto_mode
-    vehicle.mode = VehicleMode("STABILIZE")
-    in_auto_mode = False
-    print("Switched back to STABILIZE mode - manual control")
+    return switch_mode("STABILIZE")
 
 try:
-    print("Monitoring RC channels...")
-    # Initial mission download
-    update_mission_count()
+    logger.info("Monitoring RC channels...")
     
     @vehicle.on_message('RC_CHANNELS')
     def rc_listener(self, name, message):
-        if message.chan12_raw > 1000:
-            print("Channel 12 pressed!")
+        # Check if channel 12 is above threshold
+        if message.chan12_raw > CHANNEL_THRESHOLD:
+            logger.info(f"Channel 12 activated: {message.chan12_raw}")
             
             if not in_auto_mode:
-                # Check if mission is available
-                if check_mission_available():
-                    print(f"Mission available with {mission_count} waypoints")
-                    switch_to_mission_mode()
-                else:
-                    print("No mission waypoints available!")
+                switch_to_mission_mode()
             else:
-                # If already in AUTO mode, switch back to manual
                 switch_to_manual_mode()
                 
+    # Main loop with heartbeat monitoring
     while True:
+        # Check if connection is still alive
+        if vehicle.last_heartbeat > 2:
+            logger.warning("Lost connection to vehicle!")
         time.sleep(0.1)
 
 except KeyboardInterrupt:
-    print("\nStopping...")
+    logger.info("\nStopping...")
 finally:
     vehicle.close()
