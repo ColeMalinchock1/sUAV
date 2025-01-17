@@ -166,6 +166,91 @@ class DroneController(Node):
             # Process scan data
             self._process_scan_data()
 
+    def _handle_stop_command(self):
+        """
+        Handle immediate stop command when obstacle is too close.
+        Switches to BRAKE mode and hovers in place.
+        """
+        try:
+            # Only proceed if we're in AUTO or GUIDED mode
+            if self.vehicle.mode.name in ['AUTO', 'GUIDED']:
+                # Switch to BRAKE mode for immediate stop
+                self.vehicle.mode = VehicleMode("BRAKE")
+                
+                # Log the emergency stop
+                self.get_logger().warn("Emergency stop initiated - Obstacle too close!")
+                
+                # Wait for vehicle to come to a complete stop
+                time.sleep(2)
+                
+                # Switch to LOITER mode to maintain position
+                self.vehicle.mode = VehicleMode("LOITER")
+                
+                # Reset path planning state
+                with self.path_lock:
+                    self.current_path = []
+                    self.avoiding_obstacle = False
+                
+                # Send zero velocity command to ensure stop
+                self._send_ned_velocity(0, 0, 0, 1)
+                
+        except Exception as e:
+            self.get_logger().error(f"Error during emergency stop: {str(e)}")
+            # Try to force stop even if there's an error
+            try:
+                self._send_ned_velocity(0, 0, 0, 1)
+            except:
+                pass
+
+    def _handle_steering(self, steer_angle):
+        """
+        Handle steering commands for obstacle avoidance.
+        
+        Args:
+            steer_angle (float): Angle to steer in degrees. Positive is right, negative is left.
+        """
+        try:
+            # Only handle steering if we're in AUTO or GUIDED mode
+            if self.vehicle.mode.name not in ['AUTO', 'GUIDED']:
+                return
+                
+            # Switch to GUIDED mode for temporary control
+            if self.vehicle.mode.name != 'GUIDED':
+                self.vehicle.mode = VehicleMode("GUIDED")
+                time.sleep(0.5)  # Allow mode switch to complete
+                
+            # Calculate velocity components based on steering angle
+            # Convert angle to radians
+            angle_rad = math.radians(steer_angle)
+            
+            # Current ground speed or default to 5 m/s if not available
+            current_speed = self.vehicle.groundspeed if self.vehicle.groundspeed > 0 else 5.0
+            
+            # Calculate North and East components
+            # Using current speed and steering angle to maintain consistent velocity
+            velocity_n = current_speed * math.cos(angle_rad)
+            velocity_e = current_speed * math.sin(angle_rad)
+            
+            # Maintain current altitude (zero vertical velocity)
+            velocity_d = 0.0
+            
+            # Send velocity command for a short duration
+            self._send_ned_velocity(velocity_n, velocity_e, velocity_d, 0.5)
+            
+            # Log the steering action
+            self.get_logger().info(
+                f"Steering adjustment: {steer_angle:.1f}° "
+                f"(N:{velocity_n:.1f} m/s, E:{velocity_e:.1f} m/s)"
+            )
+            
+        except Exception as e:
+            self.get_logger().error(f"Error during steering adjustment: {str(e)}")
+            # Try to maintain stable flight
+            try:
+                self.vehicle.mode = VehicleMode("LOITER")
+            except:
+                pass
+
     def _process_scan_data(self):
         """Process scan data for both immediate obstacle avoidance and path planning"""
         if time.time() - self.last_scan_time < 3.0 and self.scan_array is not None:
