@@ -10,7 +10,7 @@ import time
 import math
 import numpy as np
 
-MAX_THRESHOLD = 0.2 #meters
+MAX_THRESHOLD = 5.0 #meters
 current_position = current_orientation = current_waypoint = 0
 
 def quaternion_to_euler_angle_vectorized2(w, x, y, z):
