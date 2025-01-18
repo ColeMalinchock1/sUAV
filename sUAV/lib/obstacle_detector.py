@@ -3,13 +3,7 @@ import numpy as np
 from typing import List, Tuple, Optional
 import math
 
-@dataclass
-class Obstacle:
-    center: np.ndarray  # [x, y, z]
-    radius: float
-    confidence: float
-
-class EnhancedObstacleDetector:
+class ObstacleDetector:
     def __init__(self, 
                  min_points: int = 10,
                  cluster_threshold: float = 0.5,
