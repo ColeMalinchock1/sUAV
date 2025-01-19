@@ -253,7 +253,84 @@ def zed_3d_callback(msg):
     detecting_obstacles_zed = True
 
 def merge_obstacles(lidar, zed):
-    return zed
+    """
+    Merge obstacles detected by LiDAR and ZED sensors.
+    Args:
+        lidar: List of [distance, angle] pairs from LiDAR
+        zed: List of [distance, angle] pairs from ZED
+    Returns:
+        List of merged [distance, angle] pairs
+    """
+    if not lidar:
+        return zed
+    if not zed:
+        return lidar
+
+    merged = []
+    ANGLE_THRESHOLD = 10  # degrees
+    DISTANCE_THRESHOLD = 0.5  # meters
+    
+    # Track which obstacles have been matched
+    used_lidar = [False] * len(lidar)
+    used_zed = [False] * len(zed)
+    
+    # First pass: match corresponding obstacles
+    for i in range(0, len(lidar), 2):
+        lidar_left = lidar[i]
+        lidar_right = lidar[i + 1]
+        
+        best_match = None
+        best_match_idx = -1
+        min_diff = float('inf')
+        
+        # Find the best matching ZED obstacle
+        for j in range(0, len(zed), 2):
+            if used_zed[j]:
+                continue
+                
+            zed_left = zed[j]
+            zed_right = zed[j + 1]
+            
+            # Calculate average difference in angle and distance
+            angle_diff = abs(lidar_left[1] - zed_left[1]) + abs(lidar_right[1] - zed_right[1])
+            dist_diff = abs(lidar_left[0] - zed_left[0]) + abs(lidar_right[0] - zed_right[0])
+            
+            total_diff = angle_diff + dist_diff
+            
+            if (total_diff < min_diff and 
+                angle_diff < ANGLE_THRESHOLD and 
+                dist_diff < DISTANCE_THRESHOLD):
+                min_diff = total_diff
+                best_match = (zed_left, zed_right)
+                best_match_idx = j
+        
+        if best_match:
+            # Average the measurements
+            merged_left = [
+                (lidar_left[0] + best_match[0][0]) / 2,
+                (lidar_left[1] + best_match[0][1]) / 2
+            ]
+            merged_right = [
+                (lidar_right[0] + best_match[1][0]) / 2,
+                (lidar_right[1] + best_match[1][1]) / 2
+            ]
+            merged.extend([merged_left, merged_right])
+            
+            used_lidar[i] = used_lidar[i + 1] = True
+            used_zed[best_match_idx] = used_zed[best_match_idx + 1] = True
+    
+    # Second pass: add unmatched obstacles
+    # Add remaining LiDAR obstacles
+    for i in range(0, len(lidar), 2):
+        if not used_lidar[i]:
+            merged.extend([lidar[i], lidar[i + 1]])
+    
+    # Add remaining ZED obstacles
+    for i in range(0, len(zed), 2):
+        if not used_zed[i]:
+            merged.extend([zed[i], zed[i + 1]])
+    
+    return merged
 
 def main():
 
