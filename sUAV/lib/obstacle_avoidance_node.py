@@ -13,6 +13,7 @@ import numpy as np
 MAX_THRESHOLD = 2.0 #meters
 DRONE_WIDTH = 1.0 #meters
 RADIUS = 0.2 #meters
+ZED_OFFSET = 0.06 #meters
 current_position = None
 detecting_obstacles = False
 current_yaw = waypoint_idx = 0
@@ -164,11 +165,11 @@ def detect_obstacles(center_row1_points, center_row2_points):
 
 def lidar_3d_callback(msg):
         """Handle incoming lidar messages."""
-        global center_row1_points, center_row2_points, detecting_obstacles
+        global center_row1_points_lidar, center_row2_points_lidar, detecting_obstacles_lidar
 
         # Initialize arrays for the two center rows
-        center_row1_points = []
-        center_row2_points = []
+        center_row1_points_lidar = []
+        center_row2_points_lidar = []
         
         # Extract the height and width
         height = msg.height
@@ -190,13 +191,13 @@ def lidar_3d_callback(msg):
             if row == center_row1:
                 depth = np.sqrt(x**2 + y**2 + z**2)
                 angle = -math.degrees(np.arctan2(y, x))
-                center_row1_points.append((depth, angle))
+                center_row1_points_lidar.append((depth, angle))
             elif row == center_row2:
                 depth = np.sqrt(x**2 + y**2 + z**2)
                 angle = -math.degrees(np.arctan2(y, x))
-                center_row2_points.append((depth, angle))
+                center_row2_points_lidar.append((depth, angle))
 
-        detecting_obstacles = True
+        detecting_obstacles_lidar = True
 
 def normalize_yaw(input_yaw):
     if input_yaw > 0:
@@ -209,7 +210,47 @@ def normalize_yaw(input_yaw):
             return -(180 + input_yaw)
         else:
             return input_yaw
+
+def zed_3d_callback(msg):
+    """Handle incoming zed messages."""
+    global center_row1_points_zed, center_row2_points_zed, detecting_obstacles_zed
+
+    # Initialize arrays for the two center rows
+    center_row1_points_zed = []
+    center_row2_points_zed = []
+    
+    # Extract the height and width
+    height = msg.height
+    width = msg.width
+    
+    # Define center rows
+    center_row1 = height // 2
+    center_row2 = center_row1 + 1 if height > 1 else center_row1
+    
+
+    # Iterate through points with their indices
+    for idx, point in enumerate(pc2.read_points(msg, field_names=("x", "y", "z"), skip_nans=True)):
+        x, y, z = point
+
+        x += ZED_OFFSET
         
+        # Calculate row and column indices
+        row = idx // width
+        
+        # Process only points from the two center rows
+        if row == center_row1:
+            depth = np.sqrt(x**2 + y**2 + z**2)
+            angle = -math.degrees(np.arctan2(y, x))
+            center_row1_points_zed.append((depth, angle))
+        elif row == center_row2:
+            depth = np.sqrt(x**2 + y**2 + z**2)
+            angle = -math.degrees(np.arctan2(y, x))
+            center_row2_points_zed.append((depth, angle))
+
+    detecting_obstacles_zed = True
+
+def merge_obstacles(lidar, zed):
+    return zed
 
 def main():
 
@@ -217,8 +258,10 @@ def main():
 
     rclpy.init()
     node = rclpy.create_node('obstacle_avoidance_node')
-    node.create_subscription(PointCloud2, "/scan_3D", lidar_3d_callback, 10)
+
+    lidar_sub = node.create_subscription(PointCloud2, "/scan_3D", lidar_3d_callback, 10)
     node.create_subscription(PoseStamped, "/zed/zed_node/pose", zed_pose_callback, 10)
+    zed_sub = node.create_subscription(PointCloud2, "/zed/point_cloud/cloud_registered", zed_3d_callback, 10)
 
     yaw_pub = node.create_publisher(Float64, "/obstacle_avoidance/yaw", 10)
 
@@ -250,7 +293,11 @@ def main():
             yaw_error = math.degrees(math.atan(waypoint_vector[1]/waypoint_vector[0])) - current_yaw
             
             if (detecting_obstacles):
-                obstacles = detect_obstacles(center_row1_points, center_row2_points)
+                obstacles_lidar = detect_obstacles(center_row1_points_lidar, center_row2_points_lidar)
+                obstacles_zed = detect_obstacles(center_row1_points_zed, center_row2_points_zed)
+
+                obstacles = merge_obstacles(obstacles_lidar, obstacles_zed)
+
                 if len(obstacles) > 0:
                     
                     # Loop through all the obstacles
