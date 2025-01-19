@@ -15,7 +15,8 @@ DRONE_WIDTH = 1.0 #meters
 RADIUS = 0.2 #meters
 ZED_OFFSET = 0.06 #meters
 current_position = None
-detecting_obstacles = False
+detecting_obstacles_lidar = False
+detecting_obstacles_zed = False
 current_yaw = waypoint_idx = 0
 
 waypoints = [(3, 0)]
@@ -214,7 +215,7 @@ def normalize_yaw(input_yaw):
 def zed_3d_callback(msg):
     """Handle incoming zed messages."""
     global center_row1_points_zed, center_row2_points_zed, detecting_obstacles_zed
-
+    
     # Initialize arrays for the two center rows
     center_row1_points_zed = []
     center_row2_points_zed = []
@@ -233,6 +234,8 @@ def zed_3d_callback(msg):
         x, y, z = point
 
         x += ZED_OFFSET
+
+        x = -x
         
         # Calculate row and column indices
         row = idx // width
@@ -261,7 +264,7 @@ def main():
 
     lidar_sub = node.create_subscription(PointCloud2, "/scan_3D", lidar_3d_callback, 10)
     node.create_subscription(PoseStamped, "/zed/zed_node/pose", zed_pose_callback, 10)
-    zed_sub = node.create_subscription(PointCloud2, "/zed/point_cloud/cloud_registered", zed_3d_callback, 10)
+    zed_sub = node.create_subscription(PointCloud2, "/zed/zed_node/point_cloud/cloud_registered", zed_3d_callback, 10)
 
     yaw_pub = node.create_publisher(Float64, "/obstacle_avoidance/yaw", 10)
 
@@ -292,10 +295,9 @@ def main():
 
             yaw_error = math.degrees(math.atan(waypoint_vector[1]/waypoint_vector[0])) - current_yaw
             
-            if (detecting_obstacles):
+            if (detecting_obstacles_zed):
                 obstacles_lidar = detect_obstacles(center_row1_points_lidar, center_row2_points_lidar)
                 obstacles_zed = detect_obstacles(center_row1_points_zed, center_row2_points_zed)
-
                 obstacles = merge_obstacles(obstacles_lidar, obstacles_zed)
 
                 if len(obstacles) > 0:
