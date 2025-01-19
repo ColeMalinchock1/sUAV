@@ -19,6 +19,16 @@ class ZedLineOverlay(Node):
             '/zed/zed_node/rgb/image_rect_color',  # Adjust topic name if needed
             self.image_callback,
             10)
+        self.zed_depth_sub = self.create_subscription(
+            Image,
+            '/zed/zed_node/depth/depth_registered',  # Adjust topic name if needed
+            self.zed_depth_callback,
+            10)
+        self.lidar_depth_sub = self.create_subscription(
+            Image,
+            '/scan_image',  # Adjust topic name if needed
+            self.lidar_depth_callback,
+            10)
         self.yaw_sub = self.create_subscription(
             Float64,
             '/obstacle_avoidance/yaw',
@@ -34,6 +44,80 @@ class ZedLineOverlay(Node):
     
     def yaw_callback(self, msg):
         self.current_angle = msg.data
+
+    def lidar_depth_callback(self, msg):
+        try:
+            # Convert ROS Image message to OpenCV image
+            cv_image = self.bridge.imgmsg_to_cv2(msg)
+            
+            # Get image dimensions
+            height, width = cv_image.shape[:2]
+            
+            # Calculate line endpoints
+            line_length = height // 2  # Line length is half the image height
+            bottom_center = (width // 2, height)  # Bottom center point
+            
+            # Calculate end point of line based on current angle
+            end_x = bottom_center[0] + int(line_length * math.sin(math.radians(self.current_angle)))
+            end_y = bottom_center[1] - int(line_length * math.cos(math.radians(self.current_angle)))
+            
+            cv2.line(cv_image, 
+                    bottom_center, 
+                    (bottom_center[0], bottom_center[1] - line_length),
+                    (0, 0, 255),  # Green color
+                    2)  # Line thickness
+
+            # Draw the line
+            cv2.line(cv_image, 
+                    bottom_center, 
+                    (end_x, end_y),
+                    (0, 255, 0),  # Green color
+                    2)  # Line thickness
+            
+            # Display the image
+            cv2.imshow('Lidar Depth with Line Overlay', cv_image)
+            cv2.waitKey(1)
+            
+        except Exception as e:
+            self.get_logger().error(f'Error processing image: {str(e)}')
+
+    def zed_depth_callback(self, msg):
+        try:
+            # Convert ROS Image message to OpenCV image
+            cv_image = self.bridge.imgmsg_to_cv2(msg)
+
+            cv_image = cv2.flip(cv_image, -1)
+            
+            # Get image dimensions
+            height, width = cv_image.shape[:2]
+            
+            # Calculate line endpoints
+            line_length = height // 2  # Line length is half the image height
+            bottom_center = (width // 2, height)  # Bottom center point
+            
+            # Calculate end point of line based on current angle
+            end_x = bottom_center[0] + int(line_length * math.sin(math.radians(self.current_angle)))
+            end_y = bottom_center[1] - int(line_length * math.cos(math.radians(self.current_angle)))
+            
+            cv2.line(cv_image, 
+                    bottom_center, 
+                    (bottom_center[0], bottom_center[1] - line_length),
+                    (0, 0, 255),  # Green color
+                    2)  # Line thickness
+
+            # Draw the line
+            cv2.line(cv_image, 
+                    bottom_center, 
+                    (end_x, end_y),
+                    (0, 255, 0),  # Green color
+                    2)  # Line thickness
+            
+            # Display the image
+            cv2.imshow('Zed Depth with Line Overlay', cv_image)
+            cv2.waitKey(1)
+            
+        except Exception as e:
+            self.get_logger().error(f'Error processing image: {str(e)}')
 
     def image_callback(self, msg):
         try:
