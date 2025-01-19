@@ -19,6 +19,50 @@ current_yaw = waypoint_idx = 0
 
 waypoints = [(3, 0)]
 
+class PIDController:
+    def __init__(self, kp, ki, kd, min_output=-60, max_output = 60):
+        self.kp = kp
+        self.ki = ki
+        self.kd = kd
+
+        self.min_output = min_output
+        self.max_output = max_output
+
+        self.previous_error = 0.0
+        self.integral = 0.0
+        self.last_time = time.time()
+
+    def compute(self, error):
+        current_time = time.time()
+        dt = current_time - self.last_time
+
+        if dt <= 0:
+            return 0
+        
+        p_term = self.kp * error
+        
+        self.integral += error * dt
+        i_term = self.ki * self.integral
+
+        derivative = (error - self.previous_error) / dt
+        d_term = self.kd * derivative
+
+        output = p_term + i_term + d_term
+    
+        output = max(self.min_output, min(self.max_output, output))
+
+        self.previous_error = error
+        self.last_time = time.time()
+
+        return output
+    
+    def reset(self):
+        self.previous_error = 0.0
+        self.integral = 0.0
+        self.last_time = time.time()
+
+yaw_pid = PIDController(kp = 1.0, ki = 0.0, kd = 0.0)
+
 def quaternion_to_euler_angle_vectorized2(w, x, y, z):
     ysqr = y * y
 
@@ -195,13 +239,15 @@ def main():
                 if waypoint_idx == len(waypoints):
                     print("Mission accomplished!")
                     break
+
+                yaw_pid.reset()
                 
             # Gets the direction to the next waypoint
             current_waypoint = waypoints[waypoint_idx]
             
             waypoint_vector = [current_waypoint[0] - current_position[0], current_waypoint[1] - current_position[1]]
 
-            yaw_delta = math.degrees(math.atan(waypoint_vector[1]/waypoint_vector[0])) - current_yaw
+            yaw_error = math.degrees(math.atan(waypoint_vector[1]/waypoint_vector[0])) - current_yaw
             
             if (detecting_obstacles):
                 obstacles = detect_obstacles(center_row1_points, center_row2_points)
@@ -218,17 +264,20 @@ def main():
                             # Go to the right of the obstacle
                             print(right[0])
                             print("GO RIGHT")
-                            yaw_delta = math.degrees(math.atan(DRONE_WIDTH / (2 * right[0])))
+                            yaw_error = math.degrees(math.atan(DRONE_WIDTH / (2 * right[0])))
                         else:
                             # Go to the left of the obstacle
                             print(left[0])
                             print("GO LEFT")
-                            yaw_delta = -math.degrees(math.atan(DRONE_WIDTH / (2 * left[0])))
-                
+                            yaw_error = -math.degrees(math.atan(DRONE_WIDTH / (2 * left[0])))
+            
                 print("Number of obstacles: ", len(obstacles)/2)
-                print("YAW DELTA: ", yaw_delta)
+            
+            yaw_delta = yaw_pid.compute(yaw_error)
+            print("YAW ERROR: ", yaw_error)
+            print("YAW DELTA: ", yaw_delta)
             msg = Float64()
-            msg.data = yaw_delta
+            msg.data = float(yaw_delta)
             yaw_pub.publish(msg)
             
 
