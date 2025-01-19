@@ -306,10 +306,12 @@ def main():
                         if abs(left[1] - current_yaw) > abs(right[1] - current_yaw):
                             # Go to the right of the obstacle
                             print("GO RIGHT")
+                            print(right[0])
                             yaw_error = math.degrees(math.atan(DRONE_WIDTH / (2 * right[0])))
                         else:
                             # Go to the left of the obstacle
                             print("GO LEFT")
+                            print(left[0])
                             yaw_error = -math.degrees(math.atan(DRONE_WIDTH / (2 * left[0])))
             
                 print("Number of obstacles: ", len(obstacles)/2)
