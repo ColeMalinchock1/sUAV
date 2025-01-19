@@ -68,6 +68,8 @@ def detect_obstacles(center_row1_points, center_row2_points):
     obstacles = []
     previous_point = None
 
+    obstacle_size = 0
+
     # Scanning through all the points int the rows
     for i in range(min_length):
 
@@ -82,27 +84,38 @@ def detect_obstacles(center_row1_points, center_row2_points):
         # Checks if the depth is less than the threshold which indicates an obstacle
         if avg_depth < MAX_THRESHOLD:
             # print(f"Depth: {avg_depth}, Angle: {avg_angle}")
-
+            obstacle_size += 1
             # Checks if it is a new obstacle detected
             if not scanning_obstacle:
 
                 # If it is a new obstacle, the left end of it is recorded as an obstacle
                 # And the scanning obstacle is set to true
                 obstacles.append([avg_depth, avg_angle])
+                
                 scanning_obstacle = True
-
+            elif i == min_length - 1:
+                if obstacle_size > 2:
+                    obstacles.append(previous_point)
+                else:
+                    obstacles.pop()
+                
         # Else if it does not exceed the threshold and it is still currently
         # scanning an obstacle or it reaches the end of the scan and it is still scanning an obstacle
-        elif scanning_obstacle or (scanning_obstacle and i == min_length - 1):
+        elif scanning_obstacle:
 
             # Mark it as the end of the obstacle and set scanning obstacle to false
-            obstacles.append(previous_point)
+            if obstacle_size > 2:
+                obstacles.append(previous_point)
+            else:
+                obstacles.pop()
+                
             scanning_obstacle = False
+            obstacle_size = 0
         
         # Add the average depth and average angle to the array
         depth_angle_array.append((avg_depth, avg_angle))
         previous_point = [avg_depth, avg_angle]
-    
+        
     return obstacles
 
 def lidar_3d_callback(msg):
