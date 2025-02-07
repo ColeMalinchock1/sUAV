@@ -6,7 +6,6 @@ from sensor_msgs.msg import PointCloud2
 import sensor_msgs_py.point_cloud2 as pc2
 from geometry_msgs.msg import PoseStamped
 import threading
-import time
 import math
 import numpy as np
 
@@ -17,8 +16,7 @@ ZED_OFFSET = 0.06 #meters
 current_position = None
 detecting_obstacles = False
 current_yaw = waypoint_idx = 0
-
-waypoints = [(3, 0)]
+waypoints = None
 
 def quaternion_to_euler_angle_vectorized2(w, x, y, z):
     ysqr = y * y
@@ -85,9 +83,10 @@ def detect_obstacles(center_row1_points, center_row2_points):
         
         # Checks if the depth is less than the threshold which indicates an obstacle
         if avg_depth < MAX_THRESHOLD:
-            # print(f"Depth: {avg_depth}, Angle: {avg_angle}")
+
             obstacle_size += 1
             opening_size = 0
+
             # Checks if it is a new obstacle detected
             if not scanning_obstacle:
 
@@ -96,7 +95,9 @@ def detect_obstacles(center_row1_points, center_row2_points):
             
                 obstacles.append([avg_depth, avg_angle])
                 scanning_obstacle = True
+
             elif i == min_length - 1:
+                
                 if obstacle_size > 2:
                     obstacles.append(previous_point)
                 else:
@@ -260,7 +261,7 @@ def main():
     node = rclpy.create_node('obstacle_avoidance_node')
 
     lidar_sub = node.create_subscription(PointCloud2, "/scan_3D", lidar_3d_callback, 10)
-    node.create_subscription(PoseStamped, "/zed/zed_node/pose", zed_pose_callback, 10)
+    zed_sub = node.create_subscription(PoseStamped, "/zed/zed_node/pose", zed_pose_callback, 10)
 
     yaw_pub = node.create_publisher(Float64, "/obstacle_avoidance/yaw", 10)
 
@@ -275,52 +276,53 @@ def main():
 
     
         while rclpy.ok():
-            
-            if math.sqrt((current_position[0] - waypoints[waypoint_idx][0])**2 + (current_position[1] - waypoints[waypoint_idx][1])**2) < RADIUS:
-                waypoint_idx += 1
-                if waypoint_idx == len(waypoints):
-                    print("Mission accomplished!")
-                    break
-                
-            # Gets the direction to the next waypoint
-            current_waypoint = waypoints[waypoint_idx]
-            
-            waypoint_vector = [current_waypoint[0] - current_position[0], current_waypoint[1] - current_position[1]]
-
-            yaw_error = math.degrees(math.atan(waypoint_vector[1]/waypoint_vector[0])) - current_yaw
-            
-            if (detecting_obstacles):
-                obstacles = detect_obstacles(center_row1_points_lidar, center_row2_points_lidar)
-                # obstacles_zed = detect_obstacles(center_row1_points_zed, center_row2_points_zed)
-                # obstacles = merge_obstacles(obstacles_lidar, obstacles_zed)
-
-                if len(obstacles) > 0:
+            if waypoints is not None:
+                if math.sqrt((current_position[0] - waypoints[waypoint_idx][0])**2 + (current_position[1] - waypoints[waypoint_idx][1])**2) < RADIUS:
+                    waypoint_idx += 1
+                    if waypoint_idx == len(waypoints):
+                        print("Mission accomplished!")
+                        break
                     
-                    # Loop through all the obstacles
-                    for i in range(0, len(obstacles), 2):
+                # Gets the direction to the next waypoint
+                current_waypoint = waypoints[waypoint_idx]
+                
+                waypoint_vector = [current_waypoint[0] - current_position[0], current_waypoint[1] - current_position[1]]
 
-                        # Get the values of the left and right of the obstacle
-                        left = obstacles[i]
-                        right = obstacles[i + 1]
+                yaw_error = math.degrees(math.atan(waypoint_vector[1]/waypoint_vector[0])) - current_yaw
+                
+                if (detecting_obstacles):
+                    obstacles = detect_obstacles(center_row1_points_lidar, center_row2_points_lidar)
+                    # obstacles_zed = detect_obstacles(center_row1_points_zed, center_row2_points_zed)
+                    # obstacles = merge_obstacles(obstacles_lidar, obstacles_zed)
 
-                        if abs(left[1] - current_yaw) > abs(right[1] - current_yaw):
-                            # Go to the right of the obstacle
-                            print("GO RIGHT")
-                            print(right[0])
-                            yaw_error = math.degrees(math.atan(DRONE_WIDTH / (2 * right[0])))
-                        else:
-                            # Go to the left of the obstacle
-                            print("GO LEFT")
-                            print(left[0])
-                            yaw_error = -math.degrees(math.atan(DRONE_WIDTH / (2 * left[0])))
-            
-                print("Number of obstacles: ", len(obstacles)/2)
+                    if len(obstacles) > 0:
+                        
+                        # Loop through all the obstacles
+                        for i in range(0, len(obstacles), 2):
 
-            print("YAW DELTA: ", yaw_error)
-            msg = Float64()
-            msg.data = float(yaw_error)
-            yaw_pub.publish(msg)
-            
+                            # Get the values of the left and right of the obstacle
+                            left = obstacles[i]
+                            right = obstacles[i + 1]
+
+                            if abs(left[1] - current_yaw) > abs(right[1] - current_yaw):
+                                # Go to the right of the obstacle
+                                print("GO RIGHT")
+                                print(right[0])
+                                yaw_error = math.degrees(math.atan(DRONE_WIDTH / (2 * right[0])))
+                            else:
+                                # Go to the left of the obstacle
+                                print("GO LEFT")
+                                print(left[0])
+                                yaw_error = -math.degrees(math.atan(DRONE_WIDTH / (2 * left[0])))
+                
+                    print("Number of obstacles: ", len(obstacles)/2)
+
+                print("YAW DELTA: ", yaw_error)
+                msg = Float64()
+                msg.data = float(yaw_error)
+                yaw_pub.publish(msg)
+            else:
+                print("Waiting for waypoints")
 
             rate.sleep()
     finally:
