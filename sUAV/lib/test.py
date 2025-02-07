@@ -1,98 +1,93 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-from __future__ import print_function
 from dronekit import connect, VehicleMode
+from pymavlink import mavutil
 import time
-import argparse
+import logging
 
-def arm_and_takeoff(vehicle, aTargetAltitude):
+# Set up logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Connect to the vehicle
+logger.info("Connecting to vehicle...")
+vehicle = connect('/dev/ttyTHS1', baud=57600, wait_ready=True)
+
+# Global variables
+in_auto_mode = False  # Track if we're in AUTO mode
+last_mode_switch_time = 0  # Track last mode switch time
+MODE_SWITCH_COOLDOWN = 1.0  # Cooldown period between mode switches (seconds)
+CHANNEL_THRESHOLD = 1500  # RC channel threshold for mode switching
+
+def switch_mode(target_mode):
     """
-    Arms vehicle and fly to aTargetAltitude.
+    Switch vehicle mode with additional checks and verification
+    Returns True if mode switch was successful
     """
-    print("Basic pre-arm checks")
-    # Don't let the user try to arm until autopilot is ready
-    while not vehicle.is_armable:
-        print(" Waiting for vehicle to initialise...")
-        time.sleep(1)
+    global in_auto_mode, last_mode_switch_time
+    
+    current_time = time.time()
+    
+    # Check if enough time has passed since last mode switch
+    if current_time - last_mode_switch_time < MODE_SWITCH_COOLDOWN:
+        logger.debug("Mode switch cooldown in effect")
+        return False
         
-    print("Arming motors")
-    # Copter should arm in GUIDED mode
-    vehicle.mode = VehicleMode("GUIDED")
-    vehicle.armed = True
-
-    while not vehicle.armed:      
-        print(" Waiting for arming...")
-        time.sleep(1)
-
-    vehicle.mode = VehicleMode("STABILIZE")
-    vehicle.armed = True
-
-    print("Taking off!")
-    vehicle.simple_takeoff(aTargetAltitude) # Take off to target altitude
-    count = 0
-    # Wait until the vehicle reaches a safe height
-    while True:
-        print(" Altitude: ", vehicle.location.global_relative_frame.alt)      
-        count += 1
-        if count == 30:
-            vehicle.mode = VehicleMode("LOITER")
-        if vehicle.location.global_relative_frame.alt >= aTargetAltitude * 0.95:
-            print("Reached target altitude")
-            break
-        time.sleep(1)
-
-def main():
-    # Set up argument parsing
-    parser = argparse.ArgumentParser(description='Connect to drone, takeoff, and enter stabilize mode.')
-    parser.add_argument('--connect', 
-                       help="Vehicle connection target string. If not specified, SITL automatically started and used.")
-    args = parser.parse_args()
-
-    connection_string = args.connect
-
-    # Start SITL if no connection string specified
-    if not connection_string:
-        import dronekit_sitl
-        sitl = dronekit_sitl.start_default()
-        connection_string = sitl.connection_string()
-
-    # Connect to the Vehicle
-    print("\nConnecting to vehicle on: %s" % connection_string)
-    vehicle = connect(connection_string, wait_ready=True, baud=57600, timeout=60)
-
-    # Print some basic vehicle information
-    print("\nVehicle parameters:")
-    print(" GPS: %s" % vehicle.gps_0)
-    print(" Battery: %s" % vehicle.battery)
-    print(" Last Heartbeat: %s" % vehicle.last_heartbeat)
-    print(" Is Armable?: %s" % vehicle.is_armable)
-    print(" System status: %s" % vehicle.system_status.state)
-    print(" Mode: %s" % vehicle.mode.name)
-
-    # Arm and take off
-    target_altitude = 3.5  # meters
-    arm_and_takeoff(vehicle, target_altitude)
-
-    # Switch to STABILIZE mode
-    print("\nSwitching to STABILIZE mode")
-    vehicle.mode = VehicleMode("STABILIZE")
-    time.sleep(2)  # Give time for mode switch
-
-    # Keep the script running to maintain vehicle connection
+    # Only attempt mode switch if armed
+    if not vehicle.armed:
+        logger.warning("Vehicle not armed - mode switch blocked")
+        return False
+    
     try:
-        while True:
-            print("\nCurrent Status:")
-            print(" Mode: %s" % vehicle.mode.name)
-            print(" Altitude: %s" % vehicle.location.global_relative_frame.alt)
-            print(" Battery: %s" % vehicle.battery)
-            time.sleep(2)
-    except KeyboardInterrupt:
-        print("\nUser interrupted")
-    finally:
-        # Close vehicle object
-        print("\nClosing vehicle connection")
-        vehicle.close()
+        # Set the mode
+        vehicle.mode = VehicleMode(target_mode)
+        
+        # Wait for mode change to take effect
+        start_time = time.time()
+        while vehicle.mode.name != target_mode:
+            if time.time() - start_time > 3:  # 3-second timeout
+                logger.error(f"Mode switch to {target_mode} timed out!")
+                return False
+            time.sleep(0.1)
+        
+        # Update tracking variables
+        in_auto_mode = (target_mode == "AUTO")
+        last_mode_switch_time = current_time
+        logger.info(f"Successfully switched to {target_mode} mode")
+        return True
+        
+    except Exception as e:
+        logger.error(f"Mode switch failed: {e}")
+        return False
 
-if __name__ == '__main__':
-    main()
+def switch_to_mission_mode():
+    """Switch vehicle to AUTO mode"""
+    return switch_mode("AUTO")
+
+def switch_to_manual_mode():
+    """Switch vehicle back to STABILIZE mode"""
+    return switch_mode("STABILIZE")
+
+try:
+    logger.info("Monitoring RC channels...")
+    
+    @vehicle.on_message('RC_CHANNELS')
+    def rc_listener(self, name, message):
+        # Check if channel 12 is above threshold
+        if message.chan12_raw > CHANNEL_THRESHOLD:
+            logger.info(f"Channel 12 activated: {message.chan12_raw}")
+            
+            if not in_auto_mode:
+                switch_to_mission_mode()
+            else:
+                switch_to_manual_mode()
+                
+    # Main loop with heartbeat monitoring
+    while True:
+        # Check if connection is still alive
+        if vehicle.last_heartbeat > 2:
+            logger.warning("Lost connection to vehicle!")
+        time.sleep(0.1)
+
+except KeyboardInterrupt:
+    logger.info("\nStopping...")
+finally:
+    vehicle.close()
