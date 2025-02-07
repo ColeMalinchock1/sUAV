@@ -51,6 +51,12 @@ try:
         print("Waiting for arming...")
         time.sleep(1)
 
+    while not vehicle.mode.name != "GUIDED":
+        print("Waiting for guided mode")
+        time.sleep(1)
+    
+    time.sleep(2)
+
     print("Starting movement sequence...")
     
     # Move forward 1 meter
