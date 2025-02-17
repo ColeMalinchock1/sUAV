@@ -2,7 +2,7 @@
 
 import rclpy
 from rclpy.node import Node
-from sensor_msgs.msg import Image
+from sensor_msgs.msg import LaserScan, Image
 from std_msgs.msg import Float64
 from cv_bridge import CvBridge
 import cv2
@@ -31,8 +31,8 @@ class ZedLineOverlay(Node):
             self.zed_depth_callback,
             10)
         self.lidar_depth_sub = self.create_subscription(
-            Image,
-            '/scan_image',
+            LaserScan,
+            '/scan',
             self.lidar_depth_callback,
             10)
         

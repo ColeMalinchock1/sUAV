@@ -129,10 +129,38 @@ try:
         if vehicle.mode.name == "GUIDED" and mission_not_started:
             time.sleep(5)
             mission_not_started = False
-            pos = relative_to_global_position(4, 0, 0, 0)
+            msg = vehicle.message_factory.command_long_encode(
+                0, 0,    # target_system, target_component
+                mavutil.mavlink.MAV_CMD_CONDITION_YAW, #command
+                0, #confirmation
+                90,    # param 1, yaw in degrees
+                10,          # param 2, yaw speed deg/s
+                1,          # param 3, direction -1 ccw, 1 cw
+                1, # param 4, relative offset 1, absolute angle 0
+                0, 0, 0)    # param 5 ~ 7 not used
+            # send command to vehicle
+            vehicle.send_mavlink(msg)
 
-            a_location = LocationGlobal(pos[0], pos[1], pos[2])
-            vehicle.simple_goto(a_location)
+            ack = vehicle.message_factory.command_ack_encode(
+                mavutil.mavlink.MAV_CMD_CONDITION_YAW,  # command
+                mavutil.mavlink.MAV_RESULT_ACCEPTED  # result
+            )
+
+            # Print the acknowledgment result
+            logger.info(f"Yaw command acknowledgment: {ack.result}")
+
+            # You can also log the current vehicle heading
+            logger.info(f"Current vehicle heading: {vehicle.heading}")
+
+            time.sleep(5)
+            
+            # pos = relative_to_global_position(4, 0, 0, 0)
+
+            # a_location = LocationGlobal(pos[0], pos[1], pos[2])
+            # vehicle.simple_goto(a_location)
+
+            # Log final heading after movement
+            logger.info(f"Final vehicle heading: {vehicle.heading}")
 
         time.sleep(0.1)
 
