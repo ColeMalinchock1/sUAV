@@ -17,7 +17,7 @@ in_guided_mode = False  # Track if we're in GUIDED mode
 last_mode_switch_time = 0  # Track last mode switch time
 mission_not_started = True
 MODE_SWITCH_COOLDOWN = 1.0  # Cooldown period between mode switches (seconds)
-CHANNEL_THRESHOLD = 1500  # RC channel threshold for mode switching
+CHANNEL_THRESHOLD = 1200  # RC channel threshold for mode switching
 EARTH_RADIUS = 6378137.0  # WGS84 equatorial radius
 
 def check_system_health():
