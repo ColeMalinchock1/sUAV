@@ -125,8 +125,9 @@ try:
         # Check if connection is still alive
         if vehicle.last_heartbeat > 2:
             logger.warning("Lost connection to vehicle!")
-
+        
         if vehicle.mode.name == "GUIDED" and mission_not_started:
+            print("INSIDE")
             time.sleep(5)
             mission_not_started = False
             msg = vehicle.message_factory.command_long_encode(
@@ -140,6 +141,7 @@ try:
                 0, 0, 0)    # param 5 ~ 7 not used
             # send command to vehicle
             vehicle.send_mavlink(msg)
+        
 
             ack = vehicle.message_factory.command_ack_encode(
                 mavutil.mavlink.MAV_CMD_CONDITION_YAW,  # command
@@ -161,6 +163,8 @@ try:
 
             # Log final heading after movement
             logger.info(f"Final vehicle heading: {vehicle.heading}")
+        else:
+            print("OUTSIDE")
 
         time.sleep(0.1)
 
