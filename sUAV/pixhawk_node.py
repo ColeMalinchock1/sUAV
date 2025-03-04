@@ -3,14 +3,6 @@ from pymavlink import mavutil
 import time
 import logging
 
-# Set up logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
-# Connect to the vehicle
-logger.info("Connecting to vehicle...")
-vehicle = connect('/dev/ttyTHS1', baud=57600, wait_ready=True)
-
 target_omega = 10 # deg/sec
 target_velocity = 0.5 # m/s
 type_mask = 0b0000111111111000
@@ -124,10 +116,11 @@ def main():
         
         # Checks if the vehicle is in guided mode
         if vehicle.mode.name == "GUIDED":
-
+            
             # Checks that the system is healthy
             if check_system_health():
-
+                logger.info("In GUIDED Mode, beginning movement")
+            
                 # Wait before executing the movement
                 time.sleep(5)
 
@@ -148,6 +141,16 @@ def main():
 
 if __name__ == "__main__":
     try:
+
+        # Set up logging
+        logging.basicConfig(level=logging.INFO)
+        logger = logging.getLogger(__name__)
+
+        # Connect to the vehicle
+        logger.info("Connecting to vehicle...")
+        vehicle = connect('/dev/ttyTHS1', baud=57600, wait_ready=True)
+        logger.info("Connected to vehicle")
+        
         main()
     except KeyboardInterrupt:
         logger.info("\nStopping...")
