@@ -1,0 +1,60 @@
+INFO:__main__:Starting movement sequence in GUIDED mode
+INFO:__main__:Starting vehicle heading: 247
+INFO:__main__:Executing 90-degree rotation
+INFO:__main__:Initial heading before rotation: 247
+INFO:__main__:Target heading: 337
+INFO:__main__:Yaw command sent
+INFO:__main__:Expected rotation duration: 9.0 seconds
+INFO:__main__:Rotation command completed. New heading: 29
+INFO:__main__:Executing forward movement
+INFO:__main__:Moving forward 5m at 0.5m/s
+INFO:__main__:Starting position: Lat 35.7692766, Lon -78.664065
+INFO:__main__:Forward velocity command sent
+INFO:__main__:Ending position: Lat 35.7692792, Lon -78.6640627
+INFO:__main__:Forward movement command completed
+INFO:__main__:Movement sequence completed
+INFO:__main__:Starting movement sequence in GUIDED mode
+INFO:__main__:Starting vehicle heading: 27
+INFO:__main__:Executing 90-degree rotation
+INFO:__main__:Initial heading before rotation: 27
+INFO:__main__:Target heading: 117
+INFO:__main__:Yaw command sent
+INFO:__main__:Expected rotation duration: 9.0 seconds
+INFO:__main__:Rotation command completed. New heading: 25
+INFO:__main__:Executing forward movement
+INFO:__main__:Moving forward 5m at 0.5m/s
+INFO:__main__:Starting position: Lat 35.7692809, Lon -78.6640693
+INFO:__main__:Forward velocity command sent
+INFO:__main__:Ending position: Lat 35.7692788, Lon -78.664054
+INFO:__main__:Forward movement command completed
+INFO:__main__:Movement sequence completed
+INFO:__main__:Starting movement sequence in GUIDED mode
+INFO:__main__:Starting vehicle heading: 23
+INFO:__main__:Executing 90-degree rotation
+INFO:__main__:Initial heading before rotation: 23
+INFO:__main__:Target heading: 113
+INFO:__main__:Yaw command sent
+INFO:__main__:Expected rotation duration: 9.0 seconds
+INFO:__main__:Rotation command completed. New heading: 27
+INFO:__main__:Executing forward movement
+INFO:__main__:Moving forward 5m at 0.5m/s
+INFO:__main__:Starting position: Lat 35.7692781, Lon -78.6640616
+INFO:__main__:Forward velocity command sent
+INFO:__main__:Ending position: Lat 35.7692824, Lon -78.6640605
+INFO:__main__:Forward movement command completed
+INFO:__main__:Movement sequence completed
+INFO:__main__:Starting movement sequence in GUIDED mode
+INFO:__main__:Starting vehicle heading: 28
+INFO:__main__:Executing 90-degree rotation
+INFO:__main__:Initial heading before rotation: 28
+INFO:__main__:Target heading: 118
+INFO:__main__:Yaw command sent
+INFO:__main__:Expected rotation duration: 9.0 seconds
+INFO:__main__:Rotation command completed. New heading: 26
+INFO:__main__:Executing forward movement
+INFO:__main__:Moving forward 5m at 0.5m/s
+INFO:__main__:Starting position: Lat 35.7692833, Lon -78.6640628
+INFO:__main__:Forward velocity command sent
+INFO:__main__:Ending position: Lat 35.7692833, Lon -78.6640675
+INFO:__main__:Forward movement command completed
+INFO:__main__:Movement sequence completed
