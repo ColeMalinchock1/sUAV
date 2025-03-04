@@ -2,10 +2,13 @@ from dronekit import connect, VehicleMode, LocationGlobal
 from pymavlink import mavutil
 import time
 import logging
+import math
 
-target_omega = 10 # deg/sec
-target_velocity = 0.5 # m/s
-type_mask = 0b0000111111111000
+# Constants
+TARGET_OMEGA = 10  # deg/sec
+TARGET_VELOCITY = 0.5  # m/s
+# CORRECT MASK FOR VELOCITY CONTROL - enables velocity control in x, y, z
+VELOCITY_TYPE_MASK = 0b0000111111000111
 
 def check_system_health():
     """Verify system health before mode switch"""
@@ -18,141 +21,205 @@ def check_system_health():
     return True
 
 def rotate_yaw(degrees):
-    """Rotates the yaw of the vehicle to a specified degree"""
+    """Rotates the yaw of the vehicle by a specified degree"""
+    # Store initial heading for verification
+    initial_heading = vehicle.heading
+    logger.info(f"Initial heading before rotation: {initial_heading}")
+    
+    # Target heading calculation
+    target_heading = (initial_heading + degrees) % 360
+    logger.info(f"Target heading after rotation: {target_heading}")
 
-    # Create the message to send to the pixhawk
+    # Create the yaw command
     msg = vehicle.message_factory.command_long_encode(
         0, 0,    # target_system, target_component
-        mavutil.mavlink.MAV_CMD_CONDITION_YAW, #command
-        0, #confirmation
-        degrees,    # param 1, yaw in degrees
-        target_omega,          # param 2, yaw speed deg/s
-        1,          # param 3, direction -1 ccw, 1 cw
-        1, # param 4, relative offset 1, absolute angle 0
-        0, 0, 0)    # param 5 ~ 7 not used
+        mavutil.mavlink.MAV_CMD_CONDITION_YAW,  # command
+        0,  # confirmation
+        degrees,  # param 1, yaw in degrees
+        TARGET_OMEGA,  # param 2, yaw speed deg/s
+        1,  # param 3, direction 1=cw, -1=ccw
+        1,  # param 4, relative=1, absolute=0
+        0, 0, 0)  # param 5-7 not used
     
-    # send command to vehicle
+    # Send command to vehicle
     vehicle.send_mavlink(msg)
-
-    # Calculate how long it should be rotating and get the initial start time
-    duration = degrees/target_omega
-    start_time = time.time()
-
-    # Rotate until the time is exceeded or GUIDED mode is no longer the current mode
-    while (time.time() - start_time < duration + 1):
-        if (vehicle.mode.name != "GUIDED"):
-            logger.info("Mode changed, stopping movement")
-            return False
-        time.sleep(0.1)
     
-    logger.info("Rotation movement complete")
-    return True
-
-def set_speed(speed):
-    """Sets the speed of the vehicle before any movement"""
-
-    # First, set the speed limit
-    speed_msg = vehicle.message_factory.command_long_encode(
-        0, 0,                                   # target system, target component
-        mavutil.mavlink.MAV_CMD_DO_CHANGE_SPEED,  # command
-        0,                                      # confirmation
-        1,                                      # param 1: speed type (1=ground speed)
-        speed,                               # param 2: speed (m/s)
-        -1,                                     # param 3: throttle (-1=no change)
-        0, 0, 0, 0                              # param 4-7: not used
+    # Create and log acknowledgment (just for confirmation of receipt)
+    ack = vehicle.message_factory.command_ack_encode(
+        mavutil.mavlink.MAV_CMD_CONDITION_YAW,  # command
+        mavutil.mavlink.MAV_RESULT_ACCEPTED  # result
     )
-
-    # Sends the speed to the pixhawk
-    vehicle.send_mavlink(speed_msg)
-    logger.info(f"Setting speed limit to {target_velocity} m/s")
-    time.sleep(0.5)  # Give time for the command to be processed
-
-def forward(distance):
-    """Moves the vehicle forward to a specified distance"""
-
-    # Set the speed of the vehicle
-    set_speed(target_velocity)
-
-    # Create the message to the pixhawk on the distance that it should be moved to
-    msg = vehicle.message_factory.set_position_target_local_ned_encode(
-        0,
-        0, 0,    # target_system, target_component
-        mavutil.mavlink.MAV_FRAME_BODY_OFFSET_NED, #command
-        type_mask, #Mask
-        distance, 0, 0,    # param 1, distance in meters forward
-        0, 0, 0,          # param 2, velocity
-        0, 0, 0,          # param 3, acceleration
-        0, 0)    # param 5 ~ 7 not used
+    logger.info(f"Yaw command sent, acknowledgment: {ack.result}")
     
-    # send command to vehicle
-    vehicle.send_mavlink(msg)
+    # Calculate minimum expected rotation time
+    expected_duration = abs(degrees) / TARGET_OMEGA
+    logger.info(f"Expected rotation duration: {expected_duration} seconds")
     
-    # Calculate time needed to travel the distance at given speed and get the start time
+    # Wait for rotation with heading verification
     start_time = time.time()
-    travel_time = distance /target_velocity
-
-    # Log the movement
-    logger.info(f"Moving forward {distance}m at {target_velocity}m/s for ~{travel_time:.1f} seconds")
-
-    # Sleep until the rotation is done or the mode is switched out of guided
-    while (time.time() - start_time < travel_time + 1):
+    max_wait_time = expected_duration + 5  # Add safety margin
+    
+    # Wait for rotation to complete with active monitoring
+    while time.time() - start_time < max_wait_time:
+        current_heading = vehicle.heading
+        
+        # Calculate heading difference (handles wraparound at 0/360)
+        heading_diff = abs((current_heading - target_heading + 180) % 360 - 180)
+        
+        logger.info(f"Current heading: {current_heading}, heading difference: {heading_diff}°")
+        
+        # Check if we've reached target heading within tolerance
+        if heading_diff < 5:  # 5 degree tolerance
+            logger.info(f"Reached target heading: {current_heading}")
+            time.sleep(1)  # Short pause to stabilize
+            return True
+            
+        # If mode changed, exit
         if vehicle.mode.name != "GUIDED":
-            logger.info("Mode changed, stopping movement")
+            logger.info("Mode changed, stopping rotation")
             return False
-        time.sleep(0.1)
+            
+        time.sleep(0.5)  # Check more frequently
+    
+    # If we get here, the rotation didn't complete within the time limit
+    logger.warning(f"Rotation timeout. Current heading: {vehicle.heading}, Target: {target_heading}")
+    return False
 
+def forward_velocity(distance):
+    """Moves the vehicle forward using velocity control"""
+    logger.info(f"Attempting to move forward {distance}m at {TARGET_VELOCITY}m/s")
+    
+    # Calculate time needed for movement
+    travel_time = distance / TARGET_VELOCITY
+    logger.info(f"Expected travel time: {travel_time:.1f} seconds")
+    
+    # Set the message to use VELOCITY control (not position)
+    msg = vehicle.message_factory.set_position_target_local_ned_encode(
+        0,  # time_boot_ms
+        0, 0,  # target system, target component
+        mavutil.mavlink.MAV_FRAME_BODY_NED,  # frame - BODY_NED is relative to vehicle orientation
+        VELOCITY_TYPE_MASK,  # type_mask - enables velocity control
+        0, 0, 0,  # x, y, z positions (not used)
+        TARGET_VELOCITY, 0, 0,  # x, y, z velocity in m/s (forward, right, down)
+        0, 0, 0,  # x, y, z acceleration (not used)
+        0, 0)  # yaw, yaw_rate (not used)
+    
+    # Log GPS starting position if available
+    if vehicle.location.global_relative_frame.lat:
+        start_lat = vehicle.location.global_relative_frame.lat
+        start_lon = vehicle.location.global_relative_frame.lon
+        logger.info(f"Starting position: Lat {start_lat}, Lon {start_lon}")
+    
+    # Send command and start movement
+    start_time = time.time()
+    logger.info("Starting forward movement")
+    
+    # Continue sending velocity commands until time elapses
+    while time.time() - start_time < travel_time + 2:  # Add buffer time
+        # Re-send velocity command (needed for continuous movement)
+        vehicle.send_mavlink(msg)
+        
+        # Check if we're still in GUIDED mode
+        if vehicle.mode.name != "GUIDED":
+            logger.info("Mode changed, stopping forward movement")
+            break
+            
+        # Log current position if GPS is available
+        if vehicle.location.global_relative_frame.lat:
+            current_lat = vehicle.location.global_relative_frame.lat
+            current_lon = vehicle.location.global_relative_frame.lon
+            
+            # Log position and calculate approximate distance moved
+            if 'start_lat' in locals():
+                # Rough conversion to meters (approximation)
+                dlat = current_lat - start_lat
+                dlon = current_lon - start_lon
+                earth_radius = 6378137.0  # meters
+                meters_lat = dlat * math.pi * earth_radius / 180.0
+                meters_lon = dlon * math.pi * earth_radius * math.cos(math.radians(current_lat)) / 180.0
+                dist_moved = math.sqrt(meters_lat**2 + meters_lon**2)
+                
+                logger.info(f"Current position: Lat {current_lat}, Lon {current_lon}, Moved ~{dist_moved:.2f}m")
+        
+        # Wait before sending next command
+        time.sleep(0.5)
+    
+    # Send stop command (zero velocity)
+    stop_msg = vehicle.message_factory.set_position_target_local_ned_encode(
+        0,  # time_boot_ms
+        0, 0,  # target system, target component
+        mavutil.mavlink.MAV_FRAME_BODY_NED,  # frame
+        VELOCITY_TYPE_MASK,  # type_mask - enables velocity control
+        0, 0, 0,  # x, y, z positions (not used)
+        0, 0, 0,  # x, y, z velocity (all zeros - stop movement)
+        0, 0, 0,  # x, y, z acceleration (not used)
+        0, 0)  # yaw, yaw_rate (not used)
+    vehicle.send_mavlink(stop_msg)
+    
     logger.info("Forward movement complete")
     return True
 
 def main():
-    """Main function for creating the movement and ensuring that the vehicle is safe"""
-
-    # Main loop with heartbeat monitoring
+    """Main function for drone movement sequence"""
+    mission_completed = False
+    
     while True:
-        
         # Check if connection is still alive
         if vehicle.last_heartbeat > 2:
             logger.warning("Lost connection to vehicle!")
         
-        # Checks if the vehicle is in guided mode
-        if vehicle.mode.name == "GUIDED":
-            
-            # Checks that the system is healthy
+        # Execute mission if in GUIDED mode and not already completed
+        if vehicle.mode.name == "GUIDED" and not mission_completed:
+            # Verify system health
             if check_system_health():
-                logger.info("In GUIDED Mode, beginning movement")
-            
-                # Wait before executing the movement
+                logger.info("In GUIDED Mode, beginning movement sequence")
+                
+                # Wait for stability
+                logger.info("Waiting 5 seconds before movement...")
                 time.sleep(5)
-
-                # You can also log the current vehicle heading
-                logger.info(f"Current vehicle heading: {vehicle.heading}")
-
-                # Rotate 90 degrees
-                if (rotate_yaw(90)):
+                
+                # Log starting heading
+                logger.info(f"Starting vehicle heading: {vehicle.heading}")
+                
+                # First, rotate 90 degrees
+                logger.info("Starting 90-degree rotation")
+                if rotate_yaw(90):
+                    logger.info(f"Rotation complete. New heading: {vehicle.heading}")
                     
-                    # Log the final rotation
-                    logger.info(f"Final vehicle heading: {vehicle.heading}")
-
-                    # Move forward 5 meters
-                    forward(5)
-
+                    # Wait before next movement
+                    time.sleep(2)
+                    
+                    # Now move forward
+                    logger.info("Starting forward movement")
+                    if forward_velocity(5):
+                        logger.info("Movement sequence completed successfully")
+                        mission_completed = True
+                    else:
+                        logger.warning("Forward movement failed")
+                else:
+                    logger.warning("Rotation failed")
+        
+        # Brief pause in the main loop
         time.sleep(0.1)
-
 
 if __name__ == "__main__":
     try:
-
         # Set up logging
         logging.basicConfig(level=logging.INFO)
         logger = logging.getLogger(__name__)
-
+        
         # Connect to the vehicle
         logger.info("Connecting to vehicle...")
         vehicle = connect('/dev/ttyTHS1', baud=57600, wait_ready=True)
         logger.info("Connected to vehicle")
         
+        # Run the main function
         main()
     except KeyboardInterrupt:
-        logger.info("\nStopping...")
+        logger.info("\nStopping due to keyboard interrupt...")
+    except Exception as e:
+        logger.error(f"Error occurred: {str(e)}")
     finally:
+        # Ensure clean disconnect
         vehicle.close()
+        logger.info("Vehicle connection closed")
