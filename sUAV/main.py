@@ -16,7 +16,7 @@ def main():
         time.sleep(0.1)
     logger.info("Switched to guided mode")
 
-    x_velocity = 2 # [m/s]
+    x_velocity = 0.5 # [m/s]
     y_velocity = 0 # [m/s]
     altitude = 0 # [m]
     yaw = 90 # [deg/s]
@@ -33,6 +33,11 @@ def main():
     pixhawk.command_XYA(x_velocity, y_velocity, altitude)
 
     time.sleep(5)
+
+    # Stop the drone after flying for 5 seconds
+    pixhawk.command_XYA(0, 0, altitude)
+
+    time.sleep(1)
 
     # Rotates the drone 90 degrees to the right
     pixhawk.command_YAW(yaw)
