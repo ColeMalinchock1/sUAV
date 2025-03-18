@@ -16,12 +16,12 @@ def main():
         time.sleep(0.1)
     logger.info("Switched to guided mode")
 
-    x_velocity = 0 # [m/s]
+    x_velocity = 1 # [m/s]
     y_velocity = 0 # [m/s]
     altitude = 0 # [m]
     yaw = 90 # [deg/s]
     
-    logger.info("Current mission: 4 Rotation")
+    logger.info("Current mission: Square Movement")
     logger.info(f"X Velocity: {x_velocity} m/s")
     logger.info(f"Y Velocity: {y_velocity} m/s")
     logger.info(f"Altitude: {altitude} m")
@@ -29,46 +29,20 @@ def main():
 
     time.sleep(5)
 
-    # Moves the drone forward for 2 seconds
-    # pixhawk.command_XYA(x_velocity, y_velocity, altitude)
-
-    pixhawk.command_YAW(yaw)
-
-    logger.info(str(time.time()))
-
-    time.sleep((yaw/YAW_SPEED) + 5)
-
-    time.sleep(2)
-
-    pixhawk.command_YAW(yaw)
-
-    logger.info(str(time.time()))
-
-    time.sleep((yaw/YAW_SPEED) + 5)
-
-    time.sleep(2)
-
-    pixhawk.command_YAW(yaw)
-
-    logger.info(str(time.time()))
-
-    time.sleep((yaw/YAW_SPEED) + 5)
-
-    time.sleep(2)
-
-    # time.sleep(5)
-
-    # Stop the drone after flying for 5 seconds
-    # pixhawk.command_XYA(0, 0, altitude)
-
-    # time.sleep(1)
-
-    # Rotates the drone 90 degrees to the right
-    pixhawk.command_YAW(yaw)
-
-    logger.info(str(time.time()))
-
-    time.sleep((yaw/YAW_SPEED) + 5)
+    for i in range(4):
+        # Rotate first (if not the first iteration)
+        if i > 0:
+            pixhawk.command_YAW(yaw)
+            # Wait for rotation to complete and stabilize
+            time.sleep((yaw/YAW_SPEED) + 2)
+        
+        # Now move forward in the new direction
+        pixhawk.command_XYA(x_velocity, y_velocity, altitude)
+        time.sleep(5)
+        
+        # Stop the drone
+        pixhawk.command_XYA(0, 0, 0)
+        time.sleep(1)
 
 if __name__ == "__main__":
 
