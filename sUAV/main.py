@@ -49,7 +49,7 @@ if __name__ == "__main__":
     try:
 
         # Creates the logger
-        logger = Logger()
+        logger = Logger(app_name="Drone_Flight", log_dir="/path/to/logs", udp_host="192.168.111.210",  udp_port=9999)
 
         # Checks if the logger was created correctly
         # Else report it and continue
@@ -58,7 +58,8 @@ if __name__ == "__main__":
             logger.info("Logger created")
 
             # Creates the pixhawk with the logger
-            pixhawk = PixhawkCommands(logger)
+            if not DEBUG_MODE:
+                pixhawk = PixhawkCommands(logger)
 
             # Checks if the pixhawk is created correctly
             # Else report it and continue
