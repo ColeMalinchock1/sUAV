@@ -126,14 +126,15 @@ class PixhawkCommands():
 
         # Formats the message to be sent to the pixhawk
         msg = self.vehicle.message_factory.set_position_target_local_ned_encode(
-        0,      
-        0, 0,    
-        mavutil.mavlink.MAV_FRAME_BODY_NED,  #relative to drone heading pos relative to EKF origin
-        0b0000111111100011, #ignore velocity z and other pos arguments
-        0, 0, altitude,
-        velocity_x, velocity_y, 0, 
-        0, 0, 0, 
-        0, 0) 
+            0,      
+            0, 0,    
+            mavutil.mavlink.MAV_FRAME_BODY_NED,  #relative to drone heading pos relative to EKF origin
+            0b0000111111100011, #ignore velocity z and other pos arguments
+            0, 0, altitude,
+            velocity_x, velocity_y, 0, 
+            0, 0, 0, 
+            0, 0
+        ) 
 
         # Sends the message to the pixhawk
         self._send_command(msg)

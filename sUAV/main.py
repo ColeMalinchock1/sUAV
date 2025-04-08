@@ -37,8 +37,9 @@ def main():
         #     time.sleep((yaw/YAW_SPEED) + 2)
         
         # Now move forward in the new direction
-        pixhawk.command_XYA(x_velocity, y_velocity, altitude)
-        time.sleep(5)
+        for j in range(5):
+            pixhawk.command_XYA(x_velocity, y_velocity, altitude)
+            time.sleep(1)
         
         # Stop the drone
         pixhawk.command_XYA(0, 0, 0)
