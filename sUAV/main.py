@@ -31,15 +31,14 @@ def main():
 
     for i in range(4):
         # Rotate first (if not the first iteration)
-        # if i > 0:
-        #     pixhawk.command_YAW(yaw)
-        #     # Wait for rotation to complete and stabilize
-        #     time.sleep((yaw/YAW_SPEED) + 2)
+        if i > 0:
+            pixhawk.command_YAW(yaw)
+            # Wait for rotation to complete and stabilize
+            time.sleep((yaw/YAW_SPEED) + 2)
         
-        # Now move forward in the new direction
-        for j in range(5):
-            pixhawk.command_XYA(x_velocity, y_velocity, altitude)
-            time.sleep(1)
+        # Now move forward in the new direction for 3 seconds
+        pixhawk.command_XYA(x_velocity, y_velocity, altitude)
+        time.sleep(3)
         
         # Stop the drone
         pixhawk.command_XYA(0, 0, 0)

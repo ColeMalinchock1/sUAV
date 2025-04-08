@@ -129,7 +129,7 @@ class PixhawkCommands():
             0,      
             0, 0,    
             mavutil.mavlink.MAV_FRAME_BODY_NED,  #relative to drone heading pos relative to EKF origin
-            0b0000111111100011, #ignore velocity z and other pos arguments
+            MOVEMENT_MASK, 
             0, 0, altitude,
             velocity_x, velocity_y, 0, 
             0, 0, 0, 
