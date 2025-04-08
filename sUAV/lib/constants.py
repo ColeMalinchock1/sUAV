@@ -1,4 +1,4 @@
-DEBUG_MODE = True
+DEBUG_MODE = False
 LOGGING = True
 
 # PIXHAWK_ADDRESS = "/dev/ttyTHS1"
