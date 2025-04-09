@@ -29,18 +29,23 @@ def main():
 
     time.sleep(5)
 
+    logger.info("Beginning maneuver")
     for i in range(4):
         # Rotate first (if not the first iteration)
         if i > 0:
+            logger.info(f"Turning {yaw} degrees")
             pixhawk.command_YAW(yaw)
+
             # Wait for rotation to complete and stabilize
             time.sleep((yaw/YAW_SPEED) + 2)
         
         # Now move forward in the new direction for 3 seconds
+        logger.info("Moving forward for 3 seconds")
         pixhawk.command_XYA(x_velocity, y_velocity, altitude)
         time.sleep(3)
         
         # Stop the drone
+        logger.info("Stopping for 1 second")
         pixhawk.command_XYA(0, 0, 0)
         time.sleep(1)
 
@@ -49,7 +54,7 @@ if __name__ == "__main__":
     try:
 
         # Creates the logger
-        logger = Logger(app_name="Drone_Flight", log_dir="/path/to/logs", udp_host="192.168.111.210",  udp_port=9999)
+        logger = Logger(app_name="Drone_Flight", log_dir=LOG_DIR, udp_host="192.168.111.210",  udp_port=9999)
 
         # Checks if the logger was created correctly
         # Else report it and continue
