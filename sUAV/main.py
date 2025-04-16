@@ -4,50 +4,30 @@
 from sUAV.src.pixhawk_commands import PixhawkCommands
 from sUAV.lib.logger import Logger
 from sUAV.lib.constants import *
+from sUAV.src.obstacle_avoidance import ObstacleAvoidance
+
 import time
 
 # Initialize the pixhawk and logger
-pixhawk = logger = None
+pixhawk = logger = obstacle_avoidance = None
 
-def main():
+mission = [[5, 5]]
+
+def main(mission):
     """Main function to run the obstacle avoidance algorithm"""
     logger.info("Waiting to switch to guided mode")
     while(pixhawk.get_mode() != "GUIDED"):
         time.sleep(0.1)
     logger.info("Switched to guided mode")
 
-    x_velocity = 1 # [m/s]
-    y_velocity = 0 # [m/s]
-    altitude = 0 # [m]
-    yaw = 90 # [deg/s]
-    
-    logger.info("Current mission: Square Movement")
-    logger.info(f"X Velocity: {x_velocity} m/s")
-    logger.info(f"Y Velocity: {y_velocity} m/s")
-    logger.info(f"Altitude: {altitude} m")
-    logger.info(f"Yaw: {yaw} degrees")
+    time.sleep(2)
 
-    time.sleep(5)
+    logger.info(f"Mission: {mission}")
+    logger.info("Beginning mission")
 
-    logger.info("Beginning maneuver")
-    for i in range(4):
-        # Rotate first (if not the first iteration)
-        if i > 0:
-            logger.info(f"Turning {yaw} degrees")
-            pixhawk.command_YAW(yaw)
-
-            # Wait for rotation to complete and stabilize
-            time.sleep((yaw/YAW_SPEED) + 2)
-        
-        # Now move forward in the new direction for 3 seconds
-        logger.info("Moving forward for 3 seconds")
-        pixhawk.command_XYA(x_velocity, y_velocity, altitude)
-        time.sleep(3)
-        
-        # Stop the drone
-        logger.info("Stopping for 1 second")
-        pixhawk.command_XYA(0, 0, 0)
-        time.sleep(1)
+    while (obstacle_avoidance.current_waypoint):
+        obstacle_avoidance.proceed_to_waypoint()
+        time.sleep(0.1)
 
 if __name__ == "__main__":
 
@@ -64,7 +44,11 @@ if __name__ == "__main__":
 
             # Creates the pixhawk with the logger
             if not DEBUG_MODE:
+
                 pixhawk = PixhawkCommands(logger)
+                
+                # Creates the obstacle avoidance system
+                obstacle_avoidance = ObstacleAvoidance(mission, logger, pixhawk)
 
             # Checks if the pixhawk is created correctly
             # Else report it and continue
@@ -73,7 +57,7 @@ if __name__ == "__main__":
                 logger.info("Pixhawk connected, running main")
                 
                 # Runs main function
-                main()
+                main(mission)
             else:
                 logger.critical("Unable to create pixhawk communication")
         else:

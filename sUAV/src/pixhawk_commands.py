@@ -84,6 +84,14 @@ class PixhawkCommands():
         """Closes the vehicle connection"""
         self.vehicle.close()
 
+    def get_yaw(self):
+        """Returns the current yaw"""
+        return self.vehicle.heading
+    
+    def get_local_position(self):
+        """Returns the current position"""
+        return self.vehicle.location.local_frame
+
     def command_YAW(self, degrees):
         """
         Rotates the drone a specified amount
