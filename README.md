@@ -13,8 +13,8 @@ Logging is toggled by the LOGGING constant in the lib.constants.py file. This wi
 - Use auto-takeoff like it is used in the example
 
 ## Future notes
-- Use TCP Socket for ground station logging with vehicle
 - Use ROS2 instead of mavutil
-- Find a lidar that will work better
 - Use PID to control the obstacle avoidance after completing simple maneuvers with current communication
 
+## Flow Diagram
+![sUAV Flow Diagram](/Resources/FlowDiagram.png)
