@@ -4,30 +4,30 @@
 from sUAV.src.pixhawk_commands import PixhawkCommands
 from sUAV.lib.logger import Logger
 from sUAV.lib.constants import *
-from sUAV.src.obstacle_avoidance import ObstacleAvoidance
+from sUAV.src.waypoint_follower import WaypointFollower
 
 import time
 
 # Initialize the pixhawk and logger
 pixhawk = logger = obstacle_avoidance = None
 
-mission = [[5, 5]]
-
-def main(mission):
+def control_loop():
     """Main function to run the obstacle avoidance algorithm"""
-    logger.info("Waiting to switch to guided mode")
-    while(pixhawk.get_mode() != "GUIDED"):
-        time.sleep(0.1)
-    logger.info("Switched to guided mode")
+    
 
     time.sleep(2)
-
-    logger.info(f"Mission: {mission}")
     logger.info("Beginning mission")
 
     while (obstacle_avoidance.current_waypoint):
         obstacle_avoidance.proceed_to_waypoint()
         time.sleep(0.1)
+
+def initialize():
+
+    # Waiting to get mission
+    logger.info("Waiting for mission")
+    mission = pixhawk.get_mission()
+    logger.info("Received mission")
 
 if __name__ == "__main__":
 
@@ -48,16 +48,17 @@ if __name__ == "__main__":
                 pixhawk = PixhawkCommands(logger)
                 
                 # Creates the obstacle avoidance system
-                obstacle_avoidance = ObstacleAvoidance(mission, logger, pixhawk)
+                obstacle_avoidance = WaypointFollower(logger, pixhawk)
 
             # Checks if the pixhawk is created correctly
             # Else report it and continue
             if pixhawk:
 
-                logger.info("Pixhawk connected, running main")
+                logger.info("Pixhawk connected")
+
+                initialize()
                 
-                # Runs main function
-                main(mission)
+                control_loop()
             else:
                 logger.critical("Unable to create pixhawk communication")
         else:

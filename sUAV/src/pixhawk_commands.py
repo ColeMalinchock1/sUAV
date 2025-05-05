@@ -47,6 +47,24 @@ class PixhawkCommands():
 
         return False
     
+    def get_mission(self):
+        """Gets the list of mission waypoints"""
+
+        cmds = self.vehicle.commands
+        cmds.download()
+        cmds.wait_ready()
+
+        waypoints = []
+
+        for cmd in cmds:
+
+            if cmd.command == mavutil.mavlink.MAV_CMD_NAV_WAYPOINT:
+                    waypoints.append([cmd.x, cmd.y])
+
+        print(waypoints)
+
+        return waypoints
+    
     def check_satellites(self):
         """Checks the number of satellites seen by the gps"""
 
