@@ -1,10 +1,11 @@
 
 # Import necessary libraries
 from sUAV.lib.constants import *
+import math
 
 # If not in debug mode then import pixhawk communication libraries 
 if not DEBUG_MODE:
-    from dronekit import connect, VehicleMode, LocationGlobal
+    from dronekit import connect, VehicleMode, LocationGlobal, LocationGlobalRelative
     from pymavlink import mavutil
 
 class PixhawkCommands():
@@ -46,6 +47,41 @@ class PixhawkCommands():
             self.logger.critical("Unable to setup vehicle")
 
         return False
+
+    def goto(self, waypoint):
+        """Simple goto to a waypoint"""
+
+        self.vehicle.simple_goto(waypoint)
+
+    def waypoint_reached(self, waypoint):
+        """Returns if the waypoint was reached"""
+
+        position = self.vehicle.location.global_relative_frame
+        
+        current_latlon = (position.lat, position.lon)
+
+        if self.latlon_distance(current_latlon, (waypoint.lat, waypoint.lon)) < WAYPOINT_RADIUS_M:
+            return True
+        else:
+            return False
+    
+    def latlon_distance(self, pos1, pos2):
+        # Convert decimal degrees to radians
+        lat1_rad = math.radians(pos1[0])
+        lon1_rad = math.radians(pos1[1])
+        lat2_rad = math.radians(pos2[0])
+        lon2_rad = math.radians(pos2[1])
+        
+        # Difference in coordinates
+        dlat = lat2_rad - lat1_rad
+        dlon = lon2_rad - lon1_rad
+        
+        # Haversine formula
+        a = math.sin(dlat/2)**2 + math.cos(lat1_rad) * math.cos(lat2_rad) * math.sin(dlon/2)**2
+        c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
+        distance = EARTH_RADIUS * c
+        
+        return distance
     
     def get_mission(self):
         """Gets the list of mission waypoints"""
@@ -54,14 +90,16 @@ class PixhawkCommands():
         cmds.download()
         cmds.wait_ready()
 
+        if cmds.count <= 0:
+            return False
+
         waypoints = []
 
         for cmd in cmds:
 
             if cmd.command == mavutil.mavlink.MAV_CMD_NAV_WAYPOINT:
-                    waypoints.append([cmd.x, cmd.y])
-
-        print(waypoints)
+                    waypoint = LocationGlobalRelative(cmd.x, cmd.y, cmd.z)
+                    waypoints.append(waypoint)
 
         return waypoints
     

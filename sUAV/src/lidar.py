@@ -8,7 +8,7 @@ import time
 
 from sUAV.lib.constants import *
 
-class LIDAR:
+class Lidar:
 
     def __init__(self):
 
@@ -218,9 +218,9 @@ class LIDAR:
             timeout=0.5
         )
         
-        print("Connected to: " + self.ser.portstr)
+        # print("Connected to: " + self.ser.portstr)
         time.sleep(1)
-        print("Is port open? ", self.ser.isOpen())
+        # print("Is port open? ", self.ser.isOpen())
         
         # Send commands to start LIDAR
         self.ser.write(bytes(SENSITIVITY))
@@ -277,23 +277,25 @@ class LIDAR:
                                 # for angle, distance in valid_points:
                                 #     print(f"Angle: {angle:.1f}°, Distance: {distance} mm")
                             else:
-                                print("No valid readings detected")
+                                return None
                             
                             # Output obstacle information if detected
                             if obstacle_info["detected"]:
-                                print("\n--- Obstacle Detected ---")
-                                print(f"Left boundary: {obstacle_info['left_angle']:.1f}°")
-                                print(f"Right boundary: {obstacle_info['right_angle']:.1f}°")
-                                print(f"Center angle: {obstacle_info['center_angle']:.1f}°")
-                                print(f"Minimum distance: {obstacle_info['min_distance']} mm")
-                                print(f"Angular width: {obstacle_info['width_degrees']:.1f}°")
+                                return obstacle_info
+                                # print("\n--- Obstacle Detected ---")
+                                # print(f"Left boundary: {obstacle_info['left_angle']:.1f}°")
+                                # print(f"Right boundary: {obstacle_info['right_angle']:.1f}°")
+                                # print(f"Center angle: {obstacle_info['center_angle']:.1f}°")
+                                # print(f"Minimum distance: {obstacle_info['min_distance']} mm")
+                                # print(f"Angular width: {obstacle_info['width_degrees']:.1f}°")
                             else:
-                                print("\nNo obstacles detected")
+                                return None
+                                # print("\nNo obstacles detected")
                                 
-                            print("--- End of Scan ---\n")
+                            # print("--- End of Scan ---\n")
 
     def close(self):
         if self.ser and self.ser.isOpen():
             self.ser.write(bytes(COMMAND_STOP))
             self.ser.close()
-            print("LiDAR serial port closed")
+            # print("LiDAR serial port closed")

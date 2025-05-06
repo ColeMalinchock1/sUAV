@@ -4,31 +4,69 @@
 from sUAV.src.pixhawk_commands import PixhawkCommands
 from sUAV.lib.logger import Logger
 from sUAV.lib.constants import *
-from sUAV.src.waypoint_follower import WaypointFollower
+from sUAV.src.obstacle_avoidance import ObstacleAvoidance
 
 import time
 
 # Initialize the pixhawk and logger
 pixhawk = logger = obstacle_avoidance = None
 
-def control_loop():
+def control_loop(waypoints):
     """Main function to run the obstacle avoidance algorithm"""
-    
 
     time.sleep(2)
     logger.info("Beginning mission")
 
-    while (obstacle_avoidance.current_waypoint):
-        obstacle_avoidance.proceed_to_waypoint()
-        time.sleep(0.1)
+    waypoint_reached = True
+
+    counter = 0
+
+    # Loops through all the waypoints
+    for waypoint in waypoints:
+
+        logger.info(f"Current waypoint: {counter}/{len(waypoints)}")
+        logger.info(f"Waypoint location: {waypoint.lat}, {waypoint.lon}, {waypoint.alt}")
+
+        # Checks if the waypoint was reached
+        if waypoint_reached:
+
+            # Commands the pixhawk to go to the next waypoint and makes waypoint reached false
+            pixhawk.goto(waypoint)
+            waypoint_reached = False
+
+        # Exits the while loop when the waypoint is reached
+        while not waypoint_reached:
+
+            # Checks if there are any obstacles detected with the lidar
+            if obstacle_avoidance.detect_obstacle():
+                obstacle_avoidance.maneuver(waypoint)
+
+            # Checks if the pixhawk completed the simple goto
+            waypoint_reached = pixhawk.waypoint_reached()
+
+            time.sleep(0.1)
+        
+        logger.info("Waypoint reached!")
+        
+
 
 def initialize():
 
     # Waiting to get mission
     logger.info("Waiting for mission")
-    mission = pixhawk.get_mission()
-    logger.info("Received mission")
-
+    previous_time = time.time()
+    while True:
+        if (time.time() - previous_time > 3):
+            waypoints = pixhawk.get_mission()
+            if waypoints is not None:
+                logger.info("Received mission")
+                break 
+            logger.info("No mission found, waiting...")
+            previous_time = time.time()
+        time.sleep(0.1)
+    
+    return waypoints
+    
 if __name__ == "__main__":
 
     try:
@@ -46,9 +84,6 @@ if __name__ == "__main__":
             if not DEBUG_MODE:
 
                 pixhawk = PixhawkCommands(logger)
-                
-                # Creates the obstacle avoidance system
-                obstacle_avoidance = WaypointFollower(logger, pixhawk)
 
             # Checks if the pixhawk is created correctly
             # Else report it and continue
@@ -56,9 +91,11 @@ if __name__ == "__main__":
 
                 logger.info("Pixhawk connected")
 
-                initialize()
+                obstacle_avoidance = ObstacleAvoidance(pixhawk, logger)
+
+                waypoints = initialize()
                 
-                control_loop()
+                control_loop(waypoints)
             else:
                 logger.critical("Unable to create pixhawk communication")
         else:
