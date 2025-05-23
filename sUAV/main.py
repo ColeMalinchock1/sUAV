@@ -77,7 +77,8 @@ if __name__ == "__main__":
     try:
 
         # Creates the logger
-        logger = Logger(app_name="Drone_Flight", log_dir=LOG_DIR, udp_host="192.168.198.210",  udp_port=9999)
+        # udp host is laptop ipv4
+        logger = Logger(app_name="Drone_Flight", log_dir=LOG_DIR, udp_host="192.168.83.251",  udp_port=9999)
 
         # Checks if the logger was created correctly
         # Else report it and continue
