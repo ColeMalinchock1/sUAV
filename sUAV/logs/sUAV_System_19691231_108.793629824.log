@@ -1,8 +1,0 @@
-1969-12-31 19:01:48 - INFO - [info] - Logger created
-1969-12-31 19:01:48 - INFO - [info] - Connecting to vehicle...
-1969-12-31 19:02:02 - INFO - [info] - Connected to vehicle
-1969-12-31 19:02:02 - INFO - [info] - Sufficient number of satellites - Counted: 3, Required: 3
-1969-12-31 19:02:02 - INFO - [info] - Sufficient battery level - Measured: 100, Required: 25
-1969-12-31 19:02:02 - INFO - [info] - Vehicle health validated
-1969-12-31 19:02:02 - INFO - [info] - Pixhawk connected, running main
-1969-12-31 19:02:02 - INFO - [info] - Waiting to switch to guided mode

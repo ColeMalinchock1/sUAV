@@ -1,8 +1,0 @@
-2025-04-02 10:51:30 - INFO - [info] - Logger created
-2025-04-02 10:51:30 - INFO - [info] - Connecting to vehicle...
-2025-04-02 10:51:44 - INFO - [info] - Connected to vehicle
-2025-04-02 10:51:44 - INFO - [info] - Sufficient number of satellites - Counted: 4, Required: 3
-2025-04-02 10:51:44 - INFO - [info] - Sufficient battery level - Measured: 100, Required: 25
-2025-04-02 10:51:44 - INFO - [info] - Vehicle health validated
-2025-04-02 10:51:44 - INFO - [info] - Pixhawk connected, running main
-2025-04-02 10:51:44 - INFO - [info] - Waiting to switch to guided mode
